@@ -1529,3 +1529,551 @@
 2024-11-21 12:40:53,995 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
 2024-11-21 12:40:54,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
 2024-11-21 12:40:55,161 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:40:57,045 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:40:57,162 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:40:57,768 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:40:59,163 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:01,164 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:02,100 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:03,165 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:05,166 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:06,050 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:41:06,051 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:41:06,052 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:41:06,053 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:41:06,167 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:41:06,228 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:41:07,168 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:07,229 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:08,994 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:41:08,995 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:41:09,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:41:09,169 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:13,220 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:18,225 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:23,226 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:23,995 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:41:23,995 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:41:24,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:41:27,770 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:41:28,771 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:33,772 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:38,773 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:38,995 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:41:38,995 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:41:39,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:41:43,410 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:43,859 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:45,411 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:47,412 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:48,949 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:49,416 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:51,417 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:53,418 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:53,950 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:53,995 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:41:53,995 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:41:54,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:41:55,419 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:57,420 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:41:57,772 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:41:58,957 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:41:59,421 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:01,428 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:03,432 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:04,062 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:05,437 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:06,890 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:42:06,891 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:42:06,891 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:42:06,894 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:42:07,069 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:42:07,447 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:07,448 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:42:08,995 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:42:08,996 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:42:09,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:42:09,257 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:09,448 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:14,258 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:19,259 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:23,995 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:42:23,996 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:42:24,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:42:25,224 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:27,774 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:42:30,775 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:35,776 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:38,995 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:42:38,996 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:42:39,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:42:41,022 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:42,471 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:45,473 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:46,062 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:47,474 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:49,475 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:51,120 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:51,476 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:53,477 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:53,996 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:42:53,996 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:42:54,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:42:55,478 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:56,187 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:42:57,479 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:42:57,775 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:42:59,480 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:01,239 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:01,481 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:03,483 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:05,484 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:06,258 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:06,599 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:43:06,601 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:43:06,601 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:43:06,604 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:43:06,776 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:43:07,485 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:07,485 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:43:08,485 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:08,996 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:43:08,996 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:43:09,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:43:09,486 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:12,154 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:17,155 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:22,155 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:23,996 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:43:23,996 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:43:24,036 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:43:27,198 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:27,777 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:43:32,778 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:37,779 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:38,996 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:43:38,996 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:43:39,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:43:40,514 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:42,869 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:45,521 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:47,525 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:47,925 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:49,529 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:51,540 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:53,114 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:53,581 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:53,996 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:43:53,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:43:54,044 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:43:55,582 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:57,584 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:43:57,778 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:43:58,296 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:43:59,585 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:01,586 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:03,314 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:03,587 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:05,492 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:44:05,496 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:44:05,496 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:44:05,497 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:44:05,588 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:05,588 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:44:05,670 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:44:06,588 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:07,589 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:08,671 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:08,996 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:44:08,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:44:09,044 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:44:14,208 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:19,208 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:23,996 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:44:23,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:44:24,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:44:25,181 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:27,780 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:44:30,781 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:35,782 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:38,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:44:38,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:44:39,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:44:40,624 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:41,184 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:43,625 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:45,626 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:46,261 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:47,627 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:49,628 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:51,316 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:51,629 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:53,630 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:53,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:44:53,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:44:54,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:44:55,633 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:56,372 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:44:57,634 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:44:57,782 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:44:59,635 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:01,447 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:01,636 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:03,640 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:04,493 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:45:04,494 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:45:04,495 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:45:04,507 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:45:04,640 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:45:04,681 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:45:05,641 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:06,642 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:06,682 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:08,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:45:08,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:45:09,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:45:12,158 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:17,158 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:22,159 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:23,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:45:23,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:45:24,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:45:27,783 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:45:27,785 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:32,784 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:37,808 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:38,659 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:38,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:45:38,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:45:39,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:45:42,826 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:43,662 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:45,663 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:47,664 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:47,894 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:49,665 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:51,666 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:52,967 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:53,667 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:53,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:45:53,997 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:45:54,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:45:55,669 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:57,669 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:45:57,785 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:45:58,038 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:45:59,671 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:01,672 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:02,846 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:03,122 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:03,201 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:46:03,203 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:46:03,203 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:46:03,205 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:46:03,377 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:46:03,847 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:46:04,847 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:08,379 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:08,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:46:08,998 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:46:09,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:46:14,159 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:19,159 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:23,997 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:46:23,998 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:46:24,040 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:46:24,187 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:27,787 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:46:29,788 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:34,788 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:38,953 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:39,000 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:46:39,001 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:46:39,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:46:39,874 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:40,954 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:42,955 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:44,929 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:44,956 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:46,957 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:48,958 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:49,981 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:50,959 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:52,961 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:54,000 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:46:54,001 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:46:54,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:46:54,962 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:55,063 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:46:56,963 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:46:57,788 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:46:58,964 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:00,106 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:00,965 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:02,029 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:47:02,030 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:47:02,030 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:47:02,032 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:47:02,204 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:47:02,966 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:02,966 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:47:04,967 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:05,205 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:09,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:47:09,001 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:47:09,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:47:11,169 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:16,170 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:21,171 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:24,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:47:24,001 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:47:24,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:47:26,261 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:27,790 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:47:31,791 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:36,986 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:37,465 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:39,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:47:39,001 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:47:39,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:47:40,988 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:42,573 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:42,989 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:44,991 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:46,992 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:47,644 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:48,993 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:50,994 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:52,812 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:52,995 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:54,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:47:54,001 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:47:54,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:47:54,996 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:56,997 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:47:57,791 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:47:57,913 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:47:58,999 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:01,000 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:01,172 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:48:01,175 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:48:01,176 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:48:01,178 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:48:01,347 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:48:02,000 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:48:03,001 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:03,348 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:08,349 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:09,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:48:09,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:48:09,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:48:14,240 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:19,240 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:24,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:48:24,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:48:24,010 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:48:25,180 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:27,793 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:48:30,794 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:36,511 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:37,022 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:39,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:48:39,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:48:39,011 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:48:39,023 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:41,024 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:41,555 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:43,025 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:45,026 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:46,620 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:47,027 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:49,028 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:51,029 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:51,712 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:53,030 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:54,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:48:54,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:48:54,011 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:48:55,031 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:56,779 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:48:57,032 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:48:57,795 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:48:59,033 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:00,465 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:49:00,467 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:49:00,467 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:49:00,469 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:49:00,646 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:49:01,035 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:01,035 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:49:02,647 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:03,036 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:07,648 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:09,002 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:49:09,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:49:09,011 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:49:13,203 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:18,204 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:23,205 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:24,002 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:49:24,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:49:24,011 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:49:27,797 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:49:28,798 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:33,798 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:35,080 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:38,822 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:39,002 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:49:39,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:49:39,011 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:49:39,082 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:41,083 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:43,085 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:43,914 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:45,086 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:47,087 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:48,973 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:49,088 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:51,089 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:53,093 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:54,002 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:49:54,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:49:54,011 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:49:54,262 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:49:55,094 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:57,095 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:57,798 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:49:59,096 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:49:59,333 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:00,217 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:50:00,219 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:50:00,219 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:50:00,220 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:50:00,397 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:50:01,097 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:01,097 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:50:03,098 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:04,402 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:09,002 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:50:09,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:50:09,011 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:50:10,187 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:15,188 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:20,189 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:24,002 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:50:24,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:50:24,013 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:50:25,202 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:27,799 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:50:30,801 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:35,120 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:36,697 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:39,002 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:50:39,002 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:50:39,013 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:50:39,122 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:41,124 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:41,789 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:43,125 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:45,126 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:46,851 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:47,127 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:49,128 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:51,130 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:51,967 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:53,131 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:54,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:50:54,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:50:54,014 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:50:55,132 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:57,001 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:50:57,133 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:57,801 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:50:59,135 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:50:59,439 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:50:59,442 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:50:59,443 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:50:59,444 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:50:59,617 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:51:00,135 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:51:01,136 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:02,618 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:07,618 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:09,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:51:09,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:51:09,014 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:51:13,335 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:18,336 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:23,336 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:24,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:51:24,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:51:24,052 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:51:27,803 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:51:28,804 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:33,836 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:35,163 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:37,164 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:38,889 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:39,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:51:39,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:51:39,014 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:51:39,165 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:41,166 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:43,167 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:43,961 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:45,169 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:47,170 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:48,973 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:49,171 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:51,172 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:53,173 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:54,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:51:54,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:51:54,014 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:51:54,253 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:51:55,174 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:57,179 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:57,804 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:51:58,606 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:51:58,608 DEBUG   SenderThread:357879 [sender.py:send():379] send: history
+2024-11-21 12:51:58,608 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 12:51:58,613 INFO    SenderThread:357879 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 12:51:58,786 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 12:51:59,180 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:51:59,180 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/wandb-summary.json
+2024-11-21 12:51:59,787 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:01,183 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:04,788 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:09,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:52:09,004 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:52:09,014 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:52:10,205 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:15,206 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:20,207 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:24,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:52:24,004 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:52:24,044 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:52:26,190 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:27,806 DEBUG   SenderThread:357879 [sender.py:send():379] send: stats
+2024-11-21 12:52:31,808 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:33,206 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:36,906 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:37,208 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:39,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:52:39,003 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:52:39,015 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:52:39,209 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:41,210 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:41,948 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:43,212 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:45,213 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:46,965 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:47,214 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:49,215 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:51,216 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:51,968 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 12:52:53,217 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log
+2024-11-21 12:52:54,003 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 12:52:54,004 DEBUG   SenderThread:357879 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 12:52:54,015 DEBUG   HandlerThread:357879 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 12:52:55,218 INFO    Thread-17 :357879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_120656-3w4oov5h/files/output.log

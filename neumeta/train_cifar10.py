@@ -21,7 +21,7 @@ from neumeta.utils import (AverageMeter, EMA, load_checkpoint, print_omegaconf,
 print("Training INR On CIFAR10")
 
 # Set device to GPU if available, else CPU
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
 # Function to find the maximum dimension of the model
 def find_max_dim(model_cls):
@@ -215,25 +215,19 @@ def main():
     print("Maximum DIM: ",find_max_dim(model))
 
     # Validate the model for the starting dimension
-    val_loss, acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args)
-    print(f"Initial Permutated model Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+    val_loss, val_acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args, device=device)
+    print(f"Initial Permutated model Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
 
     # Get the learnable parameters of the model
     checkpoint = model.learnable_parameter
     # Get the number of parameters
     number_param = len(checkpoint)
     # Print the keys of the parameters and the number of parameters
+    print(f"Number of parameters to be learned: {number_param}")    
     print(f"Parameters keys: {model.keys}")
-    print(f"Number of parameters to be learned: {number_param}")
-    number_weight = sum(1 for key in model.keys if "weight" in key)
-    print(f"Number of weight parameters to be learned: {number_weight}")
-    number_bias = sum(1 for key in model.keys if "bias" in key)
-    print(f"Number of bias parameters to be learned: {number_bias}")
-    
-    
 
     # Get the hypermodel
-    hyper_model = get_hypernet(args, number_param)
+    hyper_model = get_hypernet(args, number_param, device=device)
     # Initialize the EMA
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     # Get the criterion, validation criterion, optimizer, and scheduler
@@ -249,7 +243,7 @@ def main():
     # If specified, load the checkpoint
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, ema)
+        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, ema, device=device)
         start_epoch = checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         print(f"Resuming from epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
@@ -279,10 +273,10 @@ def main():
                     ema.apply()
                     
                 # Sample the merged model
-                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args)
+                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
                 # Validate the merged model
-                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args)
-                val_loss, acc = validate_single(sampled_model, val_loader, val_criterion, args=args)
+                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+                val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
                 
                 # If EMA is specified, restore the original weights
                 if ema :
@@ -290,22 +284,24 @@ def main():
                     
                 # Log the validation loss and accuracy to wandb
                 wandb.log({
+                    "Train Loss": train_loss,
+                    "Train Accuracy": train_acc,
                     "Validation Loss": val_loss,
-                    "Validation Accuracy": acc
+                    "Validation Accuracy": val_acc
                 })
                 # Print the validation loss and accuracy
                 print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+                print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
                 
                 # Save the checkpoint if the accuracy is better than the previous best
-                if acc > best_acc:
-                    best_acc = acc
+                if val_acc > best_acc:
+                    best_acc = val_acc
                     save_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth",hyper_model,optimizer,ema,epoch,best_acc)
                     print(f"Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
         wandb.finish()
     
     #testing the best model
-    checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, ema)
+    checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, ema, device=device)
     for hidden_dim in range(16, 65):
         # Create a model for the given hidden dimension
         model = create_model(args.model.type, 
@@ -314,13 +310,13 @@ def main():
                                 smooth=args.model.smooth).to(device)
             
         # Sample the merged model for K times
-        accumulated_model = sample_merge_model(hyper_model, model, args, K=100)
+        accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
 
         # Validate the merged model
-        val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args)
+        val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
 
         # Print the results
-        print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+        print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
 
     # If testing, iterate over the hidden dimensions and test the model
     else:
@@ -337,10 +333,10 @@ def main():
                 ema.apply()
                 
             # Sample the merged model
-            accumulated_model = sample_merge_model(hyper_model, model, args, K=100)
+            accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
 
             # Validate the merged model
-            val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args)
+            val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
             
             # If EMA is specified, restore the original weights after applying EMA
             if ema:
@@ -351,7 +347,7 @@ def main():
             torch.save(accumulated_model.state_dict(), save_name)
 
             # Print the results
-            print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+            print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
             
             # Define the directory and filename structure
             filename = f"cifar10_results_{args.experiment.name}.txt"
@@ -359,7 +355,7 @@ def main():
 
             # Write the results. 'a' is used to append the results; a new file will be created if it doesn't exist.
             with open(filepath, "a") as file:
-                file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%\n")
+                file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%\n")
                 # Print message
     print("Training finished.")
  

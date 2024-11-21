@@ -10,7 +10,7 @@ experiment:
 # Model configurations
 model:
   type: ResNet20
-  pretrained_path: /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt  # Path to pre-trained model
+  pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt  # Path to pre-trained model
   smooth: True
 
 # Training configurations
@@ -21,7 +21,7 @@ training:
   #lr_steps: [100, 150]
   weight_decay: 1e-2
   clip_grad: 10.0
-  save_model_path: /homes/tsommariva/neumeta/neumeta/experiments/resnet20_cifar10_32-64-4layer-5 # Directory to save the trained model
+  save_model_path: neumeta/experiments/resnet20_cifar10_32-64-4layer-5 # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

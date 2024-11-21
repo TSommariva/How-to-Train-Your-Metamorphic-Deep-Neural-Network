@@ -1,5 +1,5 @@
 # Experiment settings
-base_config: /homes/tsommariva/neumeta/neumeta/config/base_config.yaml
+base_config: neumeta/config/base_config.yaml
 
 experiment:
   name: myConf_cos_bs256
@@ -10,7 +10,7 @@ experiment:
 # Model configurations
 model:
   type: ResNet20
-  pretrained_path: /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt   # Path to pre-trained model
+  pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt   # Path to pre-trained model
   smooth: True
 
 # Training configurations

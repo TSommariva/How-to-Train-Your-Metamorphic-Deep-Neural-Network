@@ -6,7 +6,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
-      "args": ["--config", "/homes/tsommariva/neumeta/neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"],
+      "args": ["--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"],
       "console": "integratedTerminal"
     }
   ]
