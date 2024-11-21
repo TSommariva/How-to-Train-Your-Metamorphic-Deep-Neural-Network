@@ -20,4 +20,4 @@ conda activate neumeta
 # Command to execute Python program
 
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
-python3 /homes/tsommariva/neumeta/neumeta/train_cifar10.py --config /homes/tsommariva/neumeta/neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml
+python3 /homes/tsommariva/neumeta/neumeta/train_cifar10.py --config neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml

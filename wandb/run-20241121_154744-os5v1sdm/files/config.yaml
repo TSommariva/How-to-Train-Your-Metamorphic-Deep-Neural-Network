@@ -2,17 +2,17 @@ wandb_version: 1
 
 experiment:
   desc: null
-  value: '{''name'': ''myConf_cos_bs256'', ''recononly'': 0, ''num_epochs'': 200,
-    ''log_interval'': 250, ''eval_interval'': 1, ''seed'': 42}'
+  value: '{''name'': ''PredictAll_cosine_bs256_500e'', ''recononly'': 0, ''num_epochs'':
+    500, ''log_interval'': 250, ''eval_interval'': 1, ''seed'': 42}'
 model:
   desc: null
-  value: '{''type'': ''ResNet20'', ''pretrained_path'': ''/homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt'',
+  value: '{''type'': ''ResNet20'', ''pretrained_path'': ''neumeta/pretrained_models/cifar10_resnet20-4118986f.pt'',
     ''smooth'': True}'
 training:
   desc: null
   value: '{''learning_rate'': 0.001, ''batch_size'': 256, ''coordinate_noise'': 1.0,
     ''weight_decay'': 0.01, ''clip_grad'': 10.0, ''save_model_path'': ''experiments/resnet20_cifar10_myConf_cos_bs256'',
-    ''optimizer'': ''adam'', ''scheduler'': ''cosine'', ''T_max'': 200}'
+    ''optimizer'': ''adam'', ''scheduler'': ''cosine'', ''T_max'': 500}'
 hyper_model:
   desc: null
   value: '{''input_dim'': 6, ''hidden_dim'': 256, ''num_layers'': 5, ''num_freqs'':
@@ -26,7 +26,7 @@ dimensions:
     32, ''norm'': 64, ''start'': 64}'
 base_config:
   desc: null
-  value: /homes/tsommariva/neumeta/neumeta/config/base_config.yaml
+  value: neumeta/config/base_config.yaml
 config:
   desc: null
   value: /homes/tsommariva/neumeta/neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml
@@ -53,7 +53,7 @@ _wandb:
     framework: torch
     is_jupyter_run: false
     is_kaggle_kernel: false
-    start_time: 1732186551.0
+    start_time: 1732200464.0
     t:
       1:
       - 1
@@ -63,20 +63,10 @@ _wandb:
       - 53
       - 55
       - 63
-      2:
-      - 1
-      - 5
-      - 41
-      - 49
-      - 53
-      - 55
-      - 63
       3:
-      - 2
       - 13
       - 16
       - 23
-      - 61
       4: 3.12.7
       5: 0.16.6
       8:

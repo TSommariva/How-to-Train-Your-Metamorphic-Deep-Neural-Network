@@ -13,7 +13,7 @@ from neumeta.utils import (load_checkpoint, EMA, AverageMeter, save_checkpoint,
                        sample_coordinates, sample_weights, sample_subset, 
                        print_omegaconf, get_imagenet, 
                        create_key_masks, set_seed, parse_args, get_hypernet, 
-                       get_optimizer, validate, shuffle_coordiates_all)
+                       get_optimizer, validate_single,sample_merge_model, shuffle_coordiates_all)
 
 import wandb
 
@@ -164,13 +164,13 @@ def main_nerf(rank, world_size):
                          path=args.model.pretrained_path, 
                          smooth=args.model.smooth).to(rank)
 
-    # val_loss, acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args)
-    # print(f"Initial Permutated model Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+    val_loss, acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args)
+    print(f"Initial Permutated model Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
     checkpoint = model.learnable_parameter
     # print(checkpoint)
     number_param = len(checkpoint)
-    print(f"Parameters keys: {model.keys}")
     print(f"Number of parameters to be learned: {number_param}")
+    print(f"Parameters keys: {model.keys}")
     hyper_model = get_hypernet(args, number_param)
     hyper_model.to(rank)
     hyper_model = DDP(hyper_model, device_ids=[rank])
@@ -208,10 +208,15 @@ def main_nerf(rank, world_size):
                 if rank == 0:
                     if ema:
                         ema.apply()
-                        val_loss, acc = validate(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
+                        accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=torch.cuda.device)
+                        # Validate the merged model
+                        val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=torch.cuda.device)
+
                         ema.restore()  # Restore the original weights
                     else:
-                        val_loss, acc = validate(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
+                        accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=torch.cuda.device)
+                        # Validate the merged model
+                        val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=torch.cuda.device)
                     wandb.log({
                         "Validation Loss": val_loss,
                         "Validation Accuracy": acc
