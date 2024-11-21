@@ -2,7 +2,7 @@
 base_config: neumeta/config/base_config.yaml
 
 experiment:
-  name: myConf_cos_bs256
+  name: myConf
   num_epochs: 200
   log_interval: 250
   seed: 42  # Random seed

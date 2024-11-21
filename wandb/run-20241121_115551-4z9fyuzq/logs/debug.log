@@ -26,3 +26,10 @@ config: {'experiment': {'name': 'myConf_cos_bs256', 'recononly': 0, 'num_epochs'
 2024-11-21 11:55:54,913 INFO    MainThread:414324 [wandb_run.py:_redirect():2255] Wrapping output streams.
 2024-11-21 11:55:54,913 INFO    MainThread:414324 [wandb_run.py:_redirect():2280] Redirects installed.
 2024-11-21 11:55:54,915 INFO    MainThread:414324 [wandb_init.py:init():842] run started, returning control to user process
+2024-11-21 14:12:03,113 INFO    MainThread:414324 [wandb_run.py:_finish():2064] finishing run tsommariva/ninr/4z9fyuzq
+2024-11-21 14:12:03,113 INFO    MainThread:414324 [wandb_run.py:_atexit_cleanup():2304] got exitcode: 0
+2024-11-21 14:12:03,114 INFO    MainThread:414324 [wandb_run.py:_restore():2287] restore
+2024-11-21 14:12:03,114 INFO    MainThread:414324 [wandb_run.py:_restore():2293] restore done
+2024-11-21 14:12:09,250 INFO    MainThread:414324 [wandb_run.py:_footer_history_summary_info():3936] rendering history
+2024-11-21 14:12:09,251 INFO    MainThread:414324 [wandb_run.py:_footer_history_summary_info():3968] rendering summary
+2024-11-21 14:12:09,265 INFO    MainThread:414324 [wandb_run.py:_footer_sync_info():3895] logging synced files

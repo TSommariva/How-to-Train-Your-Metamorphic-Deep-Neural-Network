@@ -199,8 +199,8 @@ class CifarResNet(nn.Module):
     def learnable_parameter(self):
         # self.keys = [k for k, w in self.named_parameters() if k.startswith('layer3.2.conv') ] #  ork.startswith('layer3.2')
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.2.conv2') ]#{self.layers[-1]-1}') ]
-        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer') ] # or k.startswith('layer3.1') or k.startswith('layer3.0')
-        self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
+        self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer') ] # or k.startswith('layer3.1') or k.startswith('layer3.0')
+        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
 
 

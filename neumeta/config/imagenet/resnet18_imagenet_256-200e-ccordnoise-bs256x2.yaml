@@ -1,6 +1,6 @@
 # Experiment settings
 # Experiment settings
-base_config: toy/experiments/base_config.yaml
+base_config: neumeta/config/base_config.yaml
 
 experiment:
   name: ninr_resnet18_imagenet_32-64-5layer-coordnoise-bs256x2-100e_lr2e-3
@@ -15,7 +15,7 @@ model:
   pretrained_path: None
   
 data:
-  data_dir: /local_home/dataset/imagenet/
+  data_dir: data/
 
 # Training configurations
 training:
@@ -27,7 +27,7 @@ training:
   # strong_aug: v1
   weight_decay: 1e-3
   clip_grad: 10.0
-  save_model_path: toy/experiments/ninr_resnet18_imagenet_32-64-5layer-coordnoise-bs256x2-100e_lr2e-3 # Directory to save the trained model
+  save_model_path: experiments/ninr_resnet18_imagenet_32-64-5layer-coordnoise-bs256x2-100e_lr2e-3 # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

@@ -1,5 +1,6 @@
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader, DistributedSampler
+import os
 
 
 def get_imagenet(batch_size, strong_transform=False, data_dir='/path/to/imagenet', ddp=False):

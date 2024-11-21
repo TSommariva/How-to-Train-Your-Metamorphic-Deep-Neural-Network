@@ -2,11 +2,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python Debugger: Python File with parameters",
+      "name": "Train Cifar10",
       "type": "debugpy",
       "request": "launch",
-      "program": "${file}",
-      "args": ["--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"],
+      "program": "neumeta/train_cifar10.py",
+      "args": ["--config", "neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Train ImageNet",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/train_imagenet_ddp.py",
+      "args": ["--config", "neumeta/config/imagenet/resnet18_imagenet_256-200e-ccordnoise-bs256x2.yaml"],
       "console": "integratedTerminal"
     }
   ]
