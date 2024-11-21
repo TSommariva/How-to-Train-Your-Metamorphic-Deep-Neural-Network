@@ -1,4 +1,4 @@
-from .resnet import ResNet18_convbn
+#from .resnet import ResNet18_convbn
 # from .alexnet import AlexNet
 from .resnet_imagenet import resnet18_imagenet
 from .utils import fuse_module
@@ -6,7 +6,7 @@ from .resnet_cifar import *
 from .lenet import MnistNet, MnistResNet
 import torch
 from smooth.permute import PermutationManager, compute_tv_loss_for_network
-from .resnet_tinyimagenet import resnet18_tinyimagenet
+#from .resnet_tinyimagenet import resnet18_tinyimagenet
 import os
 
 def create_mnist_model(model_name, hidden_dim, depths=None, path=None):
@@ -38,13 +38,13 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False):
         model = cifar10_resnet56(hidden_dim=hidden_dim)
     else:
         raise ValueError(f"Unsupported model: {model_name}")
-    
-    fuse_module(model)
+        
     if path:
         if os.path.exists(path):
             print("Loading model from", path)
             state_dict = torch.load(path, map_location=torch.device('cpu'))
             load_checkpoint(model, state_dict)
+    fuse_module(model)
         
     if smooth:
         print("Smooth the parameters of the model")
@@ -53,7 +53,7 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False):
         permute_func = PermutationManager(model, input_tensor)
         permute_dict = permute_func.compute_permute_dict()
         model = permute_func.apply_permutations(permute_dict, ignored_keys=[('conv1.weight', 'in_channels'), ('fc.weight', 'out_channels'), ('fc.bias', 'out_channels')])
-        print("TV original model: ", compute_tv_loss_for_network(model, lambda_tv=1.0).item())
+        print("TV permutated model: ", compute_tv_loss_for_network(model, lambda_tv=1.0).item())
     return model
 
 def create_model_cifar100(model_name, hidden_dim, path=None, smooth=False):

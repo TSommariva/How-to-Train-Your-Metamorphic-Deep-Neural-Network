@@ -1,0 +1,186 @@
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:46: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+Replace last 2 block of layer3 with new block with hidden dim 32
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 33
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 34
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 35
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 36
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 37
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 38
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 39
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 40
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 41
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 42
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 43
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 44
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 45
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 46
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 47
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 48
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 49
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 50
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 51
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 52
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 53
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 54
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 55
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 56
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 57
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 58
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 59
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 60
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 61
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 62
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 63
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Loading model for dim 64
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/resnet20-12fca82f.th
+Iteration 0: Loss = 1565.1930, Reg Loss = 2.5919, Reconstruct Loss = 0.0000, Cls Loss = 1565.1927, Learning rate = 1.0000e-03
+Iteration 25: Loss = 112.4735, Reg Loss = 40.7236, Reconstruct Loss = 0.0636, Cls Loss = 112.4058, Learning rate = 1.0000e-03
+Iteration 50: Loss = 58.4705, Reg Loss = 45.3042, Reconstruct Loss = 0.0324, Cls Loss = 58.4335, Learning rate = 1.0000e-03
+Iteration 75: Loss = 39.9959, Reg Loss = 44.2895, Reconstruct Loss = 0.0218, Cls Loss = 39.9697, Learning rate = 1.0000e-03
+Iteration 100: Loss = 30.6748, Reg Loss = 41.1638, Reconstruct Loss = 0.0244, Cls Loss = 30.6463, Learning rate = 1.0000e-03
+Iteration 125: Loss = 25.0499, Reg Loss = 36.9958, Reconstruct Loss = 0.0237, Cls Loss = 25.0225, Learning rate = 1.0000e-03
+Iteration 150: Loss = 21.2850, Reg Loss = 33.5117, Reconstruct Loss = 0.0198, Cls Loss = 21.2619, Learning rate = 1.0000e-03
+Iteration 175: Loss = 18.5892, Reg Loss = 31.4621, Reconstruct Loss = 0.0172, Cls Loss = 18.5689, Learning rate = 1.0000e-03
+Iteration 200: Loss = 16.5637, Reg Loss = 29.8575, Reconstruct Loss = 0.0151, Cls Loss = 16.5457, Learning rate = 1.0000e-03
+Iteration 225: Loss = 14.9865, Reg Loss = 28.4680, Reconstruct Loss = 0.0134, Cls Loss = 14.9702, Learning rate = 1.0000e-03
+Iteration 250: Loss = 13.7234, Reg Loss = 27.1347, Reconstruct Loss = 0.0121, Cls Loss = 13.7085, Learning rate = 1.0000e-03
+Iteration 275: Loss = 12.6890, Reg Loss = 26.0002, Reconstruct Loss = 0.0111, Cls Loss = 12.6753, Learning rate = 1.0000e-03
+Iteration 300: Loss = 11.8265, Reg Loss = 25.1362, Reconstruct Loss = 0.0102, Cls Loss = 11.8138, Learning rate = 1.0000e-03
+Iteration 325: Loss = 11.0963, Reg Loss = 24.3005, Reconstruct Loss = 0.0094, Cls Loss = 11.0844, Learning rate = 1.0000e-03
+Iteration 350: Loss = 10.4701, Reg Loss = 23.5258, Reconstruct Loss = 0.0088, Cls Loss = 10.4590, Learning rate = 1.0000e-03
+Iteration 375: Loss = 9.9272, Reg Loss = 22.8847, Reconstruct Loss = 0.0082, Cls Loss = 9.9167, Learning rate = 1.0000e-03
+Iteration 400: Loss = 9.4520, Reg Loss = 22.3622, Reconstruct Loss = 0.0078, Cls Loss = 9.4420, Learning rate = 1.0000e-03
+Iteration 425: Loss = 9.0325, Reg Loss = 21.9068, Reconstruct Loss = 0.0073, Cls Loss = 9.0230, Learning rate = 1.0000e-03
+Iteration 450: Loss = 8.6595, Reg Loss = 21.4810, Reconstruct Loss = 0.0069, Cls Loss = 8.6505, Learning rate = 1.0000e-03
+Iteration 475: Loss = 8.3258, Reg Loss = 21.1155, Reconstruct Loss = 0.0066, Cls Loss = 8.3171, Learning rate = 1.0000e-03
+Iteration 500: Loss = 8.0253, Reg Loss = 20.7393, Reconstruct Loss = 0.0063, Cls Loss = 8.0170, Learning rate = 1.0000e-03
+Iteration 525: Loss = 7.7534, Reg Loss = 20.3520, Reconstruct Loss = 0.0060, Cls Loss = 7.7454, Learning rate = 1.0000e-03
+Iteration 550: Loss = 7.5061, Reg Loss = 19.9575, Reconstruct Loss = 0.0057, Cls Loss = 7.4984, Learning rate = 1.0000e-03
+Iteration 575: Loss = 7.2804, Reg Loss = 19.5887, Reconstruct Loss = 0.0055, Cls Loss = 7.2729, Learning rate = 1.0000e-03
+Iteration 600: Loss = 7.0734, Reg Loss = 19.3544, Reconstruct Loss = 0.0053, Cls Loss = 7.0662, Learning rate = 1.0000e-03
+Iteration 625: Loss = 6.8829, Reg Loss = 19.1264, Reconstruct Loss = 0.0050, Cls Loss = 6.8760, Learning rate = 1.0000e-03
+Iteration 650: Loss = 6.7071, Reg Loss = 18.8717, Reconstruct Loss = 0.0049, Cls Loss = 6.7004, Learning rate = 1.0000e-03
+Iteration 675: Loss = 6.5443, Reg Loss = 18.6019, Reconstruct Loss = 0.0047, Cls Loss = 6.5377, Learning rate = 1.0000e-03
+Iteration 700: Loss = 6.3931, Reg Loss = 18.3308, Reconstruct Loss = 0.0045, Cls Loss = 6.3867, Learning rate = 1.0000e-03
+Iteration 725: Loss = 6.2522, Reg Loss = 18.0752, Reconstruct Loss = 0.0044, Cls Loss = 6.2461, Learning rate = 1.0000e-03
+Iteration 750: Loss = 6.1208, Reg Loss = 17.8943, Reconstruct Loss = 0.0042, Cls Loss = 6.1148, Learning rate = 1.0000e-03
+Iteration 775: Loss = 5.9979, Reg Loss = 17.7780, Reconstruct Loss = 0.0041, Cls Loss = 5.9920, Learning rate = 1.0000e-03
+Epoch [1/30], Training Loss: 5.9696, Learning Rate: 0.001000
+
+
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████| 157/157 [00:02<00:00, 58.74it/s]
+Batch prediction shape: torch.Size([16, 10])
+Batch target shape: torch.Size([16])
+Sample predictions: tensor([2, 2, 2, 2, 2], device='cuda:0')
+Sample targets: tensor([7, 5, 8, 0, 8], device='cuda:0')
+Epoch [1/30], Validation Loss: 2.3028, Validation Accuracy: 10.00%
+Checkpoint saved at epoch 0 with accuracy: 10.00%
+Iteration 0: Loss = 2.3086, Reg Loss = 13.8248, Reconstruct Loss = 0.0000, Cls Loss = 2.3073, Learning rate = 1.0000e-03
+Iteration 25: Loss = 2.3040, Reg Loss = 13.4678, Reconstruct Loss = 0.0004, Cls Loss = 2.3023, Learning rate = 1.0000e-03
+Iteration 50: Loss = 2.3042, Reg Loss = 13.7269, Reconstruct Loss = 0.0005, Cls Loss = 2.3024, Learning rate = 1.0000e-03
+Iteration 75: Loss = 2.3041, Reg Loss = 13.7544, Reconstruct Loss = 0.0004, Cls Loss = 2.3023, Learning rate = 1.0000e-03
+Iteration 100: Loss = 2.3038, Reg Loss = 13.6299, Reconstruct Loss = 0.0003, Cls Loss = 2.3022, Learning rate = 1.0000e-03
+Iteration 125: Loss = 2.3040, Reg Loss = 13.3410, Reconstruct Loss = 0.0002, Cls Loss = 2.3025, Learning rate = 1.0000e-03
+Iteration 150: Loss = 2.3041, Reg Loss = 12.9817, Reconstruct Loss = 0.0002, Cls Loss = 2.3026, Learning rate = 1.0000e-03
+Iteration 175: Loss = 2.3042, Reg Loss = 12.6508, Reconstruct Loss = 0.0003, Cls Loss = 2.3026, Learning rate = 1.0000e-03
+Iteration 200: Loss = 2.3042, Reg Loss = 12.8118, Reconstruct Loss = 0.0003, Cls Loss = 2.3026, Learning rate = 1.0000e-03
+Iteration 225: Loss = 2.3041, Reg Loss = 12.9399, Reconstruct Loss = 0.0003, Cls Loss = 2.3026, Learning rate = 1.0000e-03
+Iteration 250: Loss = 2.3041, Reg Loss = 12.9155, Reconstruct Loss = 0.0002, Cls Loss = 2.3025, Learning rate = 1.0000e-03
+Iteration 275: Loss = 2.3041, Reg Loss = 12.7740, Reconstruct Loss = 0.0002, Cls Loss = 2.3026, Learning rate = 1.0000e-03
+Iteration 300: Loss = 2.3042, Reg Loss = 12.8740, Reconstruct Loss = 0.0003, Cls Loss = 2.3026, Learning rate = 1.0000e-03
+Iteration 325: Loss = 2.3043, Reg Loss = 13.0088, Reconstruct Loss = 0.0004, Cls Loss = 2.3027, Learning rate = 1.0000e-03
+Iteration 350: Loss = 2.3044, Reg Loss = 12.8680, Reconstruct Loss = 0.0004, Cls Loss = 2.3027, Learning rate = 1.0000e-03
+Iteration 375: Loss = 2.3044, Reg Loss = 12.8980, Reconstruct Loss = 0.0004, Cls Loss = 2.3027, Learning rate = 1.0000e-03
+Iteration 400: Loss = 2.3045, Reg Loss = 12.9164, Reconstruct Loss = 0.0004, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 425: Loss = 2.3045, Reg Loss = 12.9404, Reconstruct Loss = 0.0003, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 450: Loss = 2.3045, Reg Loss = 12.9894, Reconstruct Loss = 0.0003, Cls Loss = 2.3029, Learning rate = 1.0000e-03
+Iteration 475: Loss = 2.3045, Reg Loss = 13.0345, Reconstruct Loss = 0.0004, Cls Loss = 2.3029, Learning rate = 1.0000e-03
+Iteration 500: Loss = 2.3045, Reg Loss = 13.1220, Reconstruct Loss = 0.0004, Cls Loss = 2.3029, Learning rate = 1.0000e-03
+Iteration 525: Loss = 2.3045, Reg Loss = 13.1851, Reconstruct Loss = 0.0004, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 550: Loss = 2.3046, Reg Loss = 13.3334, Reconstruct Loss = 0.0004, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 575: Loss = 2.3048, Reg Loss = 13.5028, Reconstruct Loss = 0.0007, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 600: Loss = 2.3054, Reg Loss = 13.8584, Reconstruct Loss = 0.0011, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 625: Loss = 2.3054, Reg Loss = 13.9179, Reconstruct Loss = 0.0012, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 650: Loss = 2.3053, Reg Loss = 13.9061, Reconstruct Loss = 0.0011, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 675: Loss = 2.3053, Reg Loss = 13.8750, Reconstruct Loss = 0.0011, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 700: Loss = 2.3052, Reg Loss = 13.8682, Reconstruct Loss = 0.0011, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 725: Loss = 2.3052, Reg Loss = 13.8398, Reconstruct Loss = 0.0010, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 750: Loss = 2.3052, Reg Loss = 13.7983, Reconstruct Loss = 0.0010, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Iteration 775: Loss = 2.3052, Reg Loss = 13.7533, Reconstruct Loss = 0.0010, Cls Loss = 2.3028, Learning rate = 1.0000e-03
+Epoch [2/30], Training Loss: 2.3052, Learning Rate: 0.001000
+
+
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████| 157/157 [00:02<00:00, 57.41it/s]
+Batch prediction shape: torch.Size([16, 10])
+Batch target shape: torch.Size([16])
+Sample predictions: tensor([2, 2, 2, 2, 2], device='cuda:0')

@@ -1,0 +1,111 @@
+{
+    "os": "Linux-5.15.0-117-generic-x86_64-with-glibc2.35",
+    "python": "3.12.7",
+    "heartbeatAt": "2024-11-19T14:39:59.362723",
+    "startedAt": "2024-11-19T14:39:58.614070",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--config",
+        "/homes/tsommariva/neumeta/neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"
+    ],
+    "state": "running",
+    "program": "/homes/tsommariva/neumeta/neumeta/train_cifar10.py",
+    "codePathLocal": "neumeta/train_cifar10.py",
+    "codePath": "neumeta/train_cifar10.py",
+    "git": {
+        "remote": "https://github.com/Adamdad/neumeta.git",
+        "commit": "1a2f4a087dd7100e1e16dfca523dc68419e6200b"
+    },
+    "email": null,
+    "root": "/homes/tsommariva/neumeta",
+    "host": "lurcanio",
+    "username": "tsommariva",
+    "executable": "/homes/tsommariva/.conda/envs/neumeta/bin/python3",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 3.3385833333333337,
+        "min": 1200.0,
+        "max": 4000.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 1.563,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.5,
+            "min": 1200.0,
+            "max": 4000.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 97.87200164794922,
+            "used": 60.227176666259766
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 2080 Ti",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 2080 Ti",
+            "memory_total": 11811160064
+        }
+    ],
+    "memory": {
+        "total": 62.47286605834961
+    }
+}

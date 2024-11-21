@@ -44,7 +44,6 @@ def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon
 
     return reconstruct_loss
 
-
 def get_optimizer(args, hyper_model):
     criterion = torch.nn.CrossEntropyLoss()
     # criterion = LabelSmoothingCrossEntropy()
@@ -129,19 +128,24 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     val_loss = 0.0
     preds = []
     gt = []
+    model_cls = model_cls.to(device)
     model_cls.eval()
-    with torch.no_grad():
-        for x, target in tqdm(val_loader):
-            x, target = x.to(device), target.to(device)
-            predict = model_cls(x)
-            pred = torch.argmax(predict, dim=-1)
-            preds.append(pred)
-            gt.append(target)
-            loss = criterion(predict, target)
-            val_loss += loss.item()
-    return val_loss / len(val_loader), accuracy_score(torch.cat(gt).cpu().numpy(), torch.cat(preds).cpu().numpy())
     
-
+    with torch.no_grad():
+        with tqdm(val_loader) as t_loader:
+            for x, target in t_loader:
+                x, target = x.to(device), target.to(device)
+                predict = model_cls(x)
+    
+                pred = torch.argmax(predict, dim=-1)
+                preds.extend(pred.cpu().numpy())
+                gt.extend(target.cpu().numpy())
+    
+                loss = criterion(predict, target)
+                val_loss += loss.item()
+    
+    return val_loss / len(val_loader), accuracy_score(gt,preds)
+    
 def average_models(models):
     """
     Average the weights of multiple PyTorch models.
@@ -202,8 +206,6 @@ def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
 
     accumulated_model.eval()
     return accumulated_model
-
-
 
 def sample_coordinates(model_cls):
     """
@@ -343,8 +345,6 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
             param.data = predicted_checkpoint[name].data
 
     return model_cls, list(predicted_checkpoint.values())
-
-
 
 def sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=0.5):
     """

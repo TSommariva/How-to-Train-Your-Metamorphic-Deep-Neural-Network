@@ -1,0 +1,9 @@
+{
+    "terminal.integrated.automationProfile.linux": {
+         "path": "/homes/tsommariva/neumeta/bash.sh"
+    },
+    "git.ignoreLimitWarning": true,
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "/homes/tsommariva/neumeta:${env:PYTHONPATH}"
+    }
+}

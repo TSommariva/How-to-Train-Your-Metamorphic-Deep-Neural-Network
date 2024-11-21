@@ -3,25 +3,25 @@ experiment:
   name: ninr_resnet20_cifar10_32-64-4layer-5
   recononly: 0
   num_epochs: 30
-  log_interval: 25
+  log_interval: 250
   eval_interval: 1
   seed: 42  # Random seed
 
 # Model configurations
 model:
   type: ResNet20
-  pretrained_path: resnet20-12fca82f.th  # Path to pre-trained model
-  smooth: False
+  pretrained_path: /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt  # Path to pre-trained model
+  smooth: True
 
 # Training configurations
 training:
   learning_rate: 1e-3
   batch_size: 64
   coordinate_noise: 0.0
-  lr_steps: [100, 150]
+  #lr_steps: [100, 150]
   weight_decay: 1e-2
   clip_grad: 10.0
-  save_model_path: toy/experiments/resnet20_cifar10_32-64-4layer-5 # Directory to save the trained model
+  save_model_path: /homes/tsommariva/neumeta/neumeta/experiments/resnet20_cifar10_32-64-4layer-5 # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

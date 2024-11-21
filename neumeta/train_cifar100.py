@@ -14,8 +14,9 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            get_hypernet, get_optimizer, load_checkpoint,
                            parse_args, print_omegaconf, sample_coordinates,
                            sample_subset, sample_weights, save_checkpoint,
-                           set_seed, shuffle_coordiates_all, validate,
-                           validate_merge, validate_single)
+                           set_seed, shuffle_coordiates_all, #validate, validate_merge, 
+                           validate_single)
+import wandb
 from omegaconf import OmegaConf
 from sklearn.metrics import accuracy_score
 from torch.optim import Adam, AdamW
@@ -224,13 +225,13 @@ def main_nerf():
 
             print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
-            if (epoch + 1) % args.experiment.eval_interval == 0:
+            if (epoch + 1) % 1 == 0: #args.experiment.eval_interval == 0:
                 if ema:
                     ema.apply()
-                    val_loss, acc = validate(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
+                    val_loss, acc = validate_single(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
                     ema.restore()  # Restore the original weights
                 else:
-                    val_loss, acc = validate(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
+                    val_loss, acc = validate_single(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
                 wandb.log({
                     "Validation Loss": val_loss,
                     "Validation Accuracy": acc

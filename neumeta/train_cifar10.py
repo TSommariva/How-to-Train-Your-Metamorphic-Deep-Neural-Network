@@ -10,9 +10,10 @@ from neumeta.models import create_model_cifar10 as create_model
 from neumeta.utils import (AverageMeter, EMA, load_checkpoint, print_omegaconf, 
                        sample_coordinates, sample_merge_model, 
                        sample_subset, sample_weights, save_checkpoint, 
-                       set_seed, shuffle_coordiates_all, validate, validate_ensemble, sample_single_model,validate_merge,
+                       set_seed, shuffle_coordiates_all, 
+                       # validate, validate_ensemble, sample_single_model,validate_merge,
                        validate_single, get_cifar10, 
-                       get_hypernet, get_optimizer, 
+                       get_hypernet, get_optimizer,
                        parse_args, 
                        weighted_regression_loss)
 
@@ -45,7 +46,7 @@ def initialize_wandb(config):
     Initializes Weights and Biases (wandb) with the given configuration.
     
     Args:
-        configuration (dict): Configuration parameters for the run.
+        config (dict): Configuration parameters for the run.
     """
     # Name the run using current time and configuration name
     run_name = f"{time.strftime('%Y%m%d%H%M%S')}-{config.experiment.name}"
@@ -151,8 +152,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
     return losses.avg, dim_dict, gt_model_dict
-
-
+ 
 # Function to initialize the model dictionary
 def init_model_dict(args):
     """
@@ -207,9 +207,9 @@ def main():
     
     # Create the model for the starting dimension
     model = create_model(args.model.type, 
-                         hidden_dim=args.dimensions.start, 
-                         path=args.model.pretrained_path, 
-                         smooth=args.model.smooth).to(device)
+        hidden_dim=args.dimensions.start, 
+        path=args.model.pretrained_path, 
+        smooth=args.model.smooth).to(device)
 
     # Print the maximum dimension of the model
     print("Maximum DIM: ",find_max_dim(model))
@@ -225,6 +225,12 @@ def main():
     # Print the keys of the parameters and the number of parameters
     print(f"Parameters keys: {model.keys}")
     print(f"Number of parameters to be learned: {number_param}")
+    number_weight = sum(1 for key in model.keys if "weight" in key)
+    print(f"Number of weight parameters to be learned: {number_weight}")
+    number_bias = sum(1 for key in model.keys if "bias" in key)
+    print(f"Number of bias parameters to be learned: {number_bias}")
+    
+    
 
     # Get the hypermodel
     hyper_model = get_hypernet(args, number_param)
@@ -232,7 +238,7 @@ def main():
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     # Get the criterion, validation criterion, optimizer, and scheduler
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
-    
+
     # Initialize the starting epoch and best accuracy
     start_epoch = 0
     best_acc = 0.0
@@ -243,7 +249,7 @@ def main():
     # If specified, load the checkpoint
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        checkpoint_info = load_checkpoint(args.resume_from, hyper_model, optimizer, ema)
+        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, ema)
         start_epoch = checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         print(f"Resuming from epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
@@ -259,7 +265,7 @@ def main():
         for epoch in range(start_epoch, args.experiment.num_epochs):
             
             # Train the model for one epoch
-            train_loss, dim_dict, gt_model_dict = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
+            train_loss, dim_dict, _ = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
             # Step the scheduler
             scheduler.step()
 
@@ -269,24 +275,26 @@ def main():
             # If it's time to evaluate the model
             if (epoch + 1) % args.experiment.eval_interval == 0:
                 # If EMA is specified, apply it
-                if ema:
+                if ema :
                     ema.apply()
                     
                 # Sample the merged model
-                model = sample_merge_model(hyper_model, model, args)
+                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args)
                 # Validate the merged model
-                val_loss, acc = validate_single(model, val_loader, val_criterion, args=args)
+                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args)
+                val_loss, acc = validate_single(sampled_model, val_loader, val_criterion, args=args)
                 
                 # If EMA is specified, restore the original weights
-                if ema:
+                if ema :
                     ema.restore()  # Restore the original weights
-               
+                    
                 # Log the validation loss and accuracy to wandb
                 wandb.log({
                     "Validation Loss": val_loss,
                     "Validation Accuracy": acc
                 })
                 # Print the validation loss and accuracy
+                print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
                 print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
                 
                 # Save the checkpoint if the accuracy is better than the previous best
@@ -295,6 +303,25 @@ def main():
                     save_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth",hyper_model,optimizer,ema,epoch,best_acc)
                     print(f"Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
         wandb.finish()
+    
+    #testing the best model
+    checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, ema)
+    for hidden_dim in range(16, 65):
+        # Create a model for the given hidden dimension
+        model = create_model(args.model.type, 
+                                hidden_dim=hidden_dim, 
+                                path=args.model.pretrained_path, 
+                                smooth=args.model.smooth).to(device)
+            
+        # Sample the merged model for K times
+        accumulated_model = sample_merge_model(hyper_model, model, args, K=100)
+
+        # Validate the merged model
+        val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args)
+
+        # Print the results
+        print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+
     # If testing, iterate over the hidden dimensions and test the model
     else:
         for hidden_dim in range(16, 65):
@@ -321,7 +348,7 @@ def main():
             
             # Save the model
             save_name = os.path.join(args.training.save_model_path, f"cifar10_{accumulated_model.__class__.__name__}_dim{hidden_dim}_single.pth")
-            torch.save(accumulated_model.state_dict(),save_name)
+            torch.save(accumulated_model.state_dict(), save_name)
 
             # Print the results
             print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
@@ -333,10 +360,9 @@ def main():
             # Write the results. 'a' is used to append the results; a new file will be created if it doesn't exist.
             with open(filepath, "a") as file:
                 file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%\n")
-
-    # Print message
+                # Print message
     print("Training finished.")
-
-    
+ 
+  
 if __name__ == "__main__":
     main()

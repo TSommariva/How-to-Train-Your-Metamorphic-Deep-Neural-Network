@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Python File with parameters",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "args": ["--config", "/homes/tsommariva/neumeta/neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"],
+      "console": "integratedTerminal"
+    }
+  ]
+}

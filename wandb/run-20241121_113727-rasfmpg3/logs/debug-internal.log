@@ -1,0 +1,221 @@
+2024-11-21 11:37:27,828 INFO    StreamThr :313241 [internal.py:wandb_internal():86] W&B internal server running at pid: 313241, started at: 2024-11-21 11:37:27.825464
+2024-11-21 11:37:27,837 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status
+2024-11-21 11:37:27,840 INFO    WriterThread:313241 [datastore.py:open_for_write():87] open: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/run-rasfmpg3.wandb
+2024-11-21 11:37:27,850 DEBUG   SenderThread:313241 [sender.py:send():379] send: header
+2024-11-21 11:37:27,860 DEBUG   SenderThread:313241 [sender.py:send():379] send: run
+2024-11-21 11:37:28,366 INFO    SenderThread:313241 [dir_watcher.py:__init__():211] watching files in: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files
+2024-11-21 11:37:28,366 INFO    SenderThread:313241 [sender.py:_start_run_threads():1124] run started: rasfmpg3 with start time 1732185447.830484
+2024-11-21 11:37:28,379 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: check_version
+2024-11-21 11:37:28,380 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: check_version
+2024-11-21 11:37:28,460 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: run_start
+2024-11-21 11:37:28,491 DEBUG   HandlerThread:313241 [system_info.py:__init__():26] System info init
+2024-11-21 11:37:28,491 DEBUG   HandlerThread:313241 [system_info.py:__init__():41] System info init done
+2024-11-21 11:37:28,491 INFO    HandlerThread:313241 [system_monitor.py:start():194] Starting system monitor
+2024-11-21 11:37:28,492 INFO    SystemMonitor:313241 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-11-21 11:37:28,492 INFO    HandlerThread:313241 [system_monitor.py:probe():214] Collecting system info
+2024-11-21 11:37:28,494 INFO    SystemMonitor:313241 [interfaces.py:start():190] Started cpu monitoring
+2024-11-21 11:37:28,495 INFO    SystemMonitor:313241 [interfaces.py:start():190] Started disk monitoring
+2024-11-21 11:37:28,496 INFO    SystemMonitor:313241 [interfaces.py:start():190] Started gpu monitoring
+2024-11-21 11:37:28,500 INFO    SystemMonitor:313241 [interfaces.py:start():190] Started memory monitoring
+2024-11-21 11:37:28,502 INFO    SystemMonitor:313241 [interfaces.py:start():190] Started network monitoring
+2024-11-21 11:37:28,565 DEBUG   HandlerThread:313241 [system_info.py:probe():150] Probing system
+2024-11-21 11:37:28,571 DEBUG   HandlerThread:313241 [system_info.py:_probe_git():135] Probing git
+2024-11-21 11:37:28,589 DEBUG   HandlerThread:313241 [system_info.py:_probe_git():143] Probing git done
+2024-11-21 11:37:28,589 DEBUG   HandlerThread:313241 [system_info.py:probe():198] Probing system done
+2024-11-21 11:37:28,589 DEBUG   HandlerThread:313241 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-117-generic-x86_64-with-glibc2.35', 'python': '3.12.7', 'heartbeatAt': '2024-11-21T10:37:28.565678', 'startedAt': '2024-11-21T10:37:27.809425', 'docker': None, 'cuda': None, 'args': ('--config', '/homes/tsommariva/neumeta/neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml'), 'state': 'running', 'program': '/homes/tsommariva/neumeta/neumeta/train_cifar10.py', 'codePathLocal': 'neumeta/train_cifar10.py', 'codePath': 'neumeta/train_cifar10.py', 'git': {'remote': 'https://github.com/Adamdad/neumeta.git', 'commit': '1a2f4a087dd7100e1e16dfca523dc68419e6200b'}, 'email': None, 'root': '/homes/tsommariva/neumeta', 'host': 'ailb-login-03', 'username': 'tsommariva', 'executable': '/homes/tsommariva/.conda/envs/neumeta/bin/python', 'cpu_count': 28, 'cpu_count_logical': 56, 'cpu_freq': {'current': 1.3194464285714298, 'min': 1200.0, 'max': 3300.0}, 'cpu_freq_per_core': [{'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.7, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 2.095, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 2.388, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.6, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}], 'disk': {'/': {'total': 239.74287796020508, 'used': 76.7473373413086}}, 'gpu': 'Tesla P100-PCIE-16GB', 'gpu_count': 1, 'gpu_devices': [{'name': 'Tesla P100-PCIE-16GB', 'memory_total': 17179869184}], 'memory': {'total': 251.6204071044922}}
+2024-11-21 11:37:28,589 INFO    HandlerThread:313241 [system_monitor.py:probe():224] Finished collecting system info
+2024-11-21 11:37:28,590 INFO    HandlerThread:313241 [system_monitor.py:probe():227] Publishing system info
+2024-11-21 11:37:28,590 DEBUG   HandlerThread:313241 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-11-21 11:37:29,369 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/conda-environment.yaml
+2024-11-21 11:37:34,665 DEBUG   HandlerThread:313241 [system_info.py:_save_conda():222] Saving conda packages done
+2024-11-21 11:37:34,669 INFO    HandlerThread:313241 [system_monitor.py:probe():229] Finished publishing system info
+2024-11-21 11:37:34,673 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:37:34,674 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: keepalive
+2024-11-21 11:37:34,674 DEBUG   SenderThread:313241 [sender.py:send():379] send: files
+2024-11-21 11:37:34,674 INFO    SenderThread:313241 [sender.py:_save_file():1390] saving file wandb-metadata.json with policy now
+2024-11-21 11:37:34,885 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: python_packages
+2024-11-21 11:37:34,885 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: python_packages
+2024-11-21 11:37:34,886 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:37:34,887 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:37:34,890 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:37:35,136 DEBUG   SenderThread:313241 [sender.py:send():379] send: telemetry
+2024-11-21 11:37:35,318 INFO    wandb-upload_0:313241 [upload_job.py:push():131] Uploaded file /tmp/tmpmnyilw26wandb/7tpxv7hh-wandb-metadata.json
+2024-11-21 11:37:35,371 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/conda-environment.yaml
+2024-11-21 11:37:35,372 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:37:35,372 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/wandb-metadata.json
+2024-11-21 11:37:35,372 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/requirements.txt
+2024-11-21 11:37:37,372 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:37:39,144 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:37:41,375 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:37:44,444 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:37:47,378 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:37:50,047 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:37:50,048 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:37:50,050 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:37:50,221 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:37:51,380 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:37:53,381 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:37:55,306 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:37:55,381 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:37:59,384 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:01,105 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:01,393 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/config.yaml
+2024-11-21 11:38:05,395 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:06,160 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:38:06,161 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:38:06,204 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:38:06,375 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:07,396 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:09,397 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:11,398 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:11,456 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:15,401 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:17,297 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:21,344 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:38:21,344 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:38:21,346 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:38:21,408 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:22,497 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:25,410 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:27,411 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:27,674 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:28,503 DEBUG   SystemMonitor:313241 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-11-21 11:38:28,507 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:38:31,414 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:33,505 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:35,416 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:36,345 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:38:36,345 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:38:36,345 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:38:38,527 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:41,419 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:44,138 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:45,421 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:49,208 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:49,423 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:51,425 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:52,892 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:38:52,892 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:38:52,894 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:38:55,074 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:38:57,428 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:38:58,508 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:39:00,509 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:03,431 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:05,432 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:06,200 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:07,908 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:39:07,909 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:39:07,909 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:39:09,434 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:11,626 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:13,436 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:17,103 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:19,439 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:22,413 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:23,441 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:24,884 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:39:24,884 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:39:24,885 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:39:27,698 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:28,510 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:39:29,444 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:33,432 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:33,446 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:35,447 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:38,507 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:40,916 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:39:40,917 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:39:40,917 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:39:41,450 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:43,451 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:44,439 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:47,453 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:49,460 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:51,455 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:54,798 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:39:55,458 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:39:56,376 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:39:56,377 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:39:56,377 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:39:58,511 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:39:59,460 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:40:00,512 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:03,462 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:40:04,262 DEBUG   SenderThread:313241 [sender.py:send():379] send: telemetry
+2024-11-21 11:40:04,262 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 11:40:05,463 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:40:06,264 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:11,270 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:11,376 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:40:11,377 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:40:11,493 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:40:12,467 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/config.yaml
+2024-11-21 11:40:16,713 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:21,714 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:26,376 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:40:26,376 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:40:26,416 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:40:27,564 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:28,513 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:40:33,515 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:38,515 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:41,376 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:40:41,376 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:40:41,420 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:40:43,548 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:48,548 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:53,549 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:40:56,376 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:40:56,377 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:40:56,424 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:40:58,515 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:40:59,516 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:04,516 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:09,517 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:11,376 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:41:11,377 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:41:11,424 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:41:14,561 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:19,561 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:24,562 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:26,594 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:41:26,594 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:41:26,640 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:41:27,509 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:41:28,517 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:41:30,518 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:35,518 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:39,516 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:41:40,607 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:40,689 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 11:41:40,692 DEBUG   SenderThread:313241 [sender.py:send():379] send: history
+2024-11-21 11:41:40,692 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: summary_record
+2024-11-21 11:41:40,694 INFO    SenderThread:313241 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-21 11:41:41,382 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:41:41,382 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:41:41,519 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:41:41,519 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/wandb-summary.json
+2024-11-21 11:41:41,573 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:41:42,732 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-21 11:41:43,520 INFO    Thread-17 :313241 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241121_113727-rasfmpg3/files/output.log
+2024-11-21 11:41:45,734 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:50,735 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:55,735 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:41:56,382 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:41:56,382 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:41:56,573 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:41:58,518 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats
+2024-11-21 11:42:01,520 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:42:06,520 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:42:11,382 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:42:11,382 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:42:11,573 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:42:11,585 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:42:16,586 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:42:21,586 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:42:26,382 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-21 11:42:26,382 DEBUG   SenderThread:313241 [sender.py:send_request():406] send_request: stop_status
+2024-11-21 11:42:26,573 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-21 11:42:26,640 DEBUG   HandlerThread:313241 [handler.py:handle_request():146] handle_request: status_report
+2024-11-21 11:42:28,520 DEBUG   SenderThread:313241 [sender.py:send():379] send: stats

@@ -1,0 +1,225 @@
+Replace last 2 block of layer3 with new block with hidden dim 32
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2149.271728515625
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+TV permutated model:  2043.4351806640625
+Replace last 2 block of layer3 with new block with hidden dim 33
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2179.0263671875
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+TV permutated model:  2076.209228515625
+Replace last 2 block of layer3 with new block with hidden dim 34
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2257.455322265625
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+TV permutated model:  2131.353759765625
+Replace last 2 block of layer3 with new block with hidden dim 35
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2291.41650390625
+TV permutated model:  2166.176025390625
+Replace last 2 block of layer3 with new block with hidden dim 36
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2331.853515625
+TV permutated model:  2209.574951171875
+Replace last 2 block of layer3 with new block with hidden dim 37
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2369.844482421875
+TV permutated model:  2249.544677734375
+Replace last 2 block of layer3 with new block with hidden dim 38
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2429.6796875
+TV permutated model:  2309.2490234375
+Replace last 2 block of layer3 with new block with hidden dim 39
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2456.754150390625
+TV permutated model:  2341.226806640625
+Replace last 2 block of layer3 with new block with hidden dim 40
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2523.294921875
+TV permutated model:  2399.720947265625
+Replace last 2 block of layer3 with new block with hidden dim 41
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2563.97314453125
+TV permutated model:  2437.4345703125
+Replace last 2 block of layer3 with new block with hidden dim 42
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2605.201416015625
+TV permutated model:  2470.5595703125
+Replace last 2 block of layer3 with new block with hidden dim 43
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2651.041015625
+TV permutated model:  2518.201416015625
+Replace last 2 block of layer3 with new block with hidden dim 44
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2692.514404296875
+TV permutated model:  2562.37451171875
+Replace last 2 block of layer3 with new block with hidden dim 45
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2755.181396484375
+TV permutated model:  2622.04931640625
+Replace last 2 block of layer3 with new block with hidden dim 46
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2803.462158203125
+TV permutated model:  2664.674072265625
+Replace last 2 block of layer3 with new block with hidden dim 47
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2828.683349609375
+TV permutated model:  2688.5400390625
+Replace last 2 block of layer3 with new block with hidden dim 48
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2885.601806640625
+TV permutated model:  2735.101318359375
+Replace last 2 block of layer3 with new block with hidden dim 49
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2926.2958984375
+TV permutated model:  2788.798828125
+Replace last 2 block of layer3 with new block with hidden dim 50
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2981.265380859375
+TV permutated model:  2837.4658203125
+Replace last 2 block of layer3 with new block with hidden dim 51
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3003.22119140625
+TV permutated model:  2866.610595703125
+Replace last 2 block of layer3 with new block with hidden dim 52
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3065.931396484375
+TV permutated model:  2915.37255859375
+Replace last 2 block of layer3 with new block with hidden dim 53
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3130.150146484375
+TV permutated model:  2983.211181640625
+Replace last 2 block of layer3 with new block with hidden dim 54
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3159.479736328125
+TV permutated model:  3007.195556640625
+Replace last 2 block of layer3 with new block with hidden dim 55
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3208.83056640625
+TV permutated model:  3062.264892578125
+Replace last 2 block of layer3 with new block with hidden dim 56
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3250.351806640625
+TV permutated model:  3096.797119140625
+Replace last 2 block of layer3 with new block with hidden dim 57
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3313.608642578125
+TV permutated model:  3154.97119140625
+Replace last 2 block of layer3 with new block with hidden dim 58
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3346.686767578125
+TV permutated model:  3186.888427734375
+Replace last 2 block of layer3 with new block with hidden dim 59
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3381.390625
+TV permutated model:  3225.007568359375
+Replace last 2 block of layer3 with new block with hidden dim 60
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3426.6064453125
+TV permutated model:  3263.98583984375
+Replace last 2 block of layer3 with new block with hidden dim 61
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3457.845458984375
+TV permutated model:  3299.006103515625
+Replace last 2 block of layer3 with new block with hidden dim 62
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3505.030517578125
+TV permutated model:  3343.774169921875
+Replace last 2 block of layer3 with new block with hidden dim 63
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3580.550048828125
+TV permutated model:  3416.597900390625
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1036.84912109375
+Loading model for dim 64
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1036.8514404296875
+Traceback (most recent call last):
+  File "/homes/tsommariva/.vscode-server/extensions/ms-python.debugpy-2024.12.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_vars.py", line 622, in change_attr_expression
+    value = eval(expression, frame.f_globals, frame.f_locals)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1
+    {'64': CifarResNet(  (conv1): Conv2d(3, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, ...features=64, out_features=10, bias=True))}
+                                                                                                                                           ^
+SyntaxError: closing parenthesis '}' does not match opening parenthesis '('
+Iteration 0: Loss = 1.9737, Reg Loss = 4.0762, Reconstruct Loss = 0.0000, Cls Loss = 1.9733, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.9066, Reg Loss = 13.4319, Reconstruct Loss = 0.0027, Cls Loss = 1.9026, Learning rate = 1.0000e-03
+Iteration 500: Loss = 1.8786, Reg Loss = 10.0739, Reconstruct Loss = 0.0020, Cls Loss = 1.8757, Learning rate = 1.0000e-03
+Iteration 750: Loss = 1.8679, Reg Loss = 8.5513, Reconstruct Loss = 0.0014, Cls Loss = 1.8657, Learning rate = 1.0000e-03

@@ -1,0 +1,63 @@
+2024-11-17 13:46:35,534 INFO    StreamThr :1076726 [internal.py:wandb_internal():86] W&B internal server running at pid: 1076726, started at: 2024-11-17 13:46:35.532411
+2024-11-17 13:46:35,537 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: status
+2024-11-17 13:46:35,539 INFO    WriterThread:1076726 [datastore.py:open_for_write():87] open: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/run-ry1dda7r.wandb
+2024-11-17 13:46:35,545 DEBUG   SenderThread:1076726 [sender.py:send():379] send: header
+2024-11-17 13:46:35,552 DEBUG   SenderThread:1076726 [sender.py:send():379] send: run
+2024-11-17 13:46:36,037 INFO    SenderThread:1076726 [dir_watcher.py:__init__():211] watching files in: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files
+2024-11-17 13:46:36,037 INFO    SenderThread:1076726 [sender.py:_start_run_threads():1124] run started: ry1dda7r with start time 1731847595.533892
+2024-11-17 13:46:36,053 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: check_version
+2024-11-17 13:46:36,053 DEBUG   SenderThread:1076726 [sender.py:send_request():406] send_request: check_version
+2024-11-17 13:46:36,140 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: run_start
+2024-11-17 13:46:36,175 DEBUG   HandlerThread:1076726 [system_info.py:__init__():26] System info init
+2024-11-17 13:46:36,175 DEBUG   HandlerThread:1076726 [system_info.py:__init__():41] System info init done
+2024-11-17 13:46:36,175 INFO    HandlerThread:1076726 [system_monitor.py:start():194] Starting system monitor
+2024-11-17 13:46:36,176 INFO    SystemMonitor:1076726 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-11-17 13:46:36,176 INFO    HandlerThread:1076726 [system_monitor.py:probe():214] Collecting system info
+2024-11-17 13:46:36,178 INFO    SystemMonitor:1076726 [interfaces.py:start():190] Started cpu monitoring
+2024-11-17 13:46:36,180 INFO    SystemMonitor:1076726 [interfaces.py:start():190] Started disk monitoring
+2024-11-17 13:46:36,181 INFO    SystemMonitor:1076726 [interfaces.py:start():190] Started gpu monitoring
+2024-11-17 13:46:36,183 INFO    SystemMonitor:1076726 [interfaces.py:start():190] Started memory monitoring
+2024-11-17 13:46:36,184 INFO    SystemMonitor:1076726 [interfaces.py:start():190] Started network monitoring
+2024-11-17 13:46:36,250 DEBUG   HandlerThread:1076726 [system_info.py:probe():150] Probing system
+2024-11-17 13:46:36,253 DEBUG   HandlerThread:1076726 [system_info.py:_probe_git():135] Probing git
+2024-11-17 13:46:36,267 DEBUG   HandlerThread:1076726 [system_info.py:_probe_git():143] Probing git done
+2024-11-17 13:46:36,267 DEBUG   HandlerThread:1076726 [system_info.py:probe():198] Probing system done
+2024-11-17 13:46:36,267 DEBUG   HandlerThread:1076726 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-117-generic-x86_64-with-glibc2.35', 'python': '3.12.7', 'heartbeatAt': '2024-11-17T12:46:36.250480', 'startedAt': '2024-11-17T12:46:35.517221', 'docker': None, 'cuda': None, 'args': ('--config', '/homes/tsommariva/neumeta/neumeta/config/base_config.yaml'), 'state': 'running', 'program': '/homes/tsommariva/neumeta/neumeta/train_cifar10.py', 'codePathLocal': 'neumeta/train_cifar10.py', 'codePath': 'neumeta/train_cifar10.py', 'git': {'remote': 'https://github.com/Adamdad/neumeta.git', 'commit': '1a2f4a087dd7100e1e16dfca523dc68419e6200b'}, 'email': None, 'root': '/homes/tsommariva/neumeta', 'host': 'ailb-login-03', 'username': 'tsommariva', 'executable': '/homes/tsommariva/.conda/envs/neumeta/bin/python', 'cpu_count': 28, 'cpu_count_logical': 56, 'cpu_freq': {'current': 1.3046964285714295, 'min': 1200.0, 'max': 3300.0}, 'cpu_freq_per_core': [{'current': 1.414, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 2.1, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 2.1, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 2.1, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.6, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 3.3, 'min': 1200.0, 'max': 3300.0}, {'current': 2.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 2.1, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}], 'disk': {'/': {'total': 239.74287796020508, 'used': 76.8282356262207}}, 'gpu': 'Tesla P100-PCIE-16GB', 'gpu_count': 1, 'gpu_devices': [{'name': 'Tesla P100-PCIE-16GB', 'memory_total': 17179869184}], 'memory': {'total': 251.6204071044922}}
+2024-11-17 13:46:36,267 INFO    HandlerThread:1076726 [system_monitor.py:probe():224] Finished collecting system info
+2024-11-17 13:46:36,267 INFO    HandlerThread:1076726 [system_monitor.py:probe():227] Publishing system info
+2024-11-17 13:46:36,268 DEBUG   HandlerThread:1076726 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-11-17 13:46:37,040 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/conda-environment.yaml
+2024-11-17 13:46:41,542 DEBUG   HandlerThread:1076726 [system_info.py:_save_conda():222] Saving conda packages done
+2024-11-17 13:46:41,544 INFO    HandlerThread:1076726 [system_monitor.py:probe():229] Finished publishing system info
+2024-11-17 13:46:41,548 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: status_report
+2024-11-17 13:46:41,548 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: keepalive
+2024-11-17 13:46:41,550 DEBUG   SenderThread:1076726 [sender.py:send():379] send: files
+2024-11-17 13:46:41,550 INFO    SenderThread:1076726 [sender.py:_save_file():1390] saving file wandb-metadata.json with policy now
+2024-11-17 13:46:41,713 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: python_packages
+2024-11-17 13:46:41,714 DEBUG   SenderThread:1076726 [sender.py:send_request():406] send_request: python_packages
+2024-11-17 13:46:41,715 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-17 13:46:41,715 DEBUG   SenderThread:1076726 [sender.py:send_request():406] send_request: stop_status
+2024-11-17 13:46:41,717 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-17 13:46:41,987 DEBUG   SenderThread:1076726 [sender.py:send():379] send: telemetry
+2024-11-17 13:46:42,042 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/conda-environment.yaml
+2024-11-17 13:46:42,042 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/requirements.txt
+2024-11-17 13:46:42,043 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/output.log
+2024-11-17 13:46:42,043 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/wandb-metadata.json
+2024-11-17 13:46:42,161 INFO    wandb-upload_0:1076726 [upload_job.py:push():131] Uploaded file /tmp/tmpvwv7e_iqwandb/1wlk1s86-wandb-metadata.json
+2024-11-17 13:46:44,043 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/output.log
+2024-11-17 13:46:44,738 DEBUG   SenderThread:1076726 [sender.py:send():379] send: telemetry
+2024-11-17 13:46:44,739 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-17 13:46:46,046 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/output.log
+2024-11-17 13:46:46,690 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-17 13:46:46,693 DEBUG   SenderThread:1076726 [sender.py:send():379] send: history
+2024-11-17 13:46:46,693 DEBUG   SenderThread:1076726 [sender.py:send_request():406] send_request: summary_record
+2024-11-17 13:46:46,693 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: status_report
+2024-11-17 13:46:46,695 INFO    SenderThread:1076726 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-17 13:46:47,046 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/wandb-summary.json
+2024-11-17 13:46:48,047 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/output.log
+2024-11-17 13:46:48,881 DEBUG   HandlerThread:1076726 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-17 13:46:48,882 DEBUG   SenderThread:1076726 [sender.py:send():379] send: history
+2024-11-17 13:46:48,883 DEBUG   SenderThread:1076726 [sender.py:send_request():406] send_request: summary_record
+2024-11-17 13:46:48,885 INFO    SenderThread:1076726 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-17 13:46:49,048 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/wandb-summary.json
+2024-11-17 13:46:50,048 INFO    Thread-17 :1076726 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241117_134635-ry1dda7r/files/output.log

@@ -8,7 +8,7 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Train a NeRF model with CIFAR-10")
+    description="Train a NeRF model with CIFAR-10")
 
     parser.add_argument('--config', type=str, required=True,
                         help='Path to the configuration file')
@@ -214,4 +214,4 @@ def load_checkpoint(filepath, model, optimizer, ema, device='cuda'):
             device) for k in checkpoint['ema_shadow']}
     # ema.shadow = {k:checkpoint['ema_shadow'][k].to(device) for k in checkpoint['ema_shadow'] }  # specifically loading shadow weights
 
-    return checkpoint  # Contains other information like epoch, best_acc
+    return checkpoint, model  # Contains other information like epoch, best_acc

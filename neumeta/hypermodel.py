@@ -139,7 +139,7 @@ class NeRF_MLP_Compose(nn.Module):
         for _ in range(num_compose):
             self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers))
             
-        self.apply(weights_init_uniform_rule)
+        self.apply(weights_init_uniform_relu)
             
     def forward(self, x, layer_id=None, input_dim=None):
         """
