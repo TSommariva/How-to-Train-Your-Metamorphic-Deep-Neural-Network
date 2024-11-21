@@ -3,7 +3,7 @@
          "path": "/homes/tsommariva/neumeta/bash.sh"
     },
     "git.ignoreLimitWarning": true,
-    "terminal.integrated.env.linux": {
-        "PYTHONPATH": "/homes/tsommariva/neumeta:${env:PYTHONPATH}"
-    }
+    "terminal.integrated.env.osx": {
+        "PYTHONPATH" : "/Users/Thomas/tesi:${env:PYTHONPATH}"
+    },
 }

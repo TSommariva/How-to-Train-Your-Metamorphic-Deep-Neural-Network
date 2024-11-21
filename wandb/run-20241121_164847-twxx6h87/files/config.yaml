@@ -1,0 +1,74 @@
+wandb_version: 1
+
+experiment:
+  desc: null
+  value: '{''name'': ''${model.type}_myConf'', ''recononly'': 0, ''num_epochs'': 400,
+    ''log_interval'': 100, ''eval_interval'': 1, ''seed'': 42}'
+model:
+  desc: null
+  value: '{''type'': ''ResNet56'', ''pretrained_path'': ''neumeta/pretrained_models/cifar10_resnet56-187c023a.pt'',
+    ''smooth'': True}'
+training:
+  desc: null
+  value: '{''learning_rate'': 0.001, ''batch_size'': 128, ''coordinate_noise'': 1.0,
+    ''weight_decay'': 0.01, ''clip_grad'': 10.0, ''save_model_path'': ''experiments/${experiment.name}'',
+    ''lr_steps'': [100, 150]}'
+hyper_model:
+  desc: null
+  value: '{''input_dim'': 6, ''hidden_dim'': 256, ''num_layers'': 4, ''num_freqs'':
+    16, ''output_dim'': 9, ''ema_decay'': 0.995, ''loss_weight'': {''ce_weight'':
+    1.0, ''reg_weight'': 0.0001, ''recon_weight'': 1.0, ''kd_weight'': 0.1}}'
+dimensions:
+  desc: null
+  value: '{''range'': [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,
+    47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64], ''test'':
+    32, ''norm'': 64, ''start'': 64}'
+base_config:
+  desc: null
+  value: neumeta/config/base_config.yaml
+config:
+  desc: null
+  value: neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml
+ratio:
+  desc: null
+  value: 1.0
+resume_from:
+  desc: null
+  value: null
+load_from:
+  desc: null
+  value: null
+test_result_path:
+  desc: null
+  value: null
+test:
+  desc: null
+  value: false
+_wandb:
+  desc: null
+  value:
+    python_version: 3.12.7
+    cli_version: 0.16.6
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: true
+    start_time: 1732204127.0
+    t:
+      1:
+      - 1
+      - 5
+      - 41
+      - 49
+      - 53
+      - 55
+      - 63
+      3:
+      - 13
+      - 16
+      - 23
+      4: 3.12.7
+      5: 0.16.6
+      8:
+      - 2
+      - 5
+      13: darwin-arm64

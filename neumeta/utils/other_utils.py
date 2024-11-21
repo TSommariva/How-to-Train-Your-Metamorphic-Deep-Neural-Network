@@ -38,7 +38,7 @@ def parse_args():
     cli_args = {k: v for k, v in vars(args).items()}
 
     # Merge command-line arguments into the configuration
-    config = OmegaConf.merge(config, cli_args)
+    config = OmegaConf.merge(config, OmegaConf.create(cli_args))
     if len(config.dimensions.range) == 2:
         interval = config.dimensions.get('interval', 1)
         config.dimensions.range = list(

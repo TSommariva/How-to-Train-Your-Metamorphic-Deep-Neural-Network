@@ -1,18 +1,18 @@
 # Experiment settings
 base_config: neumeta/config/base_config.yaml
 
-experiment:
-  name: resnet56
-  num_epochs: 400
-  log_interval: 100
-  eval_interval: 1
-  seed: 42  # Random seed
-
 # Model configurations
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar10_resnet56-187c023a.pt  # Path to pre-trained model
   smooth: True
+
+experiment:
+  name: ${model.type}_myConf
+  num_epochs: 400
+  log_interval: 100
+  eval_interval: 1
+  seed: 42  # Random seed
 
 # Training configurations
 training:
@@ -22,7 +22,7 @@ training:
   lr_steps: [100, 150]
   weight_decay: 1e-2
   clip_grad: 10.0
-  save_model_path: experiments/resnet56_cifar10_32-96-4layer-400e-noisecoord-128bs # Directory to save the trained model
+  save_model_path: experiments/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

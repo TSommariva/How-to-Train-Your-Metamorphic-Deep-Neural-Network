@@ -130,7 +130,6 @@ class CifarResNet(nn.Module):
     def __init__(self, block, hidden_dim, layers, num_classes=10, num_layers_inr=1):
         super(CifarResNet, self).__init__()
         self.layers = layers
-        self.num_layers_inr = num_layers_inr
         self.inplanes = 16
         self.conv1 = conv3x3(3, 16)
         self.bn1 = nn.BatchNorm2d(16)
@@ -143,6 +142,7 @@ class CifarResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(64 * block.expansion, num_classes)
         
+        self.num_layers_inr = max(sum(1 for key in self.learnable_parameter.keys() if 'conv' in key),1)
         self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
 
         for m in self.modules():
@@ -187,7 +187,7 @@ class CifarResNet(nn.Module):
         for name, child in self.named_children():
         # Change the last block of layer3
             if name == 'layer3':
-                print("Replace last 2 block of layer3 with new block with hidden dim {}".format(planes))
+                print(f'Replace last {self.num_layers_inr} block of layer3 with new block with hidden dim {planes}')
                 # Get all the layers except the last block
                 layers = list(child.children())[:-self.num_layers_inr]
                 for i in range(self.num_layers_inr):
@@ -199,8 +199,8 @@ class CifarResNet(nn.Module):
     def learnable_parameter(self):
         # self.keys = [k for k, w in self.named_parameters() if k.startswith('layer3.2.conv') ] #  ork.startswith('layer3.2')
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.2.conv2') ]#{self.layers[-1]-1}') ]
-        self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer') ] # or k.startswith('layer3.1') or k.startswith('layer3.0')
-        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
+        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer') ] # or k.startswith('layer3.1') or k.startswith('layer3.0')
+        self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
 
 
