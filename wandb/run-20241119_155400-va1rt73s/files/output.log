@@ -1,0 +1,685 @@
+Replace last 2 block of layer3 with new block with hidden dim 32
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2145.013427734375
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+TV permutated model:  2031.9053955078125
+Replace last 2 block of layer3 with new block with hidden dim 33
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2189.1943359375
+TV permutated model:  2080.788330078125
+Replace last 2 block of layer3 with new block with hidden dim 34
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2238.868896484375
+TV permutated model:  2126.421630859375
+Replace last 2 block of layer3 with new block with hidden dim 35
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2279.739501953125
+TV permutated model:  2159.250244140625
+Replace last 2 block of layer3 with new block with hidden dim 36
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2322.078125
+TV permutated model:  2206.2724609375
+Replace last 2 block of layer3 with new block with hidden dim 37
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2378.829345703125
+TV permutated model:  2258.30126953125
+Replace last 2 block of layer3 with new block with hidden dim 38
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2426.804931640625
+TV permutated model:  2311.880859375
+Replace last 2 block of layer3 with new block with hidden dim 39
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2481.0322265625
+TV permutated model:  2357.593017578125
+Replace last 2 block of layer3 with new block with hidden dim 40
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2512.455322265625
+TV permutated model:  2386.88037109375
+Replace last 2 block of layer3 with new block with hidden dim 41
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2542.427734375
+TV permutated model:  2417.5224609375
+Replace last 2 block of layer3 with new block with hidden dim 42
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2612.404052734375
+TV permutated model:  2485.65283203125
+Replace last 2 block of layer3 with new block with hidden dim 43
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2663.52783203125
+TV permutated model:  2534.382568359375
+Replace last 2 block of layer3 with new block with hidden dim 44
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2680.248291015625
+TV permutated model:  2564.230224609375
+Replace last 2 block of layer3 with new block with hidden dim 45
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2759.303955078125
+TV permutated model:  2621.01025390625
+Replace last 2 block of layer3 with new block with hidden dim 46
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2764.61279296875
+TV permutated model:  2632.310302734375
+Replace last 2 block of layer3 with new block with hidden dim 47
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2839.306884765625
+TV permutated model:  2709.370849609375
+Replace last 2 block of layer3 with new block with hidden dim 48
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2891.559814453125
+TV permutated model:  2754.054443359375
+Replace last 2 block of layer3 with new block with hidden dim 49
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2915.774169921875
+TV permutated model:  2788.689208984375
+Replace last 2 block of layer3 with new block with hidden dim 50
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2975.538818359375
+TV permutated model:  2831.452880859375
+Replace last 2 block of layer3 with new block with hidden dim 51
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3022.835205078125
+TV permutated model:  2877.47705078125
+Replace last 2 block of layer3 with new block with hidden dim 52
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3071.655517578125
+TV permutated model:  2920.009765625
+Replace last 2 block of layer3 with new block with hidden dim 53
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3118.525634765625
+TV permutated model:  2967.154052734375
+Replace last 2 block of layer3 with new block with hidden dim 54
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3181.5654296875
+TV permutated model:  3018.21728515625
+Replace last 2 block of layer3 with new block with hidden dim 55
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3198.560302734375
+TV permutated model:  3039.1279296875
+Replace last 2 block of layer3 with new block with hidden dim 56
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3245.9443359375
+TV permutated model:  3090.669677734375
+Replace last 2 block of layer3 with new block with hidden dim 57
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3283.04443359375
+TV permutated model:  3140.412353515625
+Replace last 2 block of layer3 with new block with hidden dim 58
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3352.396728515625
+TV permutated model:  3194.456787109375
+Replace last 2 block of layer3 with new block with hidden dim 59
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3379.979736328125
+TV permutated model:  3224.638916015625
+Replace last 2 block of layer3 with new block with hidden dim 60
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3431.7470703125
+TV permutated model:  3272.9619140625
+Replace last 2 block of layer3 with new block with hidden dim 61
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3465.706298828125
+TV permutated model:  3307.05859375
+Replace last 2 block of layer3 with new block with hidden dim 62
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3532.7451171875
+TV permutated model:  3369.081787109375
+Replace last 2 block of layer3 with new block with hidden dim 63
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3592.18359375
+TV permutated model:  3429.569580078125
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1038.4193115234375
+Loading model for dim 64
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1039.5482177734375
+Iteration 0: Loss = 1.8869, Reg Loss = 3.2530, Reconstruct Loss = 0.0000, Cls Loss = 1.8865, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.8736, Reg Loss = 7.2356, Reconstruct Loss = 0.0013, Cls Loss = 1.8715, Learning rate = 1.0000e-03
+Epoch [1/400], Training Loss: 1.8649, Learning Rate: 0.001000
+ 41%|████      | 32/79 [00:00<00:01, 35.29it/s]
+Epoch [1/400], Validation Loss: 1.8096, Validation Accuracy: 73.14%
+Checkpoint saved at epoch 0 with accuracy: 73.14%
+
+100%|██████████| 79/79 [00:02<00:00, 35.47it/s]
+Iteration 250: Loss = 1.8456, Reg Loss = 3.3353, Reconstruct Loss = 0.0006, Cls Loss = 1.8447, Learning rate = 1.0000e-03
+Epoch [2/400], Training Loss: 1.8447, Learning Rate: 0.001000
+
+ 96%|█████████▌| 76/79 [00:02<00:00, 36.75it/s]
+Epoch [2/400], Validation Loss: 1.8080, Validation Accuracy: 75.18%
+Checkpoint saved at epoch 1 with accuracy: 75.18%
+
+100%|██████████| 79/79 [00:02<00:00, 36.84it/s]
+Iteration 250: Loss = 1.8449, Reg Loss = 2.5551, Reconstruct Loss = 0.0007, Cls Loss = 1.8439, Learning rate = 1.0000e-03
+Epoch [3/400], Training Loss: 1.8430, Learning Rate: 0.001000
+ 35%|███▌      | 28/79 [00:00<00:01, 35.44it/s]
+Epoch [3/400], Validation Loss: 1.8074, Validation Accuracy: 75.88%
+Checkpoint saved at epoch 2 with accuracy: 75.88%
+
+100%|██████████| 79/79 [00:02<00:00, 35.86it/s]
+Iteration 250: Loss = 1.8436, Reg Loss = 1.5853, Reconstruct Loss = 0.0019, Cls Loss = 1.8416, Learning rate = 1.0000e-03
+Epoch [4/400], Training Loss: 1.8431, Learning Rate: 0.001000
+ 81%|████████  | 64/79 [00:01<00:00, 35.67it/s]
+Epoch [4/400], Validation Loss: 1.8073, Validation Accuracy: 75.97%
+Checkpoint saved at epoch 3 with accuracy: 75.97%
+
+100%|██████████| 79/79 [00:02<00:00, 35.99it/s]
+Iteration 250: Loss = 1.8445, Reg Loss = 1.1692, Reconstruct Loss = 0.0019, Cls Loss = 1.8426, Learning rate = 1.0000e-03
+Epoch [5/400], Training Loss: 1.8432, Learning Rate: 0.001000
+ 46%|████▌     | 36/79 [00:01<00:01, 35.65it/s]
+Epoch [5/400], Validation Loss: 1.8073, Validation Accuracy: 75.92%
+
+100%|██████████| 79/79 [00:02<00:00, 35.90it/s]
+Iteration 250: Loss = 1.8424, Reg Loss = 1.4376, Reconstruct Loss = 0.0010, Cls Loss = 1.8413, Learning rate = 1.0000e-03
+Epoch [6/400], Training Loss: 1.8421, Learning Rate: 0.001000
+
+ 91%|█████████ | 72/79 [00:02<00:00, 32.03it/s]
+Epoch [6/400], Validation Loss: 1.8076, Validation Accuracy: 75.62%
+
+100%|██████████| 79/79 [00:02<00:00, 34.74it/s]
+Iteration 250: Loss = 1.8432, Reg Loss = 2.2134, Reconstruct Loss = 0.0012, Cls Loss = 1.8418, Learning rate = 1.0000e-03
+Epoch [7/400], Training Loss: 1.8424, Learning Rate: 0.001000
+ 81%|████████  | 64/79 [00:01<00:00, 34.92it/s]
+Epoch [7/400], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+
+100%|██████████| 79/79 [00:02<00:00, 35.13it/s]
+Iteration 250: Loss = 1.8415, Reg Loss = 1.2462, Reconstruct Loss = 0.0009, Cls Loss = 1.8405, Learning rate = 1.0000e-03
+Epoch [8/400], Training Loss: 1.8415, Learning Rate: 0.001000
+ 61%|██████    | 48/79 [00:01<00:00, 36.46it/s]
+Epoch [8/400], Validation Loss: 1.8075, Validation Accuracy: 75.71%
+
+100%|██████████| 79/79 [00:02<00:00, 36.76it/s]
+Iteration 250: Loss = 1.8417, Reg Loss = 1.3339, Reconstruct Loss = 0.0012, Cls Loss = 1.8404, Learning rate = 1.0000e-03
+Epoch [9/400], Training Loss: 1.8407, Learning Rate: 0.001000
+ 51%|█████     | 40/79 [00:01<00:01, 34.60it/s]
+Epoch [9/400], Validation Loss: 1.8076, Validation Accuracy: 75.59%
+
+100%|██████████| 79/79 [00:02<00:00, 34.39it/s]
+Iteration 250: Loss = 1.8435, Reg Loss = 6.1742, Reconstruct Loss = 0.0015, Cls Loss = 1.8414, Learning rate = 1.0000e-03
+Epoch [10/400], Training Loss: 1.8427, Learning Rate: 0.001000
+ 30%|███       | 24/79 [00:00<00:01, 35.38it/s]
+Epoch [10/400], Validation Loss: 1.8074, Validation Accuracy: 75.95%
+
+100%|██████████| 79/79 [00:02<00:00, 35.68it/s]
+Iteration 250: Loss = 1.8428, Reg Loss = 6.5442, Reconstruct Loss = 0.0022, Cls Loss = 1.8400, Learning rate = 1.0000e-03
+Epoch [11/400], Training Loss: 1.8414, Learning Rate: 0.001000
+ 81%|████████  | 64/79 [00:01<00:00, 37.22it/s]
+Epoch [11/400], Validation Loss: 1.8077, Validation Accuracy: 75.62%
+
+100%|██████████| 79/79 [00:02<00:00, 37.49it/s]
+Iteration 250: Loss = 1.8411, Reg Loss = 7.4728, Reconstruct Loss = 0.0002, Cls Loss = 1.8401, Learning rate = 1.0000e-03
+Epoch [12/400], Training Loss: 1.8348, Learning Rate: 0.001000
+ 41%|████      | 32/79 [00:00<00:01, 33.30it/s]
+Epoch [12/400], Validation Loss: 1.8072, Validation Accuracy: 75.57%
+
+100%|██████████| 79/79 [00:02<00:00, 34.61it/s]
+Iteration 250: Loss = 1.8219, Reg Loss = 10.9985, Reconstruct Loss = 0.0020, Cls Loss = 1.8189, Learning rate = 1.0000e-03
+Epoch [13/400], Training Loss: 1.8108, Learning Rate: 0.001000
+ 66%|██████▌   | 52/79 [00:01<00:00, 35.28it/s]
+Epoch [13/400], Validation Loss: 1.7669, Validation Accuracy: 72.40%
+
+100%|██████████| 79/79 [00:02<00:00, 35.69it/s]
+Iteration 250: Loss = 1.7864, Reg Loss = 11.8632, Reconstruct Loss = 0.0009, Cls Loss = 1.7843, Learning rate = 1.0000e-03
+Epoch [14/400], Training Loss: 1.7816, Learning Rate: 0.001000
+ 20%|██        | 16/79 [00:00<00:01, 35.58it/s]
+Epoch [14/400], Validation Loss: 1.7082, Validation Accuracy: 64.29%
+
+100%|██████████| 79/79 [00:02<00:00, 36.23it/s]
+Iteration 250: Loss = 1.7666, Reg Loss = 11.9107, Reconstruct Loss = 0.0002, Cls Loss = 1.7653, Learning rate = 1.0000e-03
+Epoch [15/400], Training Loss: 1.7662, Learning Rate: 0.001000
+ 76%|███████▌  | 60/79 [00:01<00:00, 35.31it/s]
+Epoch [15/400], Validation Loss: 1.6837, Validation Accuracy: 59.70%
+
+100%|██████████| 79/79 [00:02<00:00, 35.72it/s]
+Iteration 250: Loss = 1.7473, Reg Loss = 12.2913, Reconstruct Loss = 0.0011, Cls Loss = 1.7450, Learning rate = 1.0000e-03
+Epoch [16/400], Training Loss: 1.7500, Learning Rate: 0.001000
+ 20%|██        | 16/79 [00:00<00:01, 35.25it/s]
+Epoch [16/400], Validation Loss: 1.6786, Validation Accuracy: 55.23%
+
+100%|██████████| 79/79 [00:02<00:00, 35.42it/s]
+Iteration 250: Loss = 1.7536, Reg Loss = 12.2477, Reconstruct Loss = 0.0010, Cls Loss = 1.7514, Learning rate = 1.0000e-03
+Epoch [17/400], Training Loss: 1.7541, Learning Rate: 0.001000
+ 30%|███       | 24/79 [00:00<00:01, 35.56it/s]
+Epoch [17/400], Validation Loss: 1.6761, Validation Accuracy: 51.41%
+
+100%|██████████| 79/79 [00:02<00:00, 36.01it/s]
+Iteration 250: Loss = 1.7441, Reg Loss = 12.6629, Reconstruct Loss = 0.0011, Cls Loss = 1.7418, Learning rate = 1.0000e-03
+Epoch [18/400], Training Loss: 1.7430, Learning Rate: 0.001000
+ 56%|█████▌    | 44/79 [00:01<00:00, 35.90it/s]
+Epoch [18/400], Validation Loss: 1.6960, Validation Accuracy: 46.72%
+
+100%|██████████| 79/79 [00:02<00:00, 36.52it/s]
+Iteration 250: Loss = 1.7293, Reg Loss = 13.2068, Reconstruct Loss = 0.0013, Cls Loss = 1.7267, Learning rate = 1.0000e-03
+Epoch [19/400], Training Loss: 1.7306, Learning Rate: 0.001000
+ 20%|██        | 16/79 [00:00<00:01, 35.28it/s]
+Epoch [19/400], Validation Loss: 1.7287, Validation Accuracy: 41.75%
+
+100%|██████████| 79/79 [00:02<00:00, 35.21it/s]
+Iteration 250: Loss = 1.7270, Reg Loss = 13.4230, Reconstruct Loss = 0.0010, Cls Loss = 1.7246, Learning rate = 1.0000e-03
+Epoch [20/400], Training Loss: 1.7254, Learning Rate: 0.001000
+ 46%|████▌     | 36/79 [00:01<00:01, 35.68it/s]
+Epoch [20/400], Validation Loss: 1.7592, Validation Accuracy: 40.04%
+
+100%|██████████| 79/79 [00:02<00:00, 36.21it/s]
+Iteration 250: Loss = 1.7272, Reg Loss = 13.4471, Reconstruct Loss = 0.0008, Cls Loss = 1.7250, Learning rate = 1.0000e-03
+Epoch [21/400], Training Loss: 1.7255, Learning Rate: 0.001000
+
+ 91%|█████████ | 72/79 [00:02<00:00, 35.68it/s]
+Epoch [21/400], Validation Loss: 1.8065, Validation Accuracy: 38.56%
+
+100%|██████████| 79/79 [00:02<00:00, 35.96it/s]
+Iteration 250: Loss = 1.7222, Reg Loss = 14.1313, Reconstruct Loss = 0.0007, Cls Loss = 1.7200, Learning rate = 1.0000e-03
+Epoch [22/400], Training Loss: 1.7208, Learning Rate: 0.001000
+ 56%|█████▌    | 44/79 [00:01<00:00, 35.61it/s]
+Epoch [22/400], Validation Loss: 1.7710, Validation Accuracy: 40.46%
+
+100%|██████████| 79/79 [00:02<00:00, 36.25it/s]
+Iteration 250: Loss = 1.7085, Reg Loss = 14.1265, Reconstruct Loss = 0.0015, Cls Loss = 1.7056, Learning rate = 1.0000e-03
+Epoch [23/400], Training Loss: 1.7112, Learning Rate: 0.001000
+
+ 96%|█████████▌| 76/79 [00:02<00:00, 35.27it/s]
+Epoch [23/400], Validation Loss: 1.8216, Validation Accuracy: 40.22%
+
+100%|██████████| 79/79 [00:02<00:00, 34.85it/s]
+Iteration 250: Loss = 1.7147, Reg Loss = 14.2149, Reconstruct Loss = 0.0008, Cls Loss = 1.7124, Learning rate = 1.0000e-03
+Epoch [24/400], Training Loss: 1.7144, Learning Rate: 0.001000
+ 51%|█████     | 40/79 [00:01<00:01, 35.46it/s]
+Epoch [24/400], Validation Loss: 1.8064, Validation Accuracy: 40.52%
+
+100%|██████████| 79/79 [00:02<00:00, 35.63it/s]
+Iteration 250: Loss = 1.7243, Reg Loss = 14.4885, Reconstruct Loss = 0.0009, Cls Loss = 1.7219, Learning rate = 1.0000e-03
+Epoch [25/400], Training Loss: 1.7187, Learning Rate: 0.001000
+ 61%|██████    | 48/79 [00:01<00:00, 35.64it/s]
+Epoch [25/400], Validation Loss: 1.8104, Validation Accuracy: 39.47%
+
+100%|██████████| 79/79 [00:02<00:00, 36.03it/s]
+Iteration 250: Loss = 1.7125, Reg Loss = 14.9297, Reconstruct Loss = 0.0011, Cls Loss = 1.7099, Learning rate = 1.0000e-03
+Epoch [26/400], Training Loss: 1.7099, Learning Rate: 0.001000
+ 71%|███████   | 56/79 [00:01<00:00, 35.49it/s]
+Epoch [26/400], Validation Loss: 1.8060, Validation Accuracy: 36.58%
+
+100%|██████████| 79/79 [00:02<00:00, 35.80it/s]
+Iteration 250: Loss = 1.7023, Reg Loss = 15.2259, Reconstruct Loss = 0.0011, Cls Loss = 1.6997, Learning rate = 1.0000e-03
+Epoch [27/400], Training Loss: 1.7047, Learning Rate: 0.001000
+ 56%|█████▌    | 44/79 [00:01<00:00, 35.86it/s]
+Epoch [27/400], Validation Loss: 1.7451, Validation Accuracy: 42.90%
+
+100%|██████████| 79/79 [00:02<00:00, 35.91it/s]
+Iteration 250: Loss = 1.7029, Reg Loss = 15.5834, Reconstruct Loss = 0.0016, Cls Loss = 1.6997, Learning rate = 1.0000e-03
+Epoch [28/400], Training Loss: 1.7042, Learning Rate: 0.001000
+ 25%|██▌       | 20/79 [00:00<00:01, 35.21it/s]
+Epoch [28/400], Validation Loss: 1.7897, Validation Accuracy: 39.46%
+
+100%|██████████| 79/79 [00:02<00:00, 35.89it/s]
+Iteration 250: Loss = 1.7051, Reg Loss = 15.7519, Reconstruct Loss = 0.0009, Cls Loss = 1.7026, Learning rate = 1.0000e-03
+Epoch [29/400], Training Loss: 1.7033, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.40it/s]
+Epoch [29/400], Validation Loss: 1.8262, Validation Accuracy: 37.80%
+Iteration 0: Loss = 1.7001, Reg Loss = 14.9440, Reconstruct Loss = 0.0000, Cls Loss = 1.6986, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.7032, Reg Loss = 15.6795, Reconstruct Loss = 0.0011, Cls Loss = 1.7005, Learning rate = 1.0000e-03
+Epoch [30/400], Training Loss: 1.6985, Learning Rate: 0.001000
+ 76%|███████▌  | 60/79 [00:01<00:00, 35.94it/s]
+Epoch [30/400], Validation Loss: 1.8125, Validation Accuracy: 38.52%
+
+100%|██████████| 79/79 [00:02<00:00, 36.04it/s]
+Iteration 250: Loss = 1.6953, Reg Loss = 16.4362, Reconstruct Loss = 0.0012, Cls Loss = 1.6924, Learning rate = 1.0000e-03
+Epoch [31/400], Training Loss: 1.6978, Learning Rate: 0.001000
+ 35%|███▌      | 28/79 [00:00<00:01, 35.22it/s]
+Epoch [31/400], Validation Loss: 1.8395, Validation Accuracy: 38.93%
+
+100%|██████████| 79/79 [00:02<00:00, 35.42it/s]
+Iteration 250: Loss = 1.6896, Reg Loss = 16.8414, Reconstruct Loss = 0.0007, Cls Loss = 1.6872, Learning rate = 1.0000e-03
+Epoch [32/400], Training Loss: 1.6941, Learning Rate: 0.001000
+ 25%|██▌       | 20/79 [00:00<00:01, 35.73it/s]
+Epoch [32/400], Validation Loss: 1.8066, Validation Accuracy: 35.09%
+
+100%|██████████| 79/79 [00:02<00:00, 35.85it/s]
+Iteration 250: Loss = 1.6919, Reg Loss = 16.7756, Reconstruct Loss = 0.0006, Cls Loss = 1.6897, Learning rate = 1.0000e-03
+Epoch [33/400], Training Loss: 1.6934, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.11it/s]
+Epoch [33/400], Validation Loss: 1.8366, Validation Accuracy: 34.63%
+Iteration 0: Loss = 1.6692, Reg Loss = 18.6158, Reconstruct Loss = 0.0000, Cls Loss = 1.6673, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6931, Reg Loss = 17.0954, Reconstruct Loss = 0.0007, Cls Loss = 1.6907, Learning rate = 1.0000e-03
+Epoch [34/400], Training Loss: 1.6909, Learning Rate: 0.001000
+ 46%|████▌     | 36/79 [00:01<00:01, 35.62it/s]
+Epoch [34/400], Validation Loss: 1.8488, Validation Accuracy: 35.48%
+
+100%|██████████| 79/79 [00:02<00:00, 34.51it/s]
+Iteration 250: Loss = 1.6908, Reg Loss = 17.5289, Reconstruct Loss = 0.0011, Cls Loss = 1.6879, Learning rate = 1.0000e-03
+Epoch [35/400], Training Loss: 1.6858, Learning Rate: 0.001000
+ 25%|██▌       | 20/79 [00:00<00:01, 36.01it/s]
+Epoch [35/400], Validation Loss: 1.8540, Validation Accuracy: 38.67%
+
+100%|██████████| 79/79 [00:02<00:00, 36.37it/s]
+Iteration 250: Loss = 1.6763, Reg Loss = 17.9415, Reconstruct Loss = 0.0014, Cls Loss = 1.6731, Learning rate = 1.0000e-03
+Epoch [36/400], Training Loss: 1.6853, Learning Rate: 0.001000
+ 86%|████████▌ | 68/79 [00:01<00:00, 35.93it/s]
+Epoch [36/400], Validation Loss: 1.8601, Validation Accuracy: 39.98%
+
+100%|██████████| 79/79 [00:02<00:00, 36.17it/s]
+Iteration 250: Loss = 1.6780, Reg Loss = 17.5678, Reconstruct Loss = 0.0015, Cls Loss = 1.6747, Learning rate = 1.0000e-03
+Epoch [37/400], Training Loss: 1.6750, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 34.89it/s]
+Epoch [37/400], Validation Loss: 1.9775, Validation Accuracy: 36.86%
+Iteration 0: Loss = 1.7211, Reg Loss = 18.4065, Reconstruct Loss = 0.0000, Cls Loss = 1.7193, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6810, Reg Loss = 17.8945, Reconstruct Loss = 0.0010, Cls Loss = 1.6782, Learning rate = 1.0000e-03
+Epoch [38/400], Training Loss: 1.6804, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.12it/s]
+Epoch [38/400], Validation Loss: 1.9488, Validation Accuracy: 37.89%
+Iteration 0: Loss = 1.7805, Reg Loss = 17.2617, Reconstruct Loss = 0.0000, Cls Loss = 1.7788, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6735, Reg Loss = 18.9020, Reconstruct Loss = 0.0007, Cls Loss = 1.6709, Learning rate = 1.0000e-03
+Epoch [39/400], Training Loss: 1.6740, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.17it/s]
+Epoch [39/400], Validation Loss: 1.9381, Validation Accuracy: 38.27%
+Iteration 0: Loss = 1.6399, Reg Loss = 18.2766, Reconstruct Loss = 0.0000, Cls Loss = 1.6381, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6816, Reg Loss = 18.9501, Reconstruct Loss = 0.0008, Cls Loss = 1.6788, Learning rate = 1.0000e-03
+Epoch [40/400], Training Loss: 1.6793, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.76it/s]
+Epoch [40/400], Validation Loss: 1.9192, Validation Accuracy: 39.10%
+Iteration 0: Loss = 1.6053, Reg Loss = 21.3045, Reconstruct Loss = 0.0357, Cls Loss = 1.5675, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6650, Reg Loss = 19.3321, Reconstruct Loss = 0.0012, Cls Loss = 1.6618, Learning rate = 1.0000e-03
+Epoch [41/400], Training Loss: 1.6665, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.22it/s]
+Epoch [41/400], Validation Loss: 1.9112, Validation Accuracy: 38.65%
+Iteration 0: Loss = 1.7193, Reg Loss = 19.4854, Reconstruct Loss = 0.0000, Cls Loss = 1.7174, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6649, Reg Loss = 20.1082, Reconstruct Loss = 0.0007, Cls Loss = 1.6623, Learning rate = 1.0000e-03
+Epoch [42/400], Training Loss: 1.6669, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.15it/s]
+Epoch [42/400], Validation Loss: 1.9978, Validation Accuracy: 37.89%
+Iteration 0: Loss = 1.7747, Reg Loss = 20.2553, Reconstruct Loss = 0.0000, Cls Loss = 1.7727, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6682, Reg Loss = 20.1221, Reconstruct Loss = 0.0018, Cls Loss = 1.6643, Learning rate = 1.0000e-03
+Epoch [43/400], Training Loss: 1.6655, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.73it/s]
+Epoch [43/400], Validation Loss: 1.9487, Validation Accuracy: 40.20%
+Iteration 0: Loss = 1.6266, Reg Loss = 19.5760, Reconstruct Loss = 0.0000, Cls Loss = 1.6246, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6567, Reg Loss = 20.7537, Reconstruct Loss = 0.0014, Cls Loss = 1.6532, Learning rate = 1.0000e-03
+Epoch [44/400], Training Loss: 1.6609, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.87it/s]
+Epoch [44/400], Validation Loss: 1.9477, Validation Accuracy: 40.58%
+Iteration 0: Loss = 1.6678, Reg Loss = 22.5285, Reconstruct Loss = 0.0000, Cls Loss = 1.6656, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6488, Reg Loss = 20.8220, Reconstruct Loss = 0.0010, Cls Loss = 1.6457, Learning rate = 1.0000e-03
+Epoch [45/400], Training Loss: 1.6502, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.63it/s]
+Epoch [45/400], Validation Loss: 2.0137, Validation Accuracy: 39.69%
+Iteration 0: Loss = 1.5896, Reg Loss = 21.0248, Reconstruct Loss = 0.0000, Cls Loss = 1.5875, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6523, Reg Loss = 22.0386, Reconstruct Loss = 0.0010, Cls Loss = 1.6491, Learning rate = 1.0000e-03
+Epoch [46/400], Training Loss: 1.6450, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.23it/s]
+Epoch [46/400], Validation Loss: 1.9400, Validation Accuracy: 40.15%
+Iteration 0: Loss = 1.6261, Reg Loss = 21.7459, Reconstruct Loss = 0.0000, Cls Loss = 1.6239, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6483, Reg Loss = 22.8748, Reconstruct Loss = 0.0008, Cls Loss = 1.6452, Learning rate = 1.0000e-03
+Epoch [47/400], Training Loss: 1.6527, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.23it/s]
+Epoch [47/400], Validation Loss: 1.9355, Validation Accuracy: 40.11%
+Iteration 0: Loss = 1.6878, Reg Loss = 23.4873, Reconstruct Loss = 0.0000, Cls Loss = 1.6854, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6429, Reg Loss = 23.5240, Reconstruct Loss = 0.0004, Cls Loss = 1.6401, Learning rate = 1.0000e-03
+Epoch [48/400], Training Loss: 1.6422, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 34.64it/s]
+Epoch [48/400], Validation Loss: 2.0537, Validation Accuracy: 39.43%
+Iteration 0: Loss = 1.7026, Reg Loss = 21.0285, Reconstruct Loss = 0.0000, Cls Loss = 1.7005, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6248, Reg Loss = 23.9202, Reconstruct Loss = 0.0014, Cls Loss = 1.6210, Learning rate = 1.0000e-03
+Epoch [49/400], Training Loss: 1.6186, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.68it/s]
+Epoch [49/400], Validation Loss: 2.0978, Validation Accuracy: 39.51%
+Iteration 0: Loss = 1.7212, Reg Loss = 25.3573, Reconstruct Loss = 0.0000, Cls Loss = 1.7186, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6320, Reg Loss = 24.3540, Reconstruct Loss = 0.0009, Cls Loss = 1.6287, Learning rate = 1.0000e-03
+Epoch [50/400], Training Loss: 1.6300, Learning Rate: 0.001000
+
+ 91%|█████████ | 72/79 [00:01<00:00, 36.01it/s]
+
+100%|██████████| 79/79 [00:02<00:00, 36.52it/s]
+Iteration 0: Loss = 1.8209, Reg Loss = 28.8726, Reconstruct Loss = 0.0000, Cls Loss = 1.8180, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.6099, Reg Loss = 25.8252, Reconstruct Loss = 0.0010, Cls Loss = 1.6063, Learning rate = 1.0000e-03
+Epoch [51/400], Training Loss: 1.6020, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.85it/s]
+Epoch [51/400], Validation Loss: 2.0233, Validation Accuracy: 39.56%
+Iteration 0: Loss = 1.6454, Reg Loss = 27.1185, Reconstruct Loss = 0.0000, Cls Loss = 1.6427, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.5993, Reg Loss = 25.5214, Reconstruct Loss = 0.0011, Cls Loss = 1.5956, Learning rate = 1.0000e-03
+Epoch [52/400], Training Loss: 1.5946, Learning Rate: 0.001000
+
+ 96%|█████████▌| 76/79 [00:02<00:00, 34.94it/s]
+Epoch [52/400], Validation Loss: 1.9905, Validation Accuracy: 39.76%
+
+100%|██████████| 79/79 [00:02<00:00, 35.49it/s]
+Iteration 250: Loss = 1.6000, Reg Loss = 26.1747, Reconstruct Loss = 0.0009, Cls Loss = 1.5965, Learning rate = 1.0000e-03
+Epoch [53/400], Training Loss: 1.5948, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.20it/s]
+Epoch [53/400], Validation Loss: 1.9733, Validation Accuracy: 39.30%
+Iteration 0: Loss = 1.6535, Reg Loss = 25.8870, Reconstruct Loss = 0.0000, Cls Loss = 1.6509, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.5754, Reg Loss = 27.0843, Reconstruct Loss = 0.0007, Cls Loss = 1.5719, Learning rate = 1.0000e-03
+Epoch [54/400], Training Loss: 1.5714, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.25it/s]
+Epoch [54/400], Validation Loss: 1.9970, Validation Accuracy: 39.15%
+Iteration 0: Loss = 1.3541, Reg Loss = 31.3525, Reconstruct Loss = 0.0000, Cls Loss = 1.3510, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.5489, Reg Loss = 27.9083, Reconstruct Loss = 0.0015, Cls Loss = 1.5446, Learning rate = 1.0000e-03
+Epoch [55/400], Training Loss: 1.5435, Learning Rate: 0.001000
+
+ 91%|█████████ | 72/79 [00:02<00:00, 35.53it/s]
+
+100%|██████████| 79/79 [00:02<00:00, 35.89it/s]
+Iteration 0: Loss = 1.6180, Reg Loss = 26.5150, Reconstruct Loss = 0.0000, Cls Loss = 1.6154, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.5377, Reg Loss = 28.9721, Reconstruct Loss = 0.0002, Cls Loss = 1.5346, Learning rate = 1.0000e-03
+Epoch [56/400], Training Loss: 1.5365, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 37.16it/s]
+Epoch [56/400], Validation Loss: 1.8621, Validation Accuracy: 40.25%
+Iteration 0: Loss = 1.3445, Reg Loss = 28.2580, Reconstruct Loss = 0.0000, Cls Loss = 1.3417, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.5353, Reg Loss = 29.3636, Reconstruct Loss = 0.0002, Cls Loss = 1.5322, Learning rate = 1.0000e-03
+Epoch [57/400], Training Loss: 1.5245, Learning Rate: 0.001000
+
+ 91%|█████████ | 72/79 [00:01<00:00, 36.00it/s]
+
+100%|██████████| 79/79 [00:02<00:00, 36.40it/s]
+Iteration 0: Loss = 1.2975, Reg Loss = 31.6427, Reconstruct Loss = 0.0295, Cls Loss = 1.2648, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.5175, Reg Loss = 29.8488, Reconstruct Loss = 0.0015, Cls Loss = 1.5129, Learning rate = 1.0000e-03
+Epoch [58/400], Training Loss: 1.5193, Learning Rate: 0.001000
+
+ 96%|█████████▌| 76/79 [00:02<00:00, 35.99it/s]
+Epoch [58/400], Validation Loss: 1.6763, Validation Accuracy: 44.05%
+
+100%|██████████| 79/79 [00:02<00:00, 35.52it/s]
+Iteration 250: Loss = 1.5332, Reg Loss = 29.8076, Reconstruct Loss = 0.0006, Cls Loss = 1.5296, Learning rate = 1.0000e-03
+Epoch [59/400], Training Loss: 1.5305, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.37it/s]
+Epoch [59/400], Validation Loss: 1.6895, Validation Accuracy: 42.73%
+Iteration 0: Loss = 1.7737, Reg Loss = 32.2085, Reconstruct Loss = 0.0000, Cls Loss = 1.7705, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.4697, Reg Loss = 31.2668, Reconstruct Loss = 0.0009, Cls Loss = 1.4657, Learning rate = 1.0000e-03
+Epoch [60/400], Training Loss: 1.4695, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.24it/s]
+Epoch [60/400], Validation Loss: 1.7248, Validation Accuracy: 42.40%
+Iteration 0: Loss = 1.5296, Reg Loss = 30.2773, Reconstruct Loss = 0.0000, Cls Loss = 1.5266, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.4679, Reg Loss = 31.5174, Reconstruct Loss = 0.0010, Cls Loss = 1.4638, Learning rate = 1.0000e-03
+Epoch [61/400], Training Loss: 1.4633, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.32it/s]
+Epoch [61/400], Validation Loss: 1.6333, Validation Accuracy: 45.10%
+Iteration 0: Loss = 1.4956, Reg Loss = 31.5226, Reconstruct Loss = 0.0000, Cls Loss = 1.4925, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.4623, Reg Loss = 32.8306, Reconstruct Loss = 0.0006, Cls Loss = 1.4584, Learning rate = 1.0000e-03
+Epoch [62/400], Training Loss: 1.4636, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.31it/s]
+Epoch [62/400], Validation Loss: 1.6575, Validation Accuracy: 44.16%
+Iteration 0: Loss = 1.4667, Reg Loss = 30.9553, Reconstruct Loss = 0.0000, Cls Loss = 1.4636, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.4670, Reg Loss = 32.0478, Reconstruct Loss = 0.0008, Cls Loss = 1.4630, Learning rate = 1.0000e-03
+Epoch [63/400], Training Loss: 1.4620, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.27it/s]
+Epoch [63/400], Validation Loss: 1.7444, Validation Accuracy: 43.20%
+Iteration 0: Loss = 1.2499, Reg Loss = 30.2982, Reconstruct Loss = 0.0000, Cls Loss = 1.2469, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.4387, Reg Loss = 32.3730, Reconstruct Loss = 0.0006, Cls Loss = 1.4348, Learning rate = 1.0000e-03
+Epoch [64/400], Training Loss: 1.4426, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.07it/s]
+Epoch [64/400], Validation Loss: 1.8660, Validation Accuracy: 40.02%
+Iteration 0: Loss = 1.3808, Reg Loss = 32.6014, Reconstruct Loss = 0.0000, Cls Loss = 1.3775, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.4234, Reg Loss = 33.0546, Reconstruct Loss = 0.0009, Cls Loss = 1.4193, Learning rate = 1.0000e-03
+Epoch [65/400], Training Loss: 1.4196, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.19it/s]
+Epoch [65/400], Validation Loss: 1.8386, Validation Accuracy: 40.02%
+Iteration 0: Loss = 1.3539, Reg Loss = 33.8891, Reconstruct Loss = 0.0000, Cls Loss = 1.3505, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.4033, Reg Loss = 34.5475, Reconstruct Loss = 0.0008, Cls Loss = 1.3991, Learning rate = 1.0000e-03
+Epoch [66/400], Training Loss: 1.4006, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.22it/s]
+Epoch [66/400], Validation Loss: 1.8150, Validation Accuracy: 40.49%
+Iteration 0: Loss = 1.4463, Reg Loss = 32.8603, Reconstruct Loss = 0.0000, Cls Loss = 1.4430, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.3768, Reg Loss = 34.6592, Reconstruct Loss = 0.0012, Cls Loss = 1.3722, Learning rate = 1.0000e-03
+Epoch [67/400], Training Loss: 1.3845, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.38it/s]
+Epoch [67/400], Validation Loss: 1.8199, Validation Accuracy: 38.57%
+Iteration 0: Loss = 1.2754, Reg Loss = 34.7188, Reconstruct Loss = 0.0000, Cls Loss = 1.2719, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.3861, Reg Loss = 34.9066, Reconstruct Loss = 0.0013, Cls Loss = 1.3813, Learning rate = 1.0000e-03
+Epoch [68/400], Training Loss: 1.3754, Learning Rate: 0.001000
+
+ 91%|█████████ | 72/79 [00:01<00:00, 36.32it/s]
+Epoch [68/400], Validation Loss: 1.8108, Validation Accuracy: 38.45%
+
+100%|██████████| 79/79 [00:02<00:00, 36.55it/s]
+Iteration 250: Loss = 1.3837, Reg Loss = 35.8660, Reconstruct Loss = 0.0007, Cls Loss = 1.3794, Learning rate = 1.0000e-03
+Epoch [69/400], Training Loss: 1.3701, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.30it/s]
+Epoch [69/400], Validation Loss: 1.9087, Validation Accuracy: 37.25%
+Iteration 0: Loss = 1.1008, Reg Loss = 35.0265, Reconstruct Loss = 0.0000, Cls Loss = 1.0973, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.3560, Reg Loss = 35.2184, Reconstruct Loss = 0.0006, Cls Loss = 1.3518, Learning rate = 1.0000e-03
+Epoch [70/400], Training Loss: 1.3513, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.52it/s]
+Epoch [70/400], Validation Loss: 1.8117, Validation Accuracy: 39.81%
+Iteration 0: Loss = 1.4410, Reg Loss = 33.1810, Reconstruct Loss = 0.0000, Cls Loss = 1.4376, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.3565, Reg Loss = 36.1024, Reconstruct Loss = 0.0007, Cls Loss = 1.3521, Learning rate = 1.0000e-03
+Epoch [71/400], Training Loss: 1.3530, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.91it/s]
+Epoch [71/400], Validation Loss: 1.8619, Validation Accuracy: 38.32%
+Iteration 0: Loss = 1.6121, Reg Loss = 35.0796, Reconstruct Loss = 0.0000, Cls Loss = 1.6086, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.3500, Reg Loss = 36.3922, Reconstruct Loss = 0.0008, Cls Loss = 1.3455, Learning rate = 1.0000e-03
+Epoch [72/400], Training Loss: 1.3345, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.00it/s]
+Epoch [72/400], Validation Loss: 1.7966, Validation Accuracy: 39.97%
+Iteration 0: Loss = 1.3824, Reg Loss = 37.5568, Reconstruct Loss = 0.0000, Cls Loss = 1.3787, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.3631, Reg Loss = 36.9130, Reconstruct Loss = 0.0006, Cls Loss = 1.3588, Learning rate = 1.0000e-03
+Epoch [73/400], Training Loss: 1.3474, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 35.51it/s]
+Epoch [73/400], Validation Loss: 1.9475, Validation Accuracy: 36.67%
+Iteration 0: Loss = 1.3096, Reg Loss = 35.6319, Reconstruct Loss = 0.0000, Cls Loss = 1.3060, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.2996, Reg Loss = 36.7845, Reconstruct Loss = 0.0016, Cls Loss = 1.2944, Learning rate = 1.0000e-03
+Epoch [74/400], Training Loss: 1.2969, Learning Rate: 0.001000
+
+ 86%|████████▌ | 68/79 [00:01<00:00, 35.77it/s]
+
+100%|██████████| 79/79 [00:02<00:00, 36.07it/s]
+Iteration 0: Loss = 1.4901, Reg Loss = 41.4761, Reconstruct Loss = 0.0000, Cls Loss = 1.4859, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.3180, Reg Loss = 38.0087, Reconstruct Loss = 0.0009, Cls Loss = 1.3133, Learning rate = 1.0000e-03
+Epoch [75/400], Training Loss: 1.3219, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.23it/s]
+Epoch [75/400], Validation Loss: 1.8774, Validation Accuracy: 39.24%
+Iteration 0: Loss = 1.3014, Reg Loss = 41.3723, Reconstruct Loss = 0.0000, Cls Loss = 1.2973, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.2873, Reg Loss = 38.4304, Reconstruct Loss = 0.0007, Cls Loss = 1.2827, Learning rate = 1.0000e-03
+Epoch [76/400], Training Loss: 1.2923, Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:02<00:00, 36.12it/s]
+Epoch [76/400], Validation Loss: 1.9442, Validation Accuracy: 38.40%
+Iteration 0: Loss = 1.3255, Reg Loss = 40.1987, Reconstruct Loss = 0.0000, Cls Loss = 1.3214, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.2801, Reg Loss = 39.5344, Reconstruct Loss = 0.0008, Cls Loss = 1.2753, Learning rate = 1.0000e-03
+Epoch [77/400], Training Loss: 1.2828, Learning Rate: 0.001000
+
+ 96%|█████████▌| 76/79 [00:02<00:00, 36.13it/s]
+Epoch [77/400], Validation Loss: 2.0413, Validation Accuracy: 37.08%
+

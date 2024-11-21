@@ -1,0 +1,1253 @@
+2024-11-18 11:37:49,132 INFO    StreamThr :1711674 [internal.py:wandb_internal():86] W&B internal server running at pid: 1711674, started at: 2024-11-18 11:37:49.130259
+2024-11-18 11:37:49,135 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status
+2024-11-18 11:37:49,147 INFO    WriterThread:1711674 [datastore.py:open_for_write():87] open: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/run-kf1swsyh.wandb
+2024-11-18 11:37:49,148 DEBUG   SenderThread:1711674 [sender.py:send():379] send: header
+2024-11-18 11:37:49,165 DEBUG   SenderThread:1711674 [sender.py:send():379] send: run
+2024-11-18 11:37:49,644 INFO    SenderThread:1711674 [dir_watcher.py:__init__():211] watching files in: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files
+2024-11-18 11:37:49,644 INFO    SenderThread:1711674 [sender.py:_start_run_threads():1124] run started: kf1swsyh with start time 1731926269.136769
+2024-11-18 11:37:49,666 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: check_version
+2024-11-18 11:37:49,667 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: check_version
+2024-11-18 11:37:49,721 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: run_start
+2024-11-18 11:37:49,753 DEBUG   HandlerThread:1711674 [system_info.py:__init__():26] System info init
+2024-11-18 11:37:49,753 DEBUG   HandlerThread:1711674 [system_info.py:__init__():41] System info init done
+2024-11-18 11:37:49,754 INFO    HandlerThread:1711674 [system_monitor.py:start():194] Starting system monitor
+2024-11-18 11:37:49,754 INFO    SystemMonitor:1711674 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-11-18 11:37:49,754 INFO    HandlerThread:1711674 [system_monitor.py:probe():214] Collecting system info
+2024-11-18 11:37:49,755 INFO    SystemMonitor:1711674 [interfaces.py:start():190] Started cpu monitoring
+2024-11-18 11:37:49,756 INFO    SystemMonitor:1711674 [interfaces.py:start():190] Started disk monitoring
+2024-11-18 11:37:49,759 INFO    SystemMonitor:1711674 [interfaces.py:start():190] Started gpu monitoring
+2024-11-18 11:37:49,760 INFO    SystemMonitor:1711674 [interfaces.py:start():190] Started memory monitoring
+2024-11-18 11:37:49,760 INFO    SystemMonitor:1711674 [interfaces.py:start():190] Started network monitoring
+2024-11-18 11:37:49,823 DEBUG   HandlerThread:1711674 [system_info.py:probe():150] Probing system
+2024-11-18 11:37:49,827 DEBUG   HandlerThread:1711674 [system_info.py:_probe_git():135] Probing git
+2024-11-18 11:37:49,843 DEBUG   HandlerThread:1711674 [system_info.py:_probe_git():143] Probing git done
+2024-11-18 11:37:49,843 DEBUG   HandlerThread:1711674 [system_info.py:probe():198] Probing system done
+2024-11-18 11:37:49,843 DEBUG   HandlerThread:1711674 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-117-generic-x86_64-with-glibc2.35', 'python': '3.12.7', 'heartbeatAt': '2024-11-18T10:37:49.823782', 'startedAt': '2024-11-18T10:37:49.109409', 'docker': None, 'cuda': None, 'args': ('--config', '/homes/tsommariva/neumeta/neumeta/config/base_config.yaml'), 'state': 'running', 'program': '/homes/tsommariva/neumeta/neumeta/train_cifar10.py', 'codePathLocal': 'neumeta/train_cifar10.py', 'codePath': 'neumeta/train_cifar10.py', 'git': {'remote': 'https://github.com/Adamdad/neumeta.git', 'commit': '1a2f4a087dd7100e1e16dfca523dc68419e6200b'}, 'email': None, 'root': '/homes/tsommariva/neumeta', 'host': 'ailb-login-03', 'username': 'tsommariva', 'executable': '/homes/tsommariva/.conda/envs/neumeta/bin/python', 'cpu_count': 28, 'cpu_count_logical': 56, 'cpu_freq': {'current': 1.2588214285714299, 'min': 1200.0, 'max': 3300.0}, 'cpu_freq_per_core': [{'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 3.3, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.197, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 2.39, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.197, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}, {'current': 1.2, 'min': 1200.0, 'max': 3300.0}], 'disk': {'/': {'total': 239.74287796020508, 'used': 76.8215103149414}}, 'gpu': 'Tesla P100-PCIE-16GB', 'gpu_count': 1, 'gpu_devices': [{'name': 'Tesla P100-PCIE-16GB', 'memory_total': 17179869184}], 'memory': {'total': 251.6204071044922}}
+2024-11-18 11:37:49,843 INFO    HandlerThread:1711674 [system_monitor.py:probe():224] Finished collecting system info
+2024-11-18 11:37:49,843 INFO    HandlerThread:1711674 [system_monitor.py:probe():227] Publishing system info
+2024-11-18 11:37:49,844 DEBUG   HandlerThread:1711674 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-11-18 11:37:50,644 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/conda-environment.yaml
+2024-11-18 11:37:55,569 DEBUG   HandlerThread:1711674 [system_info.py:_save_conda():222] Saving conda packages done
+2024-11-18 11:37:55,571 INFO    HandlerThread:1711674 [system_monitor.py:probe():229] Finished publishing system info
+2024-11-18 11:37:55,575 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:37:55,575 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: keepalive
+2024-11-18 11:37:55,578 DEBUG   SenderThread:1711674 [sender.py:send():379] send: files
+2024-11-18 11:37:55,578 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-metadata.json with policy now
+2024-11-18 11:37:55,646 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/conda-environment.yaml
+2024-11-18 11:37:55,646 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-metadata.json
+2024-11-18 11:37:55,755 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: python_packages
+2024-11-18 11:37:55,756 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: python_packages
+2024-11-18 11:37:55,756 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:37:55,757 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:37:55,759 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:37:56,074 DEBUG   SenderThread:1711674 [sender.py:send():379] send: telemetry
+2024-11-18 11:37:56,192 INFO    wandb-upload_0:1711674 [upload_job.py:push():131] Uploaded file /tmp/tmpuwox3a93wandb/0lbt13ge-wandb-metadata.json
+2024-11-18 11:37:56,647 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:37:56,647 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/requirements.txt
+2024-11-18 11:37:58,648 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:37:59,729 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:00,650 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:02,651 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:04,940 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:06,653 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:08,654 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:10,407 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:10,655 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:10,834 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:38:10,835 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:38:10,836 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:38:12,656 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:14,658 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:15,808 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:16,659 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:18,660 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:20,662 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:20,954 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:21,662 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/config.yaml
+2024-11-18 11:38:22,663 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:24,664 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:26,017 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:38:26,017 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:38:26,018 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:38:26,229 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:26,665 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:28,666 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:30,667 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:31,742 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:32,668 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:34,669 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:36,671 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:36,743 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:38,672 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:40,673 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:41,208 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:38:41,209 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:38:41,209 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:38:42,441 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:42,674 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:44,676 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:46,677 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:47,978 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:48,678 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:49,761 DEBUG   SystemMonitor:1711674 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-11-18 11:38:49,764 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:38:50,680 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:52,680 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:53,223 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:38:54,681 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:56,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:38:56,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:38:56,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:38:56,682 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:58,683 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:38:59,195 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:00,685 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:39:02,686 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:39:04,688 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:39:04,875 DEBUG   SenderThread:1711674 [sender.py:send():379] send: telemetry
+2024-11-18 11:39:04,875 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:04,876 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:39:06,689 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:39:09,877 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:11,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:39:11,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:39:11,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:39:15,502 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:19,766 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:39:20,767 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:24,891 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:39:24,893 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:39:24,894 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:39:24,895 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:39:25,699 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_created():271] file/dir created: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:39:25,939 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:26,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:39:26,250 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:39:26,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:39:26,700 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:39:26,700 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/config.yaml
+2024-11-18 11:39:31,442 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:36,443 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:41,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:39:41,250 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:39:41,292 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:39:41,503 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:44,978 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:39:44,979 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:39:44,979 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:39:44,982 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:39:45,720 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:39:46,720 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:39:47,021 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:49,768 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:39:52,769 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:39:56,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:39:56,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:39:56,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:39:58,520 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:03,520 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:04,887 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:40:04,888 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:40:04,888 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:40:04,890 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:40:05,731 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:40:06,732 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:40:08,733 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:40:09,397 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:11,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:40:11,250 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:40:11,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:40:12,735 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:40:13,652 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:40:13,653 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:40:13,653 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:40:13,655 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:40:13,736 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:40:13,815 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:40:14,737 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:40:14,816 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:16,738 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:40:19,770 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:40:20,771 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:25,771 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:26,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:40:26,250 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:40:26,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:40:31,503 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:34,132 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:40:34,133 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:40:34,134 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:40:34,135 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:40:34,749 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:40:36,750 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:40:37,181 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:41,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:40:41,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:40:41,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:40:42,436 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:47,436 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:49,772 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:40:52,773 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:40:54,352 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:40:54,353 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:40:54,353 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:40:54,355 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:40:54,767 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:40:56,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:40:56,250 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:40:56,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:40:56,768 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:40:57,797 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:02,798 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:07,798 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:11,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:41:11,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:41:11,293 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:41:13,505 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:14,670 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:41:14,671 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:41:14,672 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:41:14,675 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:41:14,779 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:41:16,780 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:41:18,781 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:41:19,162 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:19,774 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:41:22,783 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:41:23,506 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:41:23,509 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:41:23,510 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:41:23,511 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:41:23,592 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:41:23,783 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:41:24,593 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:24,784 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:41:26,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:41:26,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:41:26,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:41:30,495 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:35,496 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:40,496 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:41,250 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:41:41,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:41:41,296 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:41:43,798 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:41:43,799 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:41:43,800 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:41:43,801 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:41:44,688 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:41:45,841 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:46,689 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:41:49,776 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:41:51,780 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:41:56,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:41:56,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:41:56,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:41:57,451 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:02,452 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:04,201 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:42:04,202 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:42:04,202 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:42:04,204 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:42:04,701 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:42:06,702 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:42:08,249 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:11,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:42:11,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:42:11,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:42:13,476 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:18,477 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:19,778 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:42:23,779 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:24,057 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:42:24,058 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:42:24,058 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:42:24,060 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:42:24,711 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:42:26,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:42:26,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:42:26,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:42:26,712 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:42:28,713 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:42:29,513 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:32,716 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:42:32,779 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:42:32,783 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:42:32,783 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:42:32,784 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:42:32,862 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:42:33,717 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:42:34,717 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:42:34,864 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:39,864 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:41,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:42:41,252 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:42:41,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:42:45,425 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:49,780 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:42:50,781 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:42:53,321 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:42:53,323 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:42:53,324 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:42:53,325 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:42:53,732 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:42:54,733 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:42:56,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:42:56,251 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:42:56,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:42:56,453 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:01,455 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:06,455 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:11,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:43:11,252 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:43:11,301 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:43:11,569 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:13,468 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:43:13,469 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:43:13,469 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:43:13,471 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:43:13,754 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:43:14,755 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:43:17,517 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:19,782 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:43:22,784 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:26,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:43:26,252 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:43:26,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:43:28,434 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:33,442 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:34,598 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:43:34,599 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:43:34,604 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:43:34,608 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:43:34,771 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:43:36,791 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:43:38,824 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:43:39,118 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:41,251 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:43:41,252 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:43:41,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:43:42,827 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:43:43,941 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:43:43,942 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:43:43,942 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:43:43,943 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:43:44,025 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:43:44,828 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:43:44,829 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:43:45,026 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:46,829 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:43:49,784 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:43:50,785 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:55,786 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:43:56,252 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:43:56,252 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:43:56,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:44:01,468 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:05,976 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:44:05,977 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:44:05,977 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:44:05,978 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:44:06,843 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:44:07,017 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:08,844 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:44:11,252 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:44:11,252 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:44:11,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:44:12,483 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:17,484 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:19,786 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:44:22,788 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:26,252 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:44:26,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:44:26,296 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:44:28,034 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:44:28,035 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:44:28,035 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:44:28,036 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:28,037 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:44:28,861 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:44:30,863 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:44:33,078 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:38,079 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:41,252 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:44:41,252 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:44:41,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:44:43,471 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:48,472 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:49,788 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:44:50,774 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:44:50,775 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:44:50,775 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:44:50,777 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:44:50,875 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:44:52,877 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:44:53,568 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:54,878 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:44:56,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:44:56,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:44:56,281 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:44:58,611 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:44:58,881 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:45:00,767 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:45:00,768 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:45:00,768 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:45:00,770 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:45:00,853 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:45:00,883 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:45:00,883 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:45:02,884 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:45:03,855 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:08,856 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:11,252 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:45:11,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:45:11,263 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:45:14,465 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:19,466 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:19,790 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:45:22,731 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:45:22,732 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:45:22,732 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:45:22,734 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:45:22,897 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:45:24,775 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:24,899 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:45:26,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:45:26,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:45:26,263 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:45:30,506 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:35,507 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:40,509 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:41,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:45:41,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:45:41,263 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:45:43,883 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:45:43,884 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:45:43,885 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:45:43,887 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:45:43,915 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:45:45,888 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:46,918 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:45:49,792 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:45:51,793 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:45:56,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:45:56,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:45:56,263 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:45:57,505 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:02,506 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:03,620 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:46:03,621 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:46:03,621 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:46:03,622 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:46:03,929 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:46:04,929 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:46:07,983 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:08,932 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:46:10,933 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:46:11,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:46:11,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:46:11,264 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:46:12,090 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:46:12,091 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:46:12,092 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:46:12,093 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:46:12,169 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:46:12,934 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:46:12,934 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:46:13,170 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:14,936 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:46:18,170 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:19,794 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:46:23,796 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:26,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:46:26,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:46:26,263 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:46:29,510 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:31,914 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:46:31,915 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:46:31,915 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:46:31,916 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:46:31,946 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:46:34,920 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:34,947 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:46:39,921 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:41,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:46:41,253 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:46:41,264 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:46:45,406 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:49,796 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:46:50,797 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:46:51,664 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:46:51,667 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:46:51,667 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:46:51,669 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:46:51,958 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:46:52,959 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:46:56,255 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:46:56,255 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:46:56,264 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:46:56,468 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:01,469 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:06,469 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:11,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:47:11,254 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:47:11,264 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:47:11,308 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:47:11,468 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:47:11,468 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:47:11,470 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:47:11,470 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:11,978 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:47:12,979 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:47:14,981 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:47:16,623 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:18,983 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:47:19,778 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:47:19,782 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:47:19,782 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:47:19,783 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:47:19,798 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:47:19,864 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:47:19,984 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:47:20,984 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:47:21,865 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:22,985 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:47:26,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:47:26,255 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:47:26,264 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:47:27,516 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:32,517 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:37,518 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:41,254 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:47:41,255 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:47:41,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:47:41,463 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:47:41,490 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:47:41,491 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:47:41,492 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:47:41,997 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:47:42,998 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:47:43,493 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:48,494 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:49,800 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:47:53,802 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:47:56,256 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:47:56,256 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:47:56,296 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:47:59,513 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:03,419 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:48:03,421 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:48:03,421 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:48:03,423 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:48:04,010 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:48:05,011 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:48:05,461 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:10,462 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:11,256 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:48:11,256 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:48:11,264 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:48:15,470 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:19,803 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:48:20,804 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:25,807 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:26,096 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:48:26,097 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:48:26,097 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:48:26,099 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:48:26,256 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:48:26,256 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:48:26,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:48:27,030 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:48:29,031 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:48:31,032 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:48:31,794 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:35,035 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:48:35,763 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:48:35,764 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:48:35,765 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:48:35,766 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:48:35,850 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:48:36,035 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:48:36,851 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:37,036 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:48:39,038 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:48:41,256 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:48:41,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:48:41,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:48:42,443 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:47,444 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:49,804 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:48:52,806 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:56,256 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:48:56,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:48:56,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:48:57,963 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:48:57,964 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:48:57,964 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:48:57,965 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:48:57,966 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:48:58,049 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:49:01,051 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:49:02,972 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:07,972 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:11,256 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:49:11,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:49:11,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:49:13,471 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:18,472 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:19,777 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:49:19,778 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:49:19,778 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:49:19,780 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:49:19,806 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:49:20,070 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:49:21,071 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:49:23,808 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:26,256 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:49:26,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:49:26,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:49:29,477 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:34,478 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:39,479 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:40,531 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:49:40,532 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:49:40,532 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:49:40,534 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:49:41,085 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:49:41,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:49:41,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:49:41,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:49:43,086 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:49:44,982 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:45,088 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:49:49,090 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:49:49,227 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:49:49,229 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:49:49,229 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:49:49,230 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:49:49,308 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:49:49,808 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:49:50,090 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:49:50,809 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:51,091 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:49:55,809 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:49:56,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:49:56,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:49:56,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:50:01,480 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:06,481 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:09,253 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:50:09,254 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:50:09,254 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:50:09,256 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:50:10,105 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:50:11,105 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:50:11,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:50:11,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:50:11,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:50:12,475 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:17,475 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:19,810 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:50:22,812 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:26,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:50:26,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:50:26,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:50:28,461 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:28,636 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:50:28,637 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:50:28,637 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:50:28,639 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:50:29,117 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:50:31,118 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:50:33,640 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:38,645 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:41,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:50:41,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:50:41,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:50:44,513 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:48,206 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:50:48,207 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:50:48,208 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:50:48,213 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:50:49,131 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:50:49,812 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:50:49,815 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:51,132 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:50:53,133 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:50:54,887 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:50:55,134 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:50:56,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:50:56,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:50:56,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:50:56,744 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:50:56,747 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:50:56,748 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:50:56,753 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:50:56,824 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:50:57,139 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:50:57,139 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:50:59,140 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:51:00,826 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:05,828 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:10,828 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:11,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:51:11,257 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:51:11,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:51:16,101 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:51:16,102 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:51:16,103 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:51:16,103 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:16,104 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:51:16,150 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:51:19,152 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:51:19,814 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:51:21,815 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:26,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:51:26,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:51:26,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:51:27,467 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:32,469 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:36,076 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:51:36,077 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:51:36,078 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:51:36,080 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:51:36,161 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:51:38,081 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:39,163 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:51:41,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:51:41,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:51:41,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:51:43,365 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:48,365 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:49,817 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:51:53,818 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:51:56,220 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:51:56,221 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:51:56,222 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:51:56,223 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:51:56,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:51:56,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:51:56,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:51:57,175 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:51:59,176 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:51:59,576 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:01,177 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:52:03,178 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:52:04,627 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:04,750 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:52:04,753 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:52:04,753 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:52:04,755 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:52:04,829 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:52:05,179 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:52:05,180 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:52:07,181 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:52:09,831 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:11,257 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:52:11,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:52:11,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:52:15,164 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:19,820 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:52:20,821 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:24,479 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:52:24,481 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:52:24,481 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:52:24,483 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:52:25,194 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:52:26,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:52:26,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:52:26,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:52:26,465 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:27,195 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:52:31,466 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:36,470 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:41,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:52:41,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:52:41,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:52:41,518 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:43,837 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:52:43,838 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:52:43,838 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:52:43,840 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:52:44,211 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:52:45,211 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:52:46,841 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:49,821 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:52:52,822 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:52:56,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:52:56,259 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:52:56,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:52:58,405 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:03,406 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:03,850 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:53:03,851 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:53:03,852 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:53:03,853 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:53:04,224 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:53:05,224 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:53:09,107 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:09,227 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:53:11,229 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:53:11,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:53:11,258 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:53:11,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:53:12,083 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:53:12,087 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:53:12,087 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:53:12,092 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:53:12,167 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:53:12,229 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:53:13,230 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:53:14,168 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:15,232 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:53:19,168 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:19,823 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:53:24,825 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:26,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:53:26,259 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:53:26,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:53:30,276 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:32,104 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:53:32,105 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:53:32,105 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:53:32,107 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:53:32,242 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:53:35,244 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:53:36,108 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:41,109 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:41,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:53:41,259 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:53:41,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:53:46,472 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:49,825 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:53:50,721 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:53:50,722 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:53:50,723 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:53:50,725 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:53:51,257 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:53:51,725 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:53:53,259 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:53:56,258 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:53:56,259 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:53:56,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:53:57,488 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:02,489 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:07,490 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:10,895 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:54:10,896 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:54:10,896 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:54:10,898 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:54:11,259 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:54:11,259 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:54:11,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:54:11,278 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:54:12,509 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:13,279 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:54:15,281 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:54:17,568 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:19,283 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:54:19,677 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:54:19,680 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:54:19,681 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:54:19,682 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:54:19,757 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:54:19,828 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:54:20,283 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:54:21,284 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:54:22,829 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:26,259 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:54:26,259 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:54:26,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:54:28,455 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:33,456 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:38,457 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:39,862 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:54:39,864 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:54:39,864 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:54:39,866 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:54:40,294 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:54:41,259 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:54:41,260 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:54:41,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:54:41,300 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:54:44,323 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:49,323 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:49,829 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:54:54,831 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:54:56,259 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:54:56,260 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:54:56,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:55:00,142 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:55:00,143 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:55:00,144 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:55:00,144 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:00,145 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:55:00,311 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:55:03,312 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:55:05,146 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:10,147 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:11,260 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:55:11,260 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:55:11,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:55:15,471 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:19,831 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:55:20,058 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:55:20,059 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:55:20,060 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:55:20,061 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:55:20,322 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:55:21,062 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:23,323 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:55:25,325 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:55:26,171 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:26,260 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:55:26,260 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:55:26,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:55:27,326 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:55:28,733 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:55:28,737 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:55:28,737 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:55:28,738 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:55:28,815 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:55:29,327 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:55:29,327 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:55:31,329 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:55:31,816 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:36,817 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:41,260 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:55:41,260 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:55:41,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:55:42,488 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:47,492 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:48,130 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:55:48,131 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:55:48,132 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:55:48,134 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:55:48,338 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:55:49,833 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:55:51,339 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:55:52,834 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:55:56,260 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:55:56,260 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:55:56,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:55:58,463 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:03,464 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:07,713 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:56:07,715 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:56:07,715 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:56:07,716 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:56:08,350 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:56:08,717 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:09,351 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:56:11,260 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:56:11,260 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:56:11,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:56:14,430 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:19,430 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:19,835 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:56:24,837 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:26,260 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:56:26,261 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:56:26,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:56:27,595 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:56:27,597 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:56:27,597 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:56:27,598 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:56:28,366 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:56:29,367 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:56:29,928 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:31,368 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:56:35,021 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:35,370 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:56:36,252 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:56:36,254 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:56:36,254 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:56:36,255 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:56:36,333 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:56:36,370 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:56:37,371 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:56:39,372 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:56:40,335 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:41,260 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:56:41,261 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:56:41,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:56:45,440 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:49,837 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:56:50,838 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:55,838 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:56:56,136 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:56:56,137 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:56:56,137 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:56:56,139 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:56:56,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:56:56,265 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:56:56,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:56:56,381 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:56:59,383 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:57:01,486 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:06,487 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:11,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:57:11,265 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:57:11,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:57:12,448 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:16,050 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:57:16,051 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:57:16,055 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:57:16,056 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:57:16,394 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:57:18,058 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:19,396 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:57:19,839 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:57:23,840 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:26,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:57:26,265 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:57:26,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:57:29,446 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:34,446 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:35,625 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:57:35,626 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:57:35,626 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:57:35,628 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:57:36,406 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:57:37,406 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:57:39,407 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:57:40,021 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:41,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:57:41,265 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:57:41,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:57:43,410 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:57:44,212 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:57:44,215 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:57:44,216 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:57:44,218 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:57:44,293 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:57:44,412 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:57:45,294 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:45,413 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:57:47,415 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:57:49,840 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:57:50,842 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:55,842 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:57:56,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:57:56,265 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:57:56,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:58:01,530 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:04,759 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:58:04,760 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:58:04,760 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:58:04,762 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:58:05,430 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:58:06,768 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:07,431 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:58:11,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:58:11,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:58:11,269 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:58:12,480 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:17,481 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:19,843 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:58:22,844 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:24,638 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:58:24,639 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:58:24,640 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:58:24,641 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:58:25,441 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:58:26,268 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:58:26,268 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:58:26,271 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:58:27,442 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:58:28,492 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:33,492 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:38,493 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:41,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:58:41,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:58:41,274 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:58:43,501 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:45,103 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:58:45,105 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:58:45,105 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:58:45,107 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:58:45,452 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:58:47,453 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:58:48,533 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:49,454 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:58:49,845 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:58:53,456 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:58:53,543 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:58:53,782 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:58:53,785 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:58:53,786 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:58:53,787 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:58:53,860 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:58:54,457 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:58:55,457 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:58:56,265 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:58:56,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:58:56,271 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:58:59,505 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:04,505 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:09,506 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:11,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:59:11,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:59:11,271 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:59:13,960 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:59:13,962 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:59:13,962 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:59:13,964 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:59:14,469 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:59:14,964 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:15,470 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:59:19,847 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:59:20,848 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:25,852 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:26,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:59:26,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:59:26,272 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:59:31,529 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:34,024 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:59:34,025 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:59:34,026 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:59:34,027 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:59:34,481 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:59:35,481 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:59:37,028 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:41,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:59:41,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:59:41,272 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:59:42,483 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:47,483 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:49,849 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 11:59:52,851 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:54,284 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 11:59:54,285 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 11:59:54,285 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 11:59:54,287 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 11:59:54,491 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 11:59:56,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 11:59:56,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 11:59:56,272 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 11:59:57,493 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 11:59:58,727 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 11:59:59,494 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:00:01,495 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:00:03,109 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:00:03,111 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:00:03,111 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:00:03,112 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:00:03,190 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:00:03,496 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:00:03,496 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:00:04,191 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:05,497 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:00:09,192 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:11,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:00:11,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:00:11,272 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:00:14,433 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:19,434 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:19,851 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 12:00:23,136 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:00:23,137 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:00:23,137 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:00:23,139 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:00:23,511 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:00:24,511 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:00:25,140 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:26,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:00:26,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:00:26,272 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:00:30,465 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:35,465 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:40,466 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:41,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:00:41,267 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:00:41,272 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:00:42,701 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:00:42,702 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:00:42,702 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:00:42,703 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:00:43,525 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:00:44,526 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:00:45,704 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:49,852 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 12:00:50,854 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:55,854 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:00:56,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:00:56,267 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:00:56,272 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:01:01,443 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:02,638 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:01:02,639 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:01:02,639 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:01:02,646 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:01:03,536 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:01:04,536 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:01:06,537 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:01:07,164 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:10,540 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:01:11,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:01:11,266 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:01:11,273 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:01:11,317 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:01:11,384 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:01:11,436 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:01:11,437 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:01:11,438 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:01:11,540 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:01:12,439 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:12,541 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:01:17,440 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:19,855 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 12:01:22,856 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:26,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:01:26,267 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:01:26,273 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:01:28,515 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:30,802 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:01:30,804 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:01:30,804 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:01:30,806 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:01:31,551 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:01:32,552 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:01:33,807 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:38,807 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:41,266 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:01:41,267 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:01:41,273 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:01:44,335 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:49,336 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:49,857 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 12:01:50,394 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:01:50,395 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:01:50,395 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:01:50,397 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:01:50,562 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:01:52,563 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:01:54,398 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:01:56,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:01:56,267 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:01:56,273 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:01:59,442 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:02:04,443 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:02:09,444 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:02:09,931 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:02:09,932 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:02:09,932 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:02:09,934 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:02:10,581 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:02:10,581 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:02:11,267 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: stop_status
+2024-11-18 12:02:11,267 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: stop_status
+2024-11-18 12:02:11,273 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: internal_messages
+2024-11-18 12:02:14,584 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:02:15,283 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report
+2024-11-18 12:02:16,585 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:02:18,349 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:02:18,352 DEBUG   SenderThread:1711674 [sender.py:send():379] send: history
+2024-11-18 12:02:18,353 DEBUG   SenderThread:1711674 [sender.py:send_request():406] send_request: summary_record
+2024-11-18 12:02:18,354 INFO    SenderThread:1711674 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-11-18 12:02:18,434 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: partial_history
+2024-11-18 12:02:18,587 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:02:18,587 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/wandb-summary.json
+2024-11-18 12:02:19,858 DEBUG   SenderThread:1711674 [sender.py:send():379] send: stats
+2024-11-18 12:02:20,588 INFO    Thread-17 :1711674 [dir_watcher.py:_on_file_modified():288] file/dir modified: /homes/tsommariva/neumeta/wandb/run-20241118_113749-kf1swsyh/files/output.log
+2024-11-18 12:02:20,859 DEBUG   HandlerThread:1711674 [handler.py:handle_request():146] handle_request: status_report

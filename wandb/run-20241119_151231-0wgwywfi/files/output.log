@@ -1,0 +1,257 @@
+Replace last 2 block of layer3 with new block with hidden dim 32
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2145.013427734375
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+TV permutated model:  2029.4676513671875
+Replace last 2 block of layer3 with new block with hidden dim 33
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2189.1943359375
+TV permutated model:  2082.9111328125
+Replace last 2 block of layer3 with new block with hidden dim 34
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2238.868896484375
+TV permutated model:  2127.09228515625
+Replace last 2 block of layer3 with new block with hidden dim 35
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2279.739501953125
+TV permutated model:  2157.8232421875
+Replace last 2 block of layer3 with new block with hidden dim 36
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2322.078125
+TV permutated model:  2206.947998046875
+Replace last 2 block of layer3 with new block with hidden dim 37
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2378.829345703125
+TV permutated model:  2257.974853515625
+Replace last 2 block of layer3 with new block with hidden dim 38
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2426.804931640625
+TV permutated model:  2312.788818359375
+Replace last 2 block of layer3 with new block with hidden dim 39
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2481.0322265625
+TV permutated model:  2358.52587890625
+Replace last 2 block of layer3 with new block with hidden dim 40
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2512.455322265625
+TV permutated model:  2387.896240234375
+Replace last 2 block of layer3 with new block with hidden dim 41
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2542.427734375
+TV permutated model:  2416.53125
+Replace last 2 block of layer3 with new block with hidden dim 42
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2612.404052734375
+TV permutated model:  2486.175537109375
+Replace last 2 block of layer3 with new block with hidden dim 43
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2663.52783203125
+TV permutated model:  2536.4111328125
+Replace last 2 block of layer3 with new block with hidden dim 44
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2680.248291015625
+TV permutated model:  2563.218994140625
+Replace last 2 block of layer3 with new block with hidden dim 45
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2759.303955078125
+TV permutated model:  2619.095947265625
+Replace last 2 block of layer3 with new block with hidden dim 46
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2764.61279296875
+TV permutated model:  2632.182373046875
+Replace last 2 block of layer3 with new block with hidden dim 47
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2839.306884765625
+TV permutated model:  2709.420654296875
+Replace last 2 block of layer3 with new block with hidden dim 48
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2891.559814453125
+TV permutated model:  2753.2119140625
+Replace last 2 block of layer3 with new block with hidden dim 49
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2915.774169921875
+TV permutated model:  2786.252197265625
+Replace last 2 block of layer3 with new block with hidden dim 50
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2975.538818359375
+TV permutated model:  2834.275634765625
+Replace last 2 block of layer3 with new block with hidden dim 51
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3022.835205078125
+TV permutated model:  2875.916259765625
+Replace last 2 block of layer3 with new block with hidden dim 52
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3071.655517578125
+TV permutated model:  2921.88671875
+Replace last 2 block of layer3 with new block with hidden dim 53
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3118.525634765625
+TV permutated model:  2968.943115234375
+Replace last 2 block of layer3 with new block with hidden dim 54
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3181.5654296875
+TV permutated model:  3019.516357421875
+Replace last 2 block of layer3 with new block with hidden dim 55
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3198.560302734375
+TV permutated model:  3036.3017578125
+Replace last 2 block of layer3 with new block with hidden dim 56
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3245.9443359375
+TV permutated model:  3087.74853515625
+Replace last 2 block of layer3 with new block with hidden dim 57
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3283.04443359375
+TV permutated model:  3137.93896484375
+Replace last 2 block of layer3 with new block with hidden dim 58
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3352.396728515625
+TV permutated model:  3192.70556640625
+Replace last 2 block of layer3 with new block with hidden dim 59
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3379.979736328125
+TV permutated model:  3225.19921875
+Replace last 2 block of layer3 with new block with hidden dim 60
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3431.7470703125
+TV permutated model:  3273.515380859375
+Replace last 2 block of layer3 with new block with hidden dim 61
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3465.706298828125
+TV permutated model:  3308.56884765625
+Replace last 2 block of layer3 with new block with hidden dim 62
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3532.7451171875
+TV permutated model:  3373.180419921875
+Replace last 2 block of layer3 with new block with hidden dim 63
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3592.18359375
+TV permutated model:  3429.316650390625
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1040.0361328125
+Loading model for dim 64
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1037.73779296875
+Iteration 0: Loss = 1.8657, Reg Loss = 3.2530, Reconstruct Loss = 0.0000, Cls Loss = 1.8654, Learning rate = 1.0000e-03
+Iteration 250: Loss = 1.8725, Reg Loss = 5.0567, Reconstruct Loss = 0.0014, Cls Loss = 1.8706, Learning rate = 1.0000e-03
+Epoch [1/100], Training Loss: 1.8639, Learning Rate: 0.001000
+
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 79/79 [00:02<00:00, 27.27it/s]
+Epoch [1/100], Validation Loss: 1.8079, Validation Accuracy: 74.77%
+Checkpoint saved at epoch 0 with accuracy: 74.77%
+Iteration 0: Loss = 1.8287, Reg Loss = 3.6834, Reconstruct Loss = 0.0000, Cls Loss = 1.8283, Learning rate = 9.9975e-04
+Iteration 250: Loss = 1.8450, Reg Loss = 3.3836, Reconstruct Loss = 0.0006, Cls Loss = 1.8441, Learning rate = 9.9975e-04
+Epoch [2/100], Training Loss: 1.8445, Learning Rate: 0.000999
+
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 79/79 [00:02<00:00, 27.41it/s]
+Epoch [2/100], Validation Loss: 1.8076, Validation Accuracy: 75.51%
+Checkpoint saved at epoch 1 with accuracy: 75.51%
+Iteration 0: Loss = 1.8485, Reg Loss = 2.6714, Reconstruct Loss = 0.0000, Cls Loss = 1.8482, Learning rate = 9.9901e-04
+Iteration 250: Loss = 1.8449, Reg Loss = 2.3825, Reconstruct Loss = 0.0007, Cls Loss = 1.8440, Learning rate = 9.9901e-04
+Epoch [3/100], Training Loss: 1.8429, Learning Rate: 0.000998
+
+
+100%|███████████████████████████████████████████████████| 79/79 [00:02<00:00, 27.44it/s]
+Epoch [3/100], Validation Loss: 1.8077, Validation Accuracy: 75.45%
+Iteration 0: Loss = 1.8217, Reg Loss = 2.2830, Reconstruct Loss = 0.0000, Cls Loss = 1.8215, Learning rate = 9.9778e-04
+Iteration 250: Loss = 1.8439, Reg Loss = 1.7584, Reconstruct Loss = 0.0018, Cls Loss = 1.8418, Learning rate = 9.9778e-04
+Epoch [4/100], Training Loss: 1.8433, Learning Rate: 0.000996
+
+100%|███████████████████████████████████████████████████| 79/79 [00:03<00:00, 26.24it/s]
+Epoch [4/100], Validation Loss: 1.8075, Validation Accuracy: 75.59%
+Checkpoint saved at epoch 3 with accuracy: 75.59%
+Iteration 0: Loss = 1.8612, Reg Loss = 1.3629, Reconstruct Loss = 0.0000, Cls Loss = 1.8610, Learning rate = 9.9606e-04
+Iteration 250: Loss = 1.8441, Reg Loss = 1.4229, Reconstruct Loss = 0.0018, Cls Loss = 1.8421, Learning rate = 9.9606e-04
+Epoch [5/100], Training Loss: 1.8430, Learning Rate: 0.000994
+
+100%|███████████████████████████████████████████████████| 79/79 [00:02<00:00, 26.52it/s]
+Epoch [5/100], Validation Loss: 1.8076, Validation Accuracy: 75.49%
+Iteration 0: Loss = 1.8360, Reg Loss = 1.7157, Reconstruct Loss = 0.0000, Cls Loss = 1.8358, Learning rate = 9.9384e-04
+Iteration 250: Loss = 1.8425, Reg Loss = 1.2455, Reconstruct Loss = 0.0010, Cls Loss = 1.8414, Learning rate = 9.9384e-04
+Epoch [6/100], Training Loss: 1.8424, Learning Rate: 0.000991
+
+100%|███████████████████████████████████████████████████| 79/79 [00:02<00:00, 28.01it/s]
+Epoch [6/100], Validation Loss: 1.8074, Validation Accuracy: 75.78%
+Checkpoint saved at epoch 5 with accuracy: 75.78%
+Iteration 0: Loss = 1.8592, Reg Loss = 1.1082, Reconstruct Loss = 0.0000, Cls Loss = 1.8591, Learning rate = 9.9114e-04
+Iteration 250: Loss = 1.8432, Reg Loss = 1.1010, Reconstruct Loss = 0.0012, Cls Loss = 1.8420, Learning rate = 9.9114e-04
+Epoch [7/100], Training Loss: 1.8424, Learning Rate: 0.000988
+
+
+100%|███████████████████████████████████████████████████| 79/79 [00:02<00:00, 26.69it/s]
+Epoch [7/100], Validation Loss: 1.8074, Validation Accuracy: 75.70%

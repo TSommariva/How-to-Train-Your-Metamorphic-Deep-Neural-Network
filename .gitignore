@@ -1,0 +1,4 @@
+# Directories to ignore
+data/
+experiments/
+log/

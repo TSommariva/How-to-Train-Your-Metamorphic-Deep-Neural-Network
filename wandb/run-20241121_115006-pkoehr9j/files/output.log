@@ -1,0 +1,404 @@
+Replace last 2 block of layer3 with new block with hidden dim 32
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2145.013427734375
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+TV permutated model:  2030.1097412109375
+Replace last 2 block of layer3 with new block with hidden dim 33
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2189.1943359375
+TV permutated model:  2081.03173828125
+Replace last 2 block of layer3 with new block with hidden dim 34
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2238.868896484375
+TV permutated model:  2126.881103515625
+Replace last 2 block of layer3 with new block with hidden dim 35
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2279.739501953125
+TV permutated model:  2157.1376953125
+Replace last 2 block of layer3 with new block with hidden dim 36
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2322.078125
+TV permutated model:  2209.0166015625
+Replace last 2 block of layer3 with new block with hidden dim 37
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2378.829345703125
+TV permutated model:  2258.1708984375
+Replace last 2 block of layer3 with new block with hidden dim 38
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2426.804931640625
+TV permutated model:  2311.27001953125
+Replace last 2 block of layer3 with new block with hidden dim 39
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2481.0322265625
+TV permutated model:  2357.04345703125
+Replace last 2 block of layer3 with new block with hidden dim 40
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2512.455322265625
+TV permutated model:  2385.72412109375
+Replace last 2 block of layer3 with new block with hidden dim 41
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2542.427734375
+TV permutated model:  2416.02734375
+Replace last 2 block of layer3 with new block with hidden dim 42
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2612.404052734375
+TV permutated model:  2484.3994140625
+Replace last 2 block of layer3 with new block with hidden dim 43
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2663.52783203125
+TV permutated model:  2530.090087890625
+Replace last 2 block of layer3 with new block with hidden dim 44
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2680.248291015625
+TV permutated model:  2562.5966796875
+Replace last 2 block of layer3 with new block with hidden dim 45
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2759.303955078125
+TV permutated model:  2620.35546875
+Replace last 2 block of layer3 with new block with hidden dim 46
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2764.61279296875
+TV permutated model:  2633.013427734375
+Replace last 2 block of layer3 with new block with hidden dim 47
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2839.306884765625
+TV permutated model:  2709.766357421875
+Replace last 2 block of layer3 with new block with hidden dim 48
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2891.559814453125
+TV permutated model:  2753.090576171875
+Replace last 2 block of layer3 with new block with hidden dim 49
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2915.774169921875
+TV permutated model:  2789.44482421875
+Replace last 2 block of layer3 with new block with hidden dim 50
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2975.538818359375
+TV permutated model:  2832.04248046875
+Replace last 2 block of layer3 with new block with hidden dim 51
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3022.835205078125
+TV permutated model:  2877.329833984375
+Replace last 2 block of layer3 with new block with hidden dim 52
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3071.655517578125
+TV permutated model:  2921.645263671875
+Replace last 2 block of layer3 with new block with hidden dim 53
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3118.525634765625
+TV permutated model:  2966.3212890625
+Replace last 2 block of layer3 with new block with hidden dim 54
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3181.5654296875
+TV permutated model:  3019.905517578125
+Replace last 2 block of layer3 with new block with hidden dim 55
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3198.560302734375
+TV permutated model:  3037.511962890625
+Replace last 2 block of layer3 with new block with hidden dim 56
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3245.9443359375
+TV permutated model:  3088.26953125
+Replace last 2 block of layer3 with new block with hidden dim 57
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3283.04443359375
+TV permutated model:  3132.89208984375
+Replace last 2 block of layer3 with new block with hidden dim 58
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3352.396728515625
+TV permutated model:  3190.43115234375
+Replace last 2 block of layer3 with new block with hidden dim 59
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3379.979736328125
+TV permutated model:  3224.6259765625
+Replace last 2 block of layer3 with new block with hidden dim 60
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3431.7470703125
+TV permutated model:  3272.6044921875
+Replace last 2 block of layer3 with new block with hidden dim 61
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3465.706298828125
+TV permutated model:  3303.43505859375
+Replace last 2 block of layer3 with new block with hidden dim 62
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3532.7451171875
+TV permutated model:  3370.092041015625
+Replace last 2 block of layer3 with new block with hidden dim 63
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3592.18359375
+TV permutated model:  3427.9736328125
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1039.3917236328125
+Loading model for dim 64
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1038.9383544921875
+Iteration 0: Loss = 1.9086, Reg Loss = 3.2408, Reconstruct Loss = 0.0000, Cls Loss = 1.9083, Learning rate = 1.0000e-03
+Epoch [1/200], Training Loss: 1.8677, Learning Rate: 0.001000
+
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:20<00:00,  9.36it/s]
+ 50%|██████████████████████████████████████████████▌                                              | 20/40 [00:01<00:01, 15.19it/s]
+Epoch [1/200], Train Loss: 1.8402, Train Accuracy: 81.98%
+Epoch [1/200], Validation Loss: 1.8057, Validation Accuracy: 77.07%
+Checkpoint saved at epoch 0 with accuracy: 77.07%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.45it/s]
+Epoch [2/200], Training Loss: 1.8446, Learning Rate: 0.001000
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:21<00:00,  9.28it/s]
+
+ 75%|█████████████████████████████████████████████████████████████████████▊                       | 30/40 [00:02<00:00, 14.41it/s]
+Epoch [2/200], Train Loss: 1.8408, Train Accuracy: 81.50%
+Epoch [2/200], Validation Loss: 1.8066, Validation Accuracy: 76.09%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 14.78it/s]
+Epoch [3/200], Training Loss: 1.8422, Learning Rate: 0.000999
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00,  9.89it/s]
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 16.01it/s]
+Epoch [3/200], Train Loss: 1.8397, Train Accuracy: 81.22%
+Epoch [3/200], Validation Loss: 1.8068, Validation Accuracy: 75.80%
+Iteration 0: Loss = 1.8340, Reg Loss = 0.3150, Reconstruct Loss = 0.0000, Cls Loss = 1.8339, Learning rate = 9.9944e-04
+Epoch [4/200], Training Loss: 1.8405, Learning Rate: 0.000999
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00,  9.87it/s]
+ 55%|███████████████████████████████████████████████████▏                                         | 22/40 [00:01<00:01, 15.65it/s]
+Epoch [4/200], Train Loss: 1.8407, Train Accuracy: 81.25%
+Epoch [4/200], Validation Loss: 1.8069, Validation Accuracy: 75.74%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.80it/s]
+Epoch [5/200], Training Loss: 1.8421, Learning Rate: 0.000998
+
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:21<00:00,  9.28it/s]
+ 65%|████████████████████████████████████████████████████████████▍                                | 26/40 [00:01<00:00, 14.54it/s]
+Epoch [5/200], Train Loss: 1.8406, Train Accuracy: 81.32%
+Epoch [5/200], Validation Loss: 1.8070, Validation Accuracy: 75.76%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 14.61it/s]
+Epoch [6/200], Training Loss: 1.8414, Learning Rate: 0.000998
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00, 10.02it/s]
+ 55%|███████████████████████████████████████████████████▏                                         | 22/40 [00:01<00:01, 15.59it/s]
+Epoch [6/200], Train Loss: 1.8403, Train Accuracy: 81.28%
+Epoch [6/200], Validation Loss: 1.8070, Validation Accuracy: 75.86%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.94it/s]
+Epoch [7/200], Training Loss: 1.8428, Learning Rate: 0.000997
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00, 10.12it/s]
+ 65%|████████████████████████████████████████████████████████████▍                                | 26/40 [00:01<00:00, 15.62it/s]
+Epoch [7/200], Train Loss: 1.8404, Train Accuracy: 81.07%
+Epoch [7/200], Validation Loss: 1.8070, Validation Accuracy: 75.88%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.13it/s]
+Epoch [8/200], Training Loss: 1.8423, Learning Rate: 0.000996
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00,  9.99it/s]
+ 45%|█████████████████████████████████████████▊                                                   | 18/40 [00:01<00:01, 15.02it/s]
+Epoch [8/200], Train Loss: 1.8404, Train Accuracy: 81.08%
+Epoch [8/200], Validation Loss: 1.8071, Validation Accuracy: 75.82%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.06it/s]
+Epoch [9/200], Training Loss: 1.8427, Learning Rate: 0.000995
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00,  9.94it/s]
+ 65%|████████████████████████████████████████████████████████████▍                                | 26/40 [00:01<00:00, 15.57it/s]
+Epoch [9/200], Train Loss: 1.8407, Train Accuracy: 80.93%
+Epoch [9/200], Validation Loss: 1.8071, Validation Accuracy: 75.87%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.85it/s]
+Epoch [10/200], Training Loss: 1.8422, Learning Rate: 0.000994
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00,  9.95it/s]
+ 50%|██████████████████████████████████████████████▌                                              | 20/40 [00:01<00:01, 14.97it/s]
+Epoch [10/200], Train Loss: 1.8411, Train Accuracy: 81.11%
+Epoch [10/200], Validation Loss: 1.8071, Validation Accuracy: 75.83%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.19it/s]
+Epoch [11/200], Training Loss: 1.8413, Learning Rate: 0.000993
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00,  9.97it/s]
+
+ 90%|███████████████████████████████████████████████████████████████████████████████████▋         | 36/40 [00:02<00:00, 15.59it/s]
+Epoch [11/200], Train Loss: 1.8401, Train Accuracy: 81.15%
+Epoch [11/200], Validation Loss: 1.8071, Validation Accuracy: 75.85%
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:02<00:00, 15.76it/s]
+Epoch [12/200], Training Loss: 1.8417, Learning Rate: 0.000991
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 196/196 [00:19<00:00, 10.04it/s]
+
+ 85%|███████████████████████████████████████████████████████████████████████████████              | 34/40 [00:02<00:00, 15.62it/s]
+Epoch [12/200], Train Loss: 1.8407, Train Accuracy: 81.28%
+Epoch [12/200], Validation Loss: 1.8070, Validation Accuracy: 75.87%
+

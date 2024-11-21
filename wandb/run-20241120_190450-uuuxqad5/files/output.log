@@ -1,0 +1,1400 @@
+Replace last 2 block of layer3 with new block with hidden dim 32
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2146.19775390625
+/homes/tsommariva/neumeta/neumeta/models/__init__.py:45: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(path, map_location=torch.device('cpu'))
+TV permutated model:  2047.2921142578125
+Replace last 2 block of layer3 with new block with hidden dim 33
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2180.7314453125
+TV permutated model:  2069.306884765625
+Replace last 2 block of layer3 with new block with hidden dim 34
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2236.392578125
+TV permutated model:  2123.874755859375
+Replace last 2 block of layer3 with new block with hidden dim 35
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2285.243896484375
+TV permutated model:  2170.861328125
+Replace last 2 block of layer3 with new block with hidden dim 36
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2343.27587890625
+TV permutated model:  2220.1435546875
+Replace last 2 block of layer3 with new block with hidden dim 37
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2374.8017578125
+TV permutated model:  2250.510986328125
+Replace last 2 block of layer3 with new block with hidden dim 38
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2419.525146484375
+TV permutated model:  2296.688232421875
+Replace last 2 block of layer3 with new block with hidden dim 39
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2454.681640625
+TV permutated model:  2343.915771484375
+Replace last 2 block of layer3 with new block with hidden dim 40
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2495.99560546875
+TV permutated model:  2373.625732421875
+Replace last 2 block of layer3 with new block with hidden dim 41
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2568.097412109375
+TV permutated model:  2440.739990234375
+Replace last 2 block of layer3 with new block with hidden dim 42
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2611.263916015625
+TV permutated model:  2485.471923828125
+Replace last 2 block of layer3 with new block with hidden dim 43
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2642.667236328125
+TV permutated model:  2514.48193359375
+Replace last 2 block of layer3 with new block with hidden dim 44
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2706.888427734375
+TV permutated model:  2568.844970703125
+Replace last 2 block of layer3 with new block with hidden dim 45
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2767.786376953125
+TV permutated model:  2634.8095703125
+Replace last 2 block of layer3 with new block with hidden dim 46
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2785.657958984375
+TV permutated model:  2645.603515625
+Replace last 2 block of layer3 with new block with hidden dim 47
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2832.729248046875
+TV permutated model:  2700.346435546875
+Replace last 2 block of layer3 with new block with hidden dim 48
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2873.59423828125
+TV permutated model:  2748.155517578125
+Replace last 2 block of layer3 with new block with hidden dim 49
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2939.14404296875
+TV permutated model:  2799.20849609375
+Replace last 2 block of layer3 with new block with hidden dim 50
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  2954.4736328125
+TV permutated model:  2806.638427734375
+Replace last 2 block of layer3 with new block with hidden dim 51
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3010.15234375
+TV permutated model:  2867.292724609375
+Replace last 2 block of layer3 with new block with hidden dim 52
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3070.861083984375
+TV permutated model:  2929.041259765625
+Replace last 2 block of layer3 with new block with hidden dim 53
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3112.3603515625
+TV permutated model:  2963.457763671875
+Replace last 2 block of layer3 with new block with hidden dim 54
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3140.59130859375
+TV permutated model:  2994.1240234375
+Replace last 2 block of layer3 with new block with hidden dim 55
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3216.771728515625
+TV permutated model:  3064.5625
+Replace last 2 block of layer3 with new block with hidden dim 56
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3261.925048828125
+TV permutated model:  3106.310302734375
+Replace last 2 block of layer3 with new block with hidden dim 57
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3282.73681640625
+TV permutated model:  3129.418701171875
+Replace last 2 block of layer3 with new block with hidden dim 58
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3352.95556640625
+TV permutated model:  3191.935791015625
+Replace last 2 block of layer3 with new block with hidden dim 59
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3381.45849609375
+TV permutated model:  3232.4384765625
+Replace last 2 block of layer3 with new block with hidden dim 60
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3443.02880859375
+TV permutated model:  3284.727294921875
+Replace last 2 block of layer3 with new block with hidden dim 61
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3494.45849609375
+TV permutated model:  3325.267333984375
+Replace last 2 block of layer3 with new block with hidden dim 62
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3535.0810546875
+TV permutated model:  3370.65771484375
+Replace last 2 block of layer3 with new block with hidden dim 63
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  3540.871826171875
+TV permutated model:  3366.124267578125
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1037.50537109375
+Loading model for dim 64
+Replace last 2 block of layer3 with new block with hidden dim 64
+Loading pretrained weights for resnet20
+Loading model from /homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-4118986f.pt
+Smooth the parameters of the model
+TV original model:  1321.4044189453125
+TV permutated model:  1037.2686767578125
+Iteration 0: Loss = 1.8813, Reg Loss = 4.3154, Reconstruct Loss = 0.0000, Cls Loss = 1.8808, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8692, Reg Loss = 1.8242, Reconstruct Loss = 0.0011, Cls Loss = 1.8679, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [1/200], Training Loss: 1.8601, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+ 51%|█████     | 40/79 [00:00<00:00, 40.83it/s]
+Epoch [1/200], Validation Loss: 1.8081, Validation Accuracy: 74.52%
+Checkpoint saved at epoch 0 with accuracy: 74.52%
+
+100%|██████████| 79/79 [00:01<00:00, 41.18it/s]
+Iteration 250: Loss = 1.8413, Reg Loss = 0.4594, Reconstruct Loss = 0.0006, Cls Loss = 1.8407, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [2/200], Training Loss: 1.8416, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.48it/s]
+Epoch [2/200], Validation Loss: 1.8073, Validation Accuracy: 75.78%
+Checkpoint saved at epoch 1 with accuracy: 75.78%
+Iteration 0: Loss = 1.8375, Reg Loss = 0.2292, Reconstruct Loss = 0.0000, Cls Loss = 1.8375, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8421, Reg Loss = 0.1714, Reconstruct Loss = 0.0007, Cls Loss = 1.8413, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [3/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.08it/s]
+Epoch [3/200], Validation Loss: 1.8074, Validation Accuracy: 75.75%
+Iteration 0: Loss = 1.8191, Reg Loss = 0.0654, Reconstruct Loss = 0.0000, Cls Loss = 1.8191, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8406, Reg Loss = 0.1102, Reconstruct Loss = 0.0019, Cls Loss = 1.8386, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [4/200], Training Loss: 1.8416, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.26it/s]
+Epoch [4/200], Validation Loss: 1.8075, Validation Accuracy: 75.77%
+Iteration 0: Loss = 1.8691, Reg Loss = 0.0795, Reconstruct Loss = 0.0000, Cls Loss = 1.8691, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8437, Reg Loss = 0.0894, Reconstruct Loss = 0.0019, Cls Loss = 1.8417, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [5/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.29it/s]
+Epoch [5/200], Validation Loss: 1.8074, Validation Accuracy: 75.89%
+Checkpoint saved at epoch 4 with accuracy: 75.89%
+Iteration 0: Loss = 1.8387, Reg Loss = 0.0559, Reconstruct Loss = 0.0000, Cls Loss = 1.8386, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8411, Reg Loss = 0.0648, Reconstruct Loss = 0.0011, Cls Loss = 1.8400, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [6/200], Training Loss: 1.8415, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.37it/s]
+Epoch [6/200], Validation Loss: 1.8075, Validation Accuracy: 75.83%
+Iteration 0: Loss = 1.8382, Reg Loss = 0.0825, Reconstruct Loss = 0.0000, Cls Loss = 1.8382, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8418, Reg Loss = 0.1024, Reconstruct Loss = 0.0012, Cls Loss = 1.8406, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [7/200], Training Loss: 1.8415, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.31it/s]
+Epoch [7/200], Validation Loss: 1.8075, Validation Accuracy: 75.78%
+Iteration 0: Loss = 1.8599, Reg Loss = 0.1217, Reconstruct Loss = 0.0000, Cls Loss = 1.8599, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8410, Reg Loss = 0.0932, Reconstruct Loss = 0.0009, Cls Loss = 1.8401, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [8/200], Training Loss: 1.8410, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.98it/s]
+Epoch [8/200], Validation Loss: 1.8074, Validation Accuracy: 75.84%
+Iteration 0: Loss = 1.8297, Reg Loss = 0.0942, Reconstruct Loss = 0.0000, Cls Loss = 1.8296, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8414, Reg Loss = 0.1220, Reconstruct Loss = 0.0012, Cls Loss = 1.8402, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [9/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.90it/s]
+Epoch [9/200], Validation Loss: 1.8075, Validation Accuracy: 75.79%
+Iteration 0: Loss = 1.8261, Reg Loss = 0.0682, Reconstruct Loss = 0.0000, Cls Loss = 1.8261, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.1336, Reconstruct Loss = 0.0015, Cls Loss = 1.8400, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [10/200], Training Loss: 1.8416, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+100%|██████████| 79/79 [00:01<00:00, 41.44it/s]
+Epoch [10/200], Validation Loss: 1.8075, Validation Accuracy: 75.73%
+Iteration 0: Loss = 1.8424, Reg Loss = 0.0738, Reconstruct Loss = 0.0000, Cls Loss = 1.8423, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8419, Reg Loss = 0.2025, Reconstruct Loss = 0.0018, Cls Loss = 1.8401, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [11/200], Training Loss: 1.8431, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.81it/s]
+Epoch [11/200], Validation Loss: 1.8075, Validation Accuracy: 75.70%
+Iteration 0: Loss = 1.8213, Reg Loss = 0.2767, Reconstruct Loss = 0.0000, Cls Loss = 1.8212, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8413, Reg Loss = 0.1239, Reconstruct Loss = 0.0001, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [12/200], Training Loss: 1.8413, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.26it/s]
+Epoch [12/200], Validation Loss: 1.8075, Validation Accuracy: 75.72%
+Iteration 0: Loss = 1.8468, Reg Loss = 0.1070, Reconstruct Loss = 0.0000, Cls Loss = 1.8468, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8423, Reg Loss = 0.1341, Reconstruct Loss = 0.0012, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [13/200], Training Loss: 1.8418, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.71it/s]
+Epoch [13/200], Validation Loss: 1.8075, Validation Accuracy: 75.80%
+Iteration 0: Loss = 1.8422, Reg Loss = 0.0756, Reconstruct Loss = 0.0000, Cls Loss = 1.8421, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8419, Reg Loss = 0.1295, Reconstruct Loss = 0.0007, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [14/200], Training Loss: 1.8424, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.80it/s]
+Epoch [14/200], Validation Loss: 1.8075, Validation Accuracy: 75.74%
+Iteration 0: Loss = 1.7989, Reg Loss = 0.1593, Reconstruct Loss = 0.0000, Cls Loss = 1.7989, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8425, Reg Loss = 0.1569, Reconstruct Loss = 0.0001, Cls Loss = 1.8424, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [15/200], Training Loss: 1.8415, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.41it/s]
+Epoch [15/200], Validation Loss: 1.8074, Validation Accuracy: 75.75%
+Iteration 0: Loss = 1.8459, Reg Loss = 0.1130, Reconstruct Loss = 0.0000, Cls Loss = 1.8459, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8418, Reg Loss = 0.1695, Reconstruct Loss = 0.0010, Cls Loss = 1.8408, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [16/200], Training Loss: 1.8427, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.28it/s]
+Epoch [16/200], Validation Loss: 1.8076, Validation Accuracy: 75.64%
+Iteration 0: Loss = 1.8337, Reg Loss = 0.1989, Reconstruct Loss = 0.0000, Cls Loss = 1.8337, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8426, Reg Loss = 0.1828, Reconstruct Loss = 0.0010, Cls Loss = 1.8415, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [17/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.42it/s]
+Epoch [17/200], Validation Loss: 1.8075, Validation Accuracy: 75.74%
+Iteration 0: Loss = 1.8502, Reg Loss = 0.0732, Reconstruct Loss = 0.0000, Cls Loss = 1.8502, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8421, Reg Loss = 0.1760, Reconstruct Loss = 0.0012, Cls Loss = 1.8409, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [18/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.24it/s]
+Epoch [18/200], Validation Loss: 1.8075, Validation Accuracy: 75.73%
+Iteration 0: Loss = 1.8461, Reg Loss = 0.1228, Reconstruct Loss = 0.0000, Cls Loss = 1.8461, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8421, Reg Loss = 0.1879, Reconstruct Loss = 0.0013, Cls Loss = 1.8408, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [19/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.25it/s]
+Epoch [19/200], Validation Loss: 1.8075, Validation Accuracy: 75.72%
+Iteration 0: Loss = 1.8703, Reg Loss = 0.1354, Reconstruct Loss = 0.0370, Cls Loss = 1.8332, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8420, Reg Loss = 0.1161, Reconstruct Loss = 0.0010, Cls Loss = 1.8409, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [20/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.24it/s]
+Epoch [20/200], Validation Loss: 1.8075, Validation Accuracy: 75.79%
+Iteration 0: Loss = 1.8478, Reg Loss = 0.1177, Reconstruct Loss = 0.0000, Cls Loss = 1.8478, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8412, Reg Loss = 0.1469, Reconstruct Loss = 0.0009, Cls Loss = 1.8403, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [21/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.43it/s]
+Epoch [21/200], Validation Loss: 1.8076, Validation Accuracy: 75.68%
+Iteration 0: Loss = 1.8805, Reg Loss = 0.0865, Reconstruct Loss = 0.0375, Cls Loss = 1.8430, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8410, Reg Loss = 0.1343, Reconstruct Loss = 0.0007, Cls Loss = 1.8403, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [22/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.70it/s]
+Epoch [22/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8480, Reg Loss = 0.0794, Reconstruct Loss = 0.0000, Cls Loss = 1.8480, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8420, Reg Loss = 0.2101, Reconstruct Loss = 0.0016, Cls Loss = 1.8403, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [23/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.24it/s]
+Epoch [23/200], Validation Loss: 1.8075, Validation Accuracy: 75.68%
+Iteration 0: Loss = 1.8364, Reg Loss = 0.1233, Reconstruct Loss = 0.0000, Cls Loss = 1.8364, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.1593, Reconstruct Loss = 0.0009, Cls Loss = 1.8406, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [24/200], Training Loss: 1.8418, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.55it/s]
+Epoch [24/200], Validation Loss: 1.8075, Validation Accuracy: 75.78%
+Iteration 0: Loss = 1.8210, Reg Loss = 0.0980, Reconstruct Loss = 0.0000, Cls Loss = 1.8210, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8422, Reg Loss = 0.1794, Reconstruct Loss = 0.0009, Cls Loss = 1.8413, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [25/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.52it/s]
+Epoch [25/200], Validation Loss: 1.8075, Validation Accuracy: 75.65%
+Iteration 0: Loss = 1.8283, Reg Loss = 0.1564, Reconstruct Loss = 0.0000, Cls Loss = 1.8283, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.1487, Reconstruct Loss = 0.0012, Cls Loss = 1.8403, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [26/200], Training Loss: 1.8424, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.59it/s]
+Epoch [26/200], Validation Loss: 1.8075, Validation Accuracy: 75.74%
+Iteration 0: Loss = 1.8300, Reg Loss = 0.1655, Reconstruct Loss = 0.0000, Cls Loss = 1.8300, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8439, Reg Loss = 0.1558, Reconstruct Loss = 0.0012, Cls Loss = 1.8427, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [27/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.56it/s]
+Epoch [27/200], Validation Loss: 1.8075, Validation Accuracy: 75.62%
+Iteration 0: Loss = 1.8232, Reg Loss = 0.2716, Reconstruct Loss = 0.0000, Cls Loss = 1.8232, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8431, Reg Loss = 0.2054, Reconstruct Loss = 0.0016, Cls Loss = 1.8415, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [28/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.23it/s]
+Epoch [28/200], Validation Loss: 1.8075, Validation Accuracy: 75.66%
+Iteration 0: Loss = 1.8386, Reg Loss = 0.1493, Reconstruct Loss = 0.0000, Cls Loss = 1.8386, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8413, Reg Loss = 0.1310, Reconstruct Loss = 0.0009, Cls Loss = 1.8404, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [29/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.28it/s]
+Epoch [29/200], Validation Loss: 1.8075, Validation Accuracy: 75.65%
+Iteration 0: Loss = 1.8496, Reg Loss = 0.1002, Reconstruct Loss = 0.0000, Cls Loss = 1.8496, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8428, Reg Loss = 0.1455, Reconstruct Loss = 0.0012, Cls Loss = 1.8416, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [30/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.41it/s]
+Epoch [30/200], Validation Loss: 1.8075, Validation Accuracy: 75.66%
+Iteration 0: Loss = 1.8112, Reg Loss = 0.1179, Reconstruct Loss = 0.0000, Cls Loss = 1.8112, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8424, Reg Loss = 0.2014, Reconstruct Loss = 0.0013, Cls Loss = 1.8410, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [31/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+Epoch [31/200], Validation Loss: 1.8076, Validation Accuracy: 75.59%
+Iteration 0: Loss = 1.8280, Reg Loss = 0.0962, Reconstruct Loss = 0.0000, Cls Loss = 1.8280, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8422, Reg Loss = 0.1352, Reconstruct Loss = 0.0007, Cls Loss = 1.8415, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [32/200], Training Loss: 1.8416, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.37it/s]
+Epoch [32/200], Validation Loss: 1.8075, Validation Accuracy: 75.71%
+Iteration 0: Loss = 1.8309, Reg Loss = 0.2386, Reconstruct Loss = 0.0000, Cls Loss = 1.8308, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8414, Reg Loss = 0.1863, Reconstruct Loss = 0.0006, Cls Loss = 1.8408, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [33/200], Training Loss: 1.8415, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.94it/s]
+Epoch [33/200], Validation Loss: 1.8075, Validation Accuracy: 75.71%
+Iteration 0: Loss = 1.8562, Reg Loss = 0.0840, Reconstruct Loss = 0.0000, Cls Loss = 1.8561, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8410, Reg Loss = 0.1757, Reconstruct Loss = 0.0007, Cls Loss = 1.8403, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [34/200], Training Loss: 1.8417, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.21it/s]
+Epoch [34/200], Validation Loss: 1.8075, Validation Accuracy: 75.71%
+Iteration 0: Loss = 1.8106, Reg Loss = 0.0653, Reconstruct Loss = 0.0000, Cls Loss = 1.8106, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8420, Reg Loss = 0.1753, Reconstruct Loss = 0.0012, Cls Loss = 1.8408, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [35/200], Training Loss: 1.8418, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.09it/s]
+Epoch [35/200], Validation Loss: 1.8075, Validation Accuracy: 75.66%
+Iteration 0: Loss = 1.8440, Reg Loss = 0.1448, Reconstruct Loss = 0.0000, Cls Loss = 1.8440, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8425, Reg Loss = 0.2005, Reconstruct Loss = 0.0015, Cls Loss = 1.8410, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [36/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.47it/s]
+Epoch [36/200], Validation Loss: 1.8075, Validation Accuracy: 75.63%
+Iteration 0: Loss = 1.8632, Reg Loss = 0.1585, Reconstruct Loss = 0.0000, Cls Loss = 1.8632, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8435, Reg Loss = 0.1951, Reconstruct Loss = 0.0016, Cls Loss = 1.8419, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [37/200], Training Loss: 1.8429, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 42.38it/s]
+Epoch [37/200], Validation Loss: 1.8076, Validation Accuracy: 75.64%
+Iteration 0: Loss = 1.8615, Reg Loss = 0.1281, Reconstruct Loss = 0.0000, Cls Loss = 1.8615, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8411, Reg Loss = 0.1442, Reconstruct Loss = 0.0010, Cls Loss = 1.8401, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [38/200], Training Loss: 1.8424, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+100%|██████████| 79/79 [00:01<00:00, 41.24it/s]
+Epoch [38/200], Validation Loss: 1.8075, Validation Accuracy: 75.72%
+Iteration 0: Loss = 1.8621, Reg Loss = 0.1378, Reconstruct Loss = 0.0000, Cls Loss = 1.8621, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8417, Reg Loss = 0.1617, Reconstruct Loss = 0.0007, Cls Loss = 1.8409, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [39/200], Training Loss: 1.8418, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.35it/s]
+Epoch [39/200], Validation Loss: 1.8076, Validation Accuracy: 75.66%
+Iteration 0: Loss = 1.7936, Reg Loss = 0.2709, Reconstruct Loss = 0.0000, Cls Loss = 1.7935, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8427, Reg Loss = 0.1408, Reconstruct Loss = 0.0009, Cls Loss = 1.8418, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [40/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.28it/s]
+Epoch [40/200], Validation Loss: 1.8075, Validation Accuracy: 75.70%
+Iteration 0: Loss = 1.8579, Reg Loss = 0.0830, Reconstruct Loss = 0.0377, Cls Loss = 1.8201, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8428, Reg Loss = 0.1677, Reconstruct Loss = 0.0013, Cls Loss = 1.8414, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [41/200], Training Loss: 1.8425, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.95it/s]
+Epoch [41/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8439, Reg Loss = 0.1093, Reconstruct Loss = 0.0000, Cls Loss = 1.8439, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8422, Reg Loss = 0.1789, Reconstruct Loss = 0.0007, Cls Loss = 1.8414, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [42/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.59it/s]
+Epoch [42/200], Validation Loss: 1.8075, Validation Accuracy: 75.63%
+Iteration 0: Loss = 1.8143, Reg Loss = 0.1772, Reconstruct Loss = 0.0000, Cls Loss = 1.8143, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8437, Reg Loss = 0.2270, Reconstruct Loss = 0.0021, Cls Loss = 1.8416, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [43/200], Training Loss: 1.8429, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.64it/s]
+Epoch [43/200], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+Iteration 0: Loss = 1.8562, Reg Loss = 0.1506, Reconstruct Loss = 0.0000, Cls Loss = 1.8562, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8421, Reg Loss = 0.1814, Reconstruct Loss = 0.0016, Cls Loss = 1.8405, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [44/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.96it/s]
+Epoch [44/200], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+Iteration 0: Loss = 1.8676, Reg Loss = 0.0937, Reconstruct Loss = 0.0000, Cls Loss = 1.8676, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8430, Reg Loss = 0.2049, Reconstruct Loss = 0.0012, Cls Loss = 1.8418, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [45/200], Training Loss: 1.8418, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.98it/s]
+Epoch [45/200], Validation Loss: 1.8076, Validation Accuracy: 75.60%
+Iteration 0: Loss = 1.8596, Reg Loss = 0.1620, Reconstruct Loss = 0.0000, Cls Loss = 1.8596, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8423, Reg Loss = 0.1654, Reconstruct Loss = 0.0012, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [46/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+100%|██████████| 79/79 [00:01<00:00, 41.38it/s]
+Epoch [46/200], Validation Loss: 1.8075, Validation Accuracy: 75.68%
+Iteration 0: Loss = 1.8307, Reg Loss = 0.1355, Reconstruct Loss = 0.0000, Cls Loss = 1.8307, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8408, Reg Loss = 0.2131, Reconstruct Loss = 0.0009, Cls Loss = 1.8399, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [47/200], Training Loss: 1.8416, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.10it/s]
+Epoch [47/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8443, Reg Loss = 0.3179, Reconstruct Loss = 0.0000, Cls Loss = 1.8443, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8413, Reg Loss = 0.1546, Reconstruct Loss = 0.0004, Cls Loss = 1.8409, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [48/200], Training Loss: 1.8417, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.50it/s]
+Epoch [48/200], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+Iteration 0: Loss = 1.8414, Reg Loss = 0.1883, Reconstruct Loss = 0.0000, Cls Loss = 1.8414, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8425, Reg Loss = 0.2125, Reconstruct Loss = 0.0016, Cls Loss = 1.8408, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [49/200], Training Loss: 1.8430, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.45it/s]
+Epoch [49/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8606, Reg Loss = 0.0888, Reconstruct Loss = 0.0000, Cls Loss = 1.8606, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8433, Reg Loss = 0.2209, Reconstruct Loss = 0.0010, Cls Loss = 1.8422, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [50/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+100%|██████████| 79/79 [00:01<00:00, 41.36it/s]
+Epoch [50/200], Validation Loss: 1.8075, Validation Accuracy: 75.72%
+Iteration 0: Loss = 1.8101, Reg Loss = 0.1450, Reconstruct Loss = 0.0000, Cls Loss = 1.8101, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8432, Reg Loss = 0.1871, Reconstruct Loss = 0.0012, Cls Loss = 1.8420, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [51/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.21it/s]
+Epoch [51/200], Validation Loss: 1.8075, Validation Accuracy: 75.68%
+Iteration 0: Loss = 1.8175, Reg Loss = 0.1545, Reconstruct Loss = 0.0000, Cls Loss = 1.8175, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8425, Reg Loss = 0.1976, Reconstruct Loss = 0.0013, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [52/200], Training Loss: 1.8424, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.65it/s]
+Epoch [52/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8520, Reg Loss = 0.2223, Reconstruct Loss = 0.0000, Cls Loss = 1.8520, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8430, Reg Loss = 0.1302, Reconstruct Loss = 0.0010, Cls Loss = 1.8419, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [53/200], Training Loss: 1.8424, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+100%|██████████| 79/79 [00:01<00:00, 41.12it/s]
+Epoch [53/200], Validation Loss: 1.8075, Validation Accuracy: 75.74%
+Iteration 0: Loss = 1.8104, Reg Loss = 0.1537, Reconstruct Loss = 0.0000, Cls Loss = 1.8104, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.1612, Reconstruct Loss = 0.0009, Cls Loss = 1.8406, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [54/200], Training Loss: 1.8417, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.46it/s]
+Epoch [54/200], Validation Loss: 1.8075, Validation Accuracy: 75.66%
+Iteration 0: Loss = 1.8365, Reg Loss = 0.2446, Reconstruct Loss = 0.0000, Cls Loss = 1.8364, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8424, Reg Loss = 0.2285, Reconstruct Loss = 0.0018, Cls Loss = 1.8406, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [55/200], Training Loss: 1.8427, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.60it/s]
+Epoch [55/200], Validation Loss: 1.8076, Validation Accuracy: 75.65%
+Iteration 0: Loss = 1.8347, Reg Loss = 0.2079, Reconstruct Loss = 0.0000, Cls Loss = 1.8347, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8417, Reg Loss = 0.1461, Reconstruct Loss = 0.0003, Cls Loss = 1.8414, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [56/200], Training Loss: 1.8412, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.78it/s]
+Epoch [56/200], Validation Loss: 1.8075, Validation Accuracy: 75.76%
+Iteration 0: Loss = 1.8718, Reg Loss = 0.0810, Reconstruct Loss = 0.0000, Cls Loss = 1.8718, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8416, Reg Loss = 0.1287, Reconstruct Loss = 0.0003, Cls Loss = 1.8413, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [57/200], Training Loss: 1.8413, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.38it/s]
+Epoch [57/200], Validation Loss: 1.8075, Validation Accuracy: 75.73%
+Iteration 0: Loss = 1.8926, Reg Loss = 0.1480, Reconstruct Loss = 0.0374, Cls Loss = 1.8551, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8420, Reg Loss = 0.1676, Reconstruct Loss = 0.0018, Cls Loss = 1.8402, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [58/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.13it/s]
+Epoch [58/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8467, Reg Loss = 0.1974, Reconstruct Loss = 0.0000, Cls Loss = 1.8467, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8418, Reg Loss = 0.1791, Reconstruct Loss = 0.0007, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [59/200], Training Loss: 1.8415, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.74it/s]
+Epoch [59/200], Validation Loss: 1.8075, Validation Accuracy: 75.76%
+Iteration 0: Loss = 1.8776, Reg Loss = 0.1263, Reconstruct Loss = 0.0000, Cls Loss = 1.8776, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8418, Reg Loss = 0.1921, Reconstruct Loss = 0.0010, Cls Loss = 1.8407, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [60/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.39it/s]
+Epoch [60/200], Validation Loss: 1.8075, Validation Accuracy: 75.71%
+Iteration 0: Loss = 1.8803, Reg Loss = 0.0965, Reconstruct Loss = 0.0000, Cls Loss = 1.8803, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8422, Reg Loss = 0.1807, Reconstruct Loss = 0.0012, Cls Loss = 1.8410, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [61/200], Training Loss: 1.8417, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.25it/s]
+Epoch [61/200], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+Iteration 0: Loss = 1.8755, Reg Loss = 0.1199, Reconstruct Loss = 0.0000, Cls Loss = 1.8755, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8426, Reg Loss = 0.1573, Reconstruct Loss = 0.0007, Cls Loss = 1.8419, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [62/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.70it/s]
+Epoch [62/200], Validation Loss: 1.8076, Validation Accuracy: 75.62%
+Iteration 0: Loss = 1.8745, Reg Loss = 0.1358, Reconstruct Loss = 0.0000, Cls Loss = 1.8745, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8424, Reg Loss = 0.1559, Reconstruct Loss = 0.0010, Cls Loss = 1.8414, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [63/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.31it/s]
+Epoch [63/200], Validation Loss: 1.8075, Validation Accuracy: 75.72%
+Iteration 0: Loss = 1.8457, Reg Loss = 0.1828, Reconstruct Loss = 0.0000, Cls Loss = 1.8457, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8419, Reg Loss = 0.1539, Reconstruct Loss = 0.0007, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [64/200], Training Loss: 1.8414, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+ 89%|████████▊ | 70/79 [00:01<00:00, 41.16it/s]
+Epoch [64/200], Validation Loss: 1.8075, Validation Accuracy: 75.68%
+
+100%|██████████| 79/79 [00:01<00:00, 41.53it/s]
+Iteration 250: Loss = 1.8416, Reg Loss = 0.1695, Reconstruct Loss = 0.0010, Cls Loss = 1.8405, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [65/200], Training Loss: 1.8415, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.03it/s]
+Epoch [65/200], Validation Loss: 1.8076, Validation Accuracy: 75.60%
+Iteration 0: Loss = 1.8262, Reg Loss = 0.1337, Reconstruct Loss = 0.0000, Cls Loss = 1.8262, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8420, Reg Loss = 0.1530, Reconstruct Loss = 0.0009, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [66/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.56it/s]
+Epoch [66/200], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+Iteration 0: Loss = 1.8604, Reg Loss = 0.1414, Reconstruct Loss = 0.0000, Cls Loss = 1.8604, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8447, Reg Loss = 0.1889, Reconstruct Loss = 0.0015, Cls Loss = 1.8432, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [67/200], Training Loss: 1.8428, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.77it/s]
+Epoch [67/200], Validation Loss: 1.8075, Validation Accuracy: 75.68%
+Iteration 0: Loss = 1.8532, Reg Loss = 0.2181, Reconstruct Loss = 0.0000, Cls Loss = 1.8532, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8430, Reg Loss = 0.2289, Reconstruct Loss = 0.0016, Cls Loss = 1.8413, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [68/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.11it/s]
+Epoch [68/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8358, Reg Loss = 0.1581, Reconstruct Loss = 0.0000, Cls Loss = 1.8357, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8430, Reg Loss = 0.1469, Reconstruct Loss = 0.0009, Cls Loss = 1.8421, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [69/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.28it/s]
+Epoch [69/200], Validation Loss: 1.8075, Validation Accuracy: 75.64%
+Iteration 0: Loss = 1.8102, Reg Loss = 0.2074, Reconstruct Loss = 0.0000, Cls Loss = 1.8101, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8430, Reg Loss = 0.1522, Reconstruct Loss = 0.0007, Cls Loss = 1.8422, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [70/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.35it/s]
+Epoch [70/200], Validation Loss: 1.8074, Validation Accuracy: 75.80%
+Iteration 0: Loss = 1.8212, Reg Loss = 0.1668, Reconstruct Loss = 0.0000, Cls Loss = 1.8212, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8416, Reg Loss = 0.1257, Reconstruct Loss = 0.0009, Cls Loss = 1.8407, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [71/200], Training Loss: 1.8417, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.09it/s]
+Epoch [71/200], Validation Loss: 1.8075, Validation Accuracy: 75.78%
+Iteration 0: Loss = 1.8693, Reg Loss = 0.0873, Reconstruct Loss = 0.0000, Cls Loss = 1.8693, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8398, Reg Loss = 0.1245, Reconstruct Loss = 0.0010, Cls Loss = 1.8387, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [72/200], Training Loss: 1.8416, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.49it/s]
+Epoch [72/200], Validation Loss: 1.8076, Validation Accuracy: 75.67%
+Iteration 0: Loss = 1.8425, Reg Loss = 0.1663, Reconstruct Loss = 0.0000, Cls Loss = 1.8424, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.1797, Reconstruct Loss = 0.0007, Cls Loss = 1.8408, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [73/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.05it/s]
+Epoch [73/200], Validation Loss: 1.8075, Validation Accuracy: 75.68%
+Iteration 0: Loss = 1.8335, Reg Loss = 0.0955, Reconstruct Loss = 0.0000, Cls Loss = 1.8335, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8424, Reg Loss = 0.2078, Reconstruct Loss = 0.0019, Cls Loss = 1.8405, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [74/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.34it/s]
+Epoch [74/200], Validation Loss: 1.8076, Validation Accuracy: 75.57%
+Iteration 0: Loss = 1.8420, Reg Loss = 0.0765, Reconstruct Loss = 0.0000, Cls Loss = 1.8420, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8418, Reg Loss = 0.1580, Reconstruct Loss = 0.0010, Cls Loss = 1.8407, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [75/200], Training Loss: 1.8424, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.57it/s]
+Epoch [75/200], Validation Loss: 1.8075, Validation Accuracy: 75.73%
+Iteration 0: Loss = 1.8298, Reg Loss = 0.2487, Reconstruct Loss = 0.0000, Cls Loss = 1.8298, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.1581, Reconstruct Loss = 0.0009, Cls Loss = 1.8406, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [76/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.12it/s]
+Epoch [76/200], Validation Loss: 1.8075, Validation Accuracy: 75.73%
+Iteration 0: Loss = 1.8433, Reg Loss = 0.0850, Reconstruct Loss = 0.0000, Cls Loss = 1.8433, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8411, Reg Loss = 0.1354, Reconstruct Loss = 0.0010, Cls Loss = 1.8400, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [77/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+Epoch [77/200], Validation Loss: 1.8073, Validation Accuracy: 75.95%
+Checkpoint saved at epoch 76 with accuracy: 75.95%
+Iteration 0: Loss = 1.8968, Reg Loss = 0.1905, Reconstruct Loss = 0.0000, Cls Loss = 1.8968, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8434, Reg Loss = 0.1516, Reconstruct Loss = 0.0010, Cls Loss = 1.8423, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [78/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.15it/s]
+Epoch [78/200], Validation Loss: 1.8075, Validation Accuracy: 75.62%
+Iteration 0: Loss = 1.8566, Reg Loss = 0.0918, Reconstruct Loss = 0.0000, Cls Loss = 1.8566, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8434, Reg Loss = 0.1965, Reconstruct Loss = 0.0018, Cls Loss = 1.8417, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [79/200], Training Loss: 1.8425, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+ 87%|████████▋ | 69/79 [00:01<00:00, 40.56it/s]
+Epoch [79/200], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+
+100%|██████████| 79/79 [00:01<00:00, 40.89it/s]
+Iteration 250: Loss = 1.8409, Reg Loss = 0.2679, Reconstruct Loss = 0.0010, Cls Loss = 1.8399, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [80/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 39.79it/s]
+Epoch [80/200], Validation Loss: 1.8075, Validation Accuracy: 75.67%
+Iteration 0: Loss = 1.8143, Reg Loss = 0.1914, Reconstruct Loss = 0.0000, Cls Loss = 1.8143, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8416, Reg Loss = 0.1749, Reconstruct Loss = 0.0006, Cls Loss = 1.8410, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [81/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.29it/s]
+Epoch [81/200], Validation Loss: 1.8075, Validation Accuracy: 75.70%
+Iteration 0: Loss = 1.8434, Reg Loss = 0.2600, Reconstruct Loss = 0.0000, Cls Loss = 1.8434, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.2353, Reconstruct Loss = 0.0016, Cls Loss = 1.8398, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [82/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.97it/s]
+Epoch [82/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8373, Reg Loss = 0.2006, Reconstruct Loss = 0.0000, Cls Loss = 1.8372, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8439, Reg Loss = 0.1835, Reconstruct Loss = 0.0012, Cls Loss = 1.8427, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [83/200], Training Loss: 1.8426, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.21it/s]
+Epoch [83/200], Validation Loss: 1.8074, Validation Accuracy: 75.73%
+Iteration 0: Loss = 1.8432, Reg Loss = 0.1864, Reconstruct Loss = 0.0000, Cls Loss = 1.8431, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8418, Reg Loss = 0.1764, Reconstruct Loss = 0.0012, Cls Loss = 1.8406, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [84/200], Training Loss: 1.8424, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 42.33it/s]
+Epoch [84/200], Validation Loss: 1.8075, Validation Accuracy: 75.73%
+Iteration 0: Loss = 1.8562, Reg Loss = 0.3721, Reconstruct Loss = 0.0000, Cls Loss = 1.8561, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8414, Reg Loss = 0.2110, Reconstruct Loss = 0.0009, Cls Loss = 1.8405, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [85/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.75it/s]
+Epoch [85/200], Validation Loss: 1.8075, Validation Accuracy: 75.69%
+Iteration 0: Loss = 1.8333, Reg Loss = 0.2151, Reconstruct Loss = 0.0000, Cls Loss = 1.8333, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8424, Reg Loss = 0.1959, Reconstruct Loss = 0.0013, Cls Loss = 1.8411, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [86/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.39it/s]
+
+100%|██████████| 79/79 [00:01<00:00, 42.07it/s]
+Iteration 0: Loss = 1.8292, Reg Loss = 0.1369, Reconstruct Loss = 0.0000, Cls Loss = 1.8292, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8417, Reg Loss = 0.1845, Reconstruct Loss = 0.0007, Cls Loss = 1.8409, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [87/200], Training Loss: 1.8417, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.43it/s]
+Epoch [87/200], Validation Loss: 1.8076, Validation Accuracy: 75.59%
+Iteration 0: Loss = 1.8555, Reg Loss = 0.1128, Reconstruct Loss = 0.0373, Cls Loss = 1.8182, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8436, Reg Loss = 0.1673, Reconstruct Loss = 0.0015, Cls Loss = 1.8422, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [88/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+Epoch [88/200], Validation Loss: 1.8076, Validation Accuracy: 75.61%
+Iteration 0: Loss = 1.8757, Reg Loss = 0.1373, Reconstruct Loss = 0.0000, Cls Loss = 1.8757, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8427, Reg Loss = 0.1822, Reconstruct Loss = 0.0012, Cls Loss = 1.8415, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [89/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.26it/s]
+Epoch [89/200], Validation Loss: 1.8075, Validation Accuracy: 75.76%
+Iteration 0: Loss = 1.8349, Reg Loss = 0.0746, Reconstruct Loss = 0.0000, Cls Loss = 1.8349, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8436, Reg Loss = 0.1534, Reconstruct Loss = 0.0013, Cls Loss = 1.8422, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [90/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+ 89%|████████▊ | 70/79 [00:01<00:00, 40.37it/s]
+Epoch [90/200], Validation Loss: 1.8075, Validation Accuracy: 75.72%
+
+100%|██████████| 79/79 [00:01<00:00, 40.96it/s]
+Iteration 250: Loss = 1.8423, Reg Loss = 0.1483, Reconstruct Loss = 0.0007, Cls Loss = 1.8415, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [91/200], Training Loss: 1.8421, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+100%|██████████| 79/79 [00:01<00:00, 41.18it/s]
+Epoch [91/200], Validation Loss: 1.8075, Validation Accuracy: 75.76%
+Iteration 0: Loss = 1.8520, Reg Loss = 0.2146, Reconstruct Loss = 0.0000, Cls Loss = 1.8520, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8427, Reg Loss = 0.2241, Reconstruct Loss = 0.0013, Cls Loss = 1.8413, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [92/200], Training Loss: 1.8434, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 40.96it/s]
+Epoch [92/200], Validation Loss: 1.8075, Validation Accuracy: 75.63%
+Iteration 0: Loss = 1.8628, Reg Loss = 0.2926, Reconstruct Loss = 0.0000, Cls Loss = 1.8627, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8431, Reg Loss = 0.1933, Reconstruct Loss = 0.0012, Cls Loss = 1.8419, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [93/200], Training Loss: 1.8426, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.27it/s]
+Epoch [93/200], Validation Loss: 1.8076, Validation Accuracy: 75.59%
+Iteration 0: Loss = 1.8326, Reg Loss = 0.1645, Reconstruct Loss = 0.0000, Cls Loss = 1.8326, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8423, Reg Loss = 0.1787, Reconstruct Loss = 0.0015, Cls Loss = 1.8408, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [94/200], Training Loss: 1.8423, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.54it/s]
+Epoch [94/200], Validation Loss: 1.8075, Validation Accuracy: 75.68%
+Iteration 0: Loss = 1.8285, Reg Loss = 0.1093, Reconstruct Loss = 0.0000, Cls Loss = 1.8285, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8427, Reg Loss = 0.1745, Reconstruct Loss = 0.0010, Cls Loss = 1.8416, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [95/200], Training Loss: 1.8428, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+ 95%|█████████▍| 75/79 [00:01<00:00, 40.55it/s]
+Epoch [95/200], Validation Loss: 1.8076, Validation Accuracy: 75.53%
+
+100%|██████████| 79/79 [00:01<00:00, 41.20it/s]
+Iteration 250: Loss = 1.8433, Reg Loss = 0.2161, Reconstruct Loss = 0.0019, Cls Loss = 1.8414, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [96/200], Training Loss: 1.8419, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.52it/s]
+Epoch [96/200], Validation Loss: 1.8075, Validation Accuracy: 75.63%
+Iteration 0: Loss = 1.8402, Reg Loss = 0.1099, Reconstruct Loss = 0.0000, Cls Loss = 1.8402, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8421, Reg Loss = 0.1209, Reconstruct Loss = 0.0013, Cls Loss = 1.8407, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [97/200], Training Loss: 1.8420, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.46it/s]
+Epoch [97/200], Validation Loss: 1.8074, Validation Accuracy: 75.86%
+Iteration 0: Loss = 1.8174, Reg Loss = 0.1339, Reconstruct Loss = 0.0000, Cls Loss = 1.8173, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8415, Reg Loss = 0.1888, Reconstruct Loss = 0.0013, Cls Loss = 1.8402, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [98/200], Training Loss: 1.8425, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+
+100%|██████████| 79/79 [00:01<00:00, 41.48it/s]
+Epoch [98/200], Validation Loss: 1.8076, Validation Accuracy: 75.67%
+Iteration 0: Loss = 1.8218, Reg Loss = 0.1754, Reconstruct Loss = 0.0000, Cls Loss = 1.8217, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8419, Reg Loss = 0.1330, Reconstruct Loss = 0.0018, Cls Loss = 1.8401, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Epoch [99/200], Training Loss: 1.8422, Weight Learning Rate: 0.001000, Biases Learning Rate: 0.001000
+100%|██████████| 79/79 [00:01<00:00, 41.24it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.24it/s]
+Epoch [99/200], Validation Loss: 1.8075, Validation Accuracy: 75.82%
+Iteration 0: Loss = 1.8175, Reg Loss = 0.1512, Reconstruct Loss = 0.0000, Cls Loss = 1.8175, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+Iteration 250: Loss = 1.8418, Reg Loss = 0.1354, Reconstruct Loss = 0.0004, Cls Loss = 1.8414, Weight LR = 1.0000e-03, Bias LR = 1.0000e-03
+ 81%|████████  | 64/79 [00:01<00:00, 40.58it/s]
+ 81%|████████  | 64/79 [00:01<00:00, 40.58it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.08it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.08it/s]
+Iteration 0: Loss = 1.8682, Reg Loss = 0.3442, Reconstruct Loss = 0.0000, Cls Loss = 1.8682, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8430, Reg Loss = 0.1535, Reconstruct Loss = 0.0013, Cls Loss = 1.8417, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+100%|██████████| 79/79 [00:01<00:00, 41.43it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.43it/s]
+Epoch [101/200], Validation Loss: 1.8075, Validation Accuracy: 75.71%
+Iteration 0: Loss = 1.8296, Reg Loss = 0.0744, Reconstruct Loss = 0.0000, Cls Loss = 1.8296, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8406, Reg Loss = 0.0699, Reconstruct Loss = 0.0009, Cls Loss = 1.8397, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 11%|█▏        | 9/79 [00:00<00:01, 40.36it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.13it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.13it/s]
+Epoch [102/200], Validation Loss: 1.8074, Validation Accuracy: 75.83%
+Iteration 0: Loss = 1.8503, Reg Loss = 0.0569, Reconstruct Loss = 0.0000, Cls Loss = 1.8503, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8423, Reg Loss = 0.0461, Reconstruct Loss = 0.0014, Cls Loss = 1.8410, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 57%|█████▋    | 45/79 [00:01<00:00, 41.48it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.67it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.67it/s]
+Epoch [103/200], Validation Loss: 1.8074, Validation Accuracy: 75.93%
+Iteration 0: Loss = 1.8465, Reg Loss = 0.0489, Reconstruct Loss = 0.0000, Cls Loss = 1.8465, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8420, Reg Loss = 0.0591, Reconstruct Loss = 0.0014, Cls Loss = 1.8407, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 82%|████████▏ | 65/79 [00:01<00:00, 40.75it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 40.75it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.44it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.44it/s]
+Iteration 0: Loss = 1.8655, Reg Loss = 0.0593, Reconstruct Loss = 0.0000, Cls Loss = 1.8655, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8403, Reg Loss = 0.0499, Reconstruct Loss = 0.0006, Cls Loss = 1.8397, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 81%|████████  | 64/79 [00:01<00:00, 40.77it/s]
+ 81%|████████  | 64/79 [00:01<00:00, 40.77it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.97it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.97it/s]
+Iteration 0: Loss = 1.8230, Reg Loss = 0.0693, Reconstruct Loss = 0.0000, Cls Loss = 1.8230, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8416, Reg Loss = 0.0572, Reconstruct Loss = 0.0005, Cls Loss = 1.8411, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 87%|████████▋ | 69/79 [00:01<00:00, 40.25it/s]
+ 87%|████████▋ | 69/79 [00:01<00:00, 40.25it/s]
+Epoch [106/200], Validation Loss: 1.8074, Validation Accuracy: 75.86%
+100%|██████████| 79/79 [00:01<00:00, 40.37it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.37it/s]
+Iteration 250: Loss = 1.8413, Reg Loss = 0.0336, Reconstruct Loss = 0.0011, Cls Loss = 1.8402, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 13%|█▎        | 10/79 [00:00<00:01, 41.08it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.45it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.45it/s]
+Epoch [107/200], Validation Loss: 1.8074, Validation Accuracy: 75.83%
+Iteration 0: Loss = 1.8303, Reg Loss = 0.0558, Reconstruct Loss = 0.0000, Cls Loss = 1.8303, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8407, Reg Loss = 0.0329, Reconstruct Loss = 0.0006, Cls Loss = 1.8401, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 32%|███▏      | 25/79 [00:00<00:01, 40.71it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.18it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.18it/s]
+Epoch [108/200], Validation Loss: 1.8074, Validation Accuracy: 75.80%
+Iteration 0: Loss = 1.8786, Reg Loss = 0.0579, Reconstruct Loss = 0.0000, Cls Loss = 1.8786, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8412, Reg Loss = 0.0453, Reconstruct Loss = 0.0015, Cls Loss = 1.8397, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 63%|██████▎   | 50/79 [00:01<00:00, 40.75it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.05it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.05it/s]
+Epoch [109/200], Validation Loss: 1.8074, Validation Accuracy: 75.83%
+Iteration 0: Loss = 1.8341, Reg Loss = 0.0560, Reconstruct Loss = 0.0000, Cls Loss = 1.8341, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8409, Reg Loss = 0.0293, Reconstruct Loss = 0.0005, Cls Loss = 1.8404, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+100%|██████████| 79/79 [00:01<00:00, 41.33it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.33it/s]
+Epoch [110/200], Validation Loss: 1.8074, Validation Accuracy: 75.78%
+Iteration 0: Loss = 1.8719, Reg Loss = 0.0226, Reconstruct Loss = 0.0000, Cls Loss = 1.8719, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8427, Reg Loss = 0.0435, Reconstruct Loss = 0.0015, Cls Loss = 1.8412, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 19%|█▉        | 15/79 [00:00<00:01, 41.10it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.79it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.79it/s]
+Epoch [111/200], Validation Loss: 1.8074, Validation Accuracy: 75.84%
+Iteration 0: Loss = 1.8633, Reg Loss = 0.0256, Reconstruct Loss = 0.0000, Cls Loss = 1.8633, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8425, Reg Loss = 0.0265, Reconstruct Loss = 0.0006, Cls Loss = 1.8419, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 43%|████▎     | 34/79 [00:00<00:01, 41.28it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.26it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.26it/s]
+Epoch [112/200], Validation Loss: 1.8074, Validation Accuracy: 75.85%
+Iteration 0: Loss = 1.8423, Reg Loss = 0.0227, Reconstruct Loss = 0.0000, Cls Loss = 1.8423, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8431, Reg Loss = 0.0414, Reconstruct Loss = 0.0018, Cls Loss = 1.8413, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 56%|█████▌    | 44/79 [00:01<00:00, 40.11it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.24it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.24it/s]
+Epoch [113/200], Validation Loss: 1.8074, Validation Accuracy: 75.81%
+Iteration 0: Loss = 1.8143, Reg Loss = 0.0253, Reconstruct Loss = 0.0000, Cls Loss = 1.8143, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8407, Reg Loss = 0.0390, Reconstruct Loss = 0.0005, Cls Loss = 1.8403, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 95%|█████████▍| 75/79 [00:01<00:00, 40.91it/s]
+ 95%|█████████▍| 75/79 [00:01<00:00, 40.91it/s]
+Epoch [114/200], Validation Loss: 1.8074, Validation Accuracy: 75.81%
+100%|██████████| 79/79 [00:01<00:00, 41.66it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.66it/s]
+Iteration 250: Loss = 1.8414, Reg Loss = 0.0324, Reconstruct Loss = 0.0006, Cls Loss = 1.8408, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+100%|██████████| 79/79 [00:01<00:00, 41.21it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.21it/s]
+Epoch [115/200], Validation Loss: 1.8074, Validation Accuracy: 75.82%
+Iteration 0: Loss = 1.8278, Reg Loss = 0.0315, Reconstruct Loss = 0.0000, Cls Loss = 1.8278, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8410, Reg Loss = 0.0334, Reconstruct Loss = 0.0011, Cls Loss = 1.8400, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 19%|█▉        | 15/79 [00:00<00:01, 40.96it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.18it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.18it/s]
+Epoch [116/200], Validation Loss: 1.8074, Validation Accuracy: 75.79%
+Iteration 0: Loss = 1.8186, Reg Loss = 0.0352, Reconstruct Loss = 0.0000, Cls Loss = 1.8186, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8430, Reg Loss = 0.0262, Reconstruct Loss = 0.0014, Cls Loss = 1.8416, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 32%|███▏      | 25/79 [00:00<00:01, 40.83it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.13it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.13it/s]
+Epoch [117/200], Validation Loss: 1.8074, Validation Accuracy: 75.89%
+Iteration 0: Loss = 1.8647, Reg Loss = 0.0483, Reconstruct Loss = 0.0000, Cls Loss = 1.8647, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8432, Reg Loss = 0.0490, Reconstruct Loss = 0.0020, Cls Loss = 1.8412, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.52it/s]
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.52it/s]
+Epoch [118/200], Validation Loss: 1.8074, Validation Accuracy: 75.87%
+100%|██████████| 79/79 [00:01<00:00, 41.66it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.66it/s]
+Iteration 250: Loss = 1.8408, Reg Loss = 0.0263, Reconstruct Loss = 0.0006, Cls Loss = 1.8402, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 95%|█████████▍| 75/79 [00:01<00:00, 40.59it/s]
+ 95%|█████████▍| 75/79 [00:01<00:00, 40.59it/s]
+Epoch [119/200], Validation Loss: 1.8074, Validation Accuracy: 75.87%
+100%|██████████| 79/79 [00:01<00:00, 41.22it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.22it/s]
+Iteration 250: Loss = 1.8430, Reg Loss = 0.0279, Reconstruct Loss = 0.0018, Cls Loss = 1.8412, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+  6%|▋         | 5/79 [00:00<00:01, 40.96it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.22it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.22it/s]
+Epoch [120/200], Validation Loss: 1.8074, Validation Accuracy: 75.89%
+Iteration 0: Loss = 1.8160, Reg Loss = 0.0317, Reconstruct Loss = 0.0000, Cls Loss = 1.8160, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8415, Reg Loss = 0.0356, Reconstruct Loss = 0.0014, Cls Loss = 1.8402, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 29%|██▉       | 23/79 [00:00<00:01, 40.57it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.12it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.12it/s]
+Epoch [121/200], Validation Loss: 1.8074, Validation Accuracy: 75.89%
+Iteration 0: Loss = 1.8649, Reg Loss = 0.0168, Reconstruct Loss = 0.0000, Cls Loss = 1.8649, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8419, Reg Loss = 0.0152, Reconstruct Loss = 0.0012, Cls Loss = 1.8407, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 30%|███       | 24/79 [00:00<00:01, 40.85it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.10it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.10it/s]
+Epoch [122/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8615, Reg Loss = 0.0667, Reconstruct Loss = 0.0000, Cls Loss = 1.8615, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8419, Reg Loss = 0.0348, Reconstruct Loss = 0.0011, Cls Loss = 1.8409, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.26it/s]
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.26it/s]
+Epoch [123/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+100%|██████████| 79/79 [00:01<00:00, 41.41it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.41it/s]
+Iteration 250: Loss = 1.8423, Reg Loss = 0.0163, Reconstruct Loss = 0.0009, Cls Loss = 1.8414, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+  0%|          | 0/79 [00:00<?, ?it/s]1.41it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+Epoch [124/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8419, Reg Loss = 0.0111, Reconstruct Loss = 0.0000, Cls Loss = 1.8419, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8413, Reg Loss = 0.0141, Reconstruct Loss = 0.0009, Cls Loss = 1.8404, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 25%|██▌       | 20/79 [00:00<00:01, 41.11it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.33it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.33it/s]
+Epoch [125/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8533, Reg Loss = 0.0163, Reconstruct Loss = 0.0000, Cls Loss = 1.8533, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8433, Reg Loss = 0.0347, Reconstruct Loss = 0.0018, Cls Loss = 1.8415, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 57%|█████▋    | 45/79 [00:01<00:00, 41.24it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.48it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.48it/s]
+Epoch [126/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8267, Reg Loss = 0.0261, Reconstruct Loss = 0.0000, Cls Loss = 1.8267, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8438, Reg Loss = 0.0360, Reconstruct Loss = 0.0020, Cls Loss = 1.8419, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.30it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.30it/s]
+Epoch [127/200], Validation Loss: 1.8074, Validation Accuracy: 75.88%
+100%|██████████| 79/79 [00:01<00:00, 41.47it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.47it/s]
+Iteration 250: Loss = 1.8413, Reg Loss = 0.0290, Reconstruct Loss = 0.0008, Cls Loss = 1.8405, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 62%|██████▏   | 49/79 [00:01<00:00, 40.96it/s]
+ 62%|██████▏   | 49/79 [00:01<00:00, 40.96it/s]
+Epoch [128/200], Validation Loss: 1.8074, Validation Accuracy: 75.87%
+100%|██████████| 79/79 [00:01<00:00, 41.23it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.23it/s]
+Iteration 250: Loss = 1.8400, Reg Loss = 0.0290, Reconstruct Loss = 0.0009, Cls Loss = 1.8391, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 76%|███████▌  | 60/79 [00:01<00:00, 40.58it/s]
+ 76%|███████▌  | 60/79 [00:01<00:00, 40.58it/s]
+Epoch [129/200], Validation Loss: 1.8074, Validation Accuracy: 75.83%
+100%|██████████| 79/79 [00:01<00:00, 41.17it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.17it/s]
+Iteration 250: Loss = 1.8410, Reg Loss = 0.0206, Reconstruct Loss = 0.0008, Cls Loss = 1.8402, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+100%|██████████| 79/79 [00:01<00:00, 40.96it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.96it/s]
+Epoch [130/200], Validation Loss: 1.8074, Validation Accuracy: 75.87%
+Iteration 0: Loss = 1.8665, Reg Loss = 0.0219, Reconstruct Loss = 0.0000, Cls Loss = 1.8665, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8415, Reg Loss = 0.0185, Reconstruct Loss = 0.0014, Cls Loss = 1.8401, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 18%|█▊        | 14/79 [00:00<00:01, 40.28it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.11it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.11it/s]
+Epoch [131/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8185, Reg Loss = 0.0113, Reconstruct Loss = 0.0000, Cls Loss = 1.8185, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0193, Reconstruct Loss = 0.0006, Cls Loss = 1.8411, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 37%|███▋      | 29/79 [00:00<00:01, 40.64it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.37it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.37it/s]
+Epoch [132/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8894, Reg Loss = 0.0237, Reconstruct Loss = 0.0000, Cls Loss = 1.8894, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8413, Reg Loss = 0.0160, Reconstruct Loss = 0.0014, Cls Loss = 1.8400, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 51%|█████     | 40/79 [00:00<00:00, 40.52it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.14it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.14it/s]
+Epoch [133/200], Validation Loss: 1.8074, Validation Accuracy: 75.86%
+Iteration 0: Loss = 1.8615, Reg Loss = 0.0189, Reconstruct Loss = 0.0000, Cls Loss = 1.8615, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0224, Reconstruct Loss = 0.0015, Cls Loss = 1.8402, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 81%|████████  | 64/79 [00:01<00:00, 41.12it/s]
+ 81%|████████  | 64/79 [00:01<00:00, 41.12it/s]
+Epoch [134/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+100%|██████████| 79/79 [00:01<00:00, 41.09it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.09it/s]
+Iteration 250: Loss = 1.8432, Reg Loss = 0.0371, Reconstruct Loss = 0.0015, Cls Loss = 1.8416, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 89%|████████▊ | 70/79 [00:01<00:00, 41.48it/s]
+ 89%|████████▊ | 70/79 [00:01<00:00, 41.48it/s]
+Epoch [135/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+100%|██████████| 79/79 [00:01<00:00, 41.46it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.46it/s]
+Iteration 250: Loss = 1.8408, Reg Loss = 0.0206, Reconstruct Loss = 0.0015, Cls Loss = 1.8393, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 95%|█████████▍| 75/79 [00:01<00:00, 41.36it/s]
+ 95%|█████████▍| 75/79 [00:01<00:00, 41.36it/s]
+Epoch [136/200], Validation Loss: 1.8074, Validation Accuracy: 75.93%
+100%|██████████| 79/79 [00:01<00:00, 41.58it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.58it/s]
+Iteration 250: Loss = 1.8415, Reg Loss = 0.0320, Reconstruct Loss = 0.0011, Cls Loss = 1.8404, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+  0%|          | 0/79 [00:00<?, ?it/s]1.58it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.85it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.85it/s]
+Epoch [137/200], Validation Loss: 1.8074, Validation Accuracy: 75.88%
+Iteration 0: Loss = 1.8606, Reg Loss = 0.0212, Reconstruct Loss = 0.0000, Cls Loss = 1.8606, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8411, Reg Loss = 0.0389, Reconstruct Loss = 0.0011, Cls Loss = 1.8400, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 32%|███▏      | 25/79 [00:00<00:01, 40.78it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.31it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.31it/s]
+Epoch [138/200], Validation Loss: 1.8074, Validation Accuracy: 75.88%
+Iteration 0: Loss = 1.8563, Reg Loss = 0.0247, Reconstruct Loss = 0.0000, Cls Loss = 1.8563, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8414, Reg Loss = 0.0250, Reconstruct Loss = 0.0015, Cls Loss = 1.8399, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 56%|█████▌    | 44/79 [00:01<00:00, 41.02it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.40it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.40it/s]
+Epoch [139/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8644, Reg Loss = 0.0188, Reconstruct Loss = 0.0000, Cls Loss = 1.8644, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8418, Reg Loss = 0.0207, Reconstruct Loss = 0.0012, Cls Loss = 1.8405, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 82%|████████▏ | 65/79 [00:01<00:00, 40.77it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 40.77it/s]
+Epoch [140/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+100%|██████████| 79/79 [00:01<00:00, 40.95it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.95it/s]
+Iteration 250: Loss = 1.8422, Reg Loss = 0.0184, Reconstruct Loss = 0.0018, Cls Loss = 1.8404, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+  5%|▌         | 4/79 [00:00<00:01, 39.23it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.19it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.19it/s]
+Epoch [141/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8595, Reg Loss = 0.0138, Reconstruct Loss = 0.0000, Cls Loss = 1.8595, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0264, Reconstruct Loss = 0.0008, Cls Loss = 1.8409, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 51%|█████     | 40/79 [00:00<00:00, 40.90it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.38it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.38it/s]
+Epoch [142/200], Validation Loss: 1.8074, Validation Accuracy: 75.87%
+Iteration 0: Loss = 1.8638, Reg Loss = 0.0142, Reconstruct Loss = 0.0000, Cls Loss = 1.8638, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8411, Reg Loss = 0.0203, Reconstruct Loss = 0.0012, Cls Loss = 1.8398, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.56it/s]
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.56it/s]
+Epoch [143/200], Validation Loss: 1.8074, Validation Accuracy: 75.87%
+100%|██████████| 79/79 [00:01<00:00, 41.97it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.97it/s]
+Iteration 250: Loss = 1.8426, Reg Loss = 0.0312, Reconstruct Loss = 0.0015, Cls Loss = 1.8411, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 87%|████████▋ | 69/79 [00:01<00:00, 40.79it/s]
+ 87%|████████▋ | 69/79 [00:01<00:00, 40.79it/s]
+Epoch [144/200], Validation Loss: 1.8074, Validation Accuracy: 75.88%
+100%|██████████| 79/79 [00:01<00:00, 41.17it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.17it/s]
+Iteration 250: Loss = 1.8402, Reg Loss = 0.0238, Reconstruct Loss = 0.0014, Cls Loss = 1.8389, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 11%|█▏        | 9/79 [00:00<00:01, 40.37it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.16it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.16it/s]
+Epoch [145/200], Validation Loss: 1.8074, Validation Accuracy: 75.86%
+Iteration 0: Loss = 1.8492, Reg Loss = 0.0417, Reconstruct Loss = 0.0000, Cls Loss = 1.8492, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8416, Reg Loss = 0.0313, Reconstruct Loss = 0.0009, Cls Loss = 1.8407, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 38%|███▊      | 30/79 [00:00<00:01, 41.11it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.40it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.40it/s]
+Epoch [146/200], Validation Loss: 1.8074, Validation Accuracy: 75.89%
+Iteration 0: Loss = 1.8556, Reg Loss = 0.0219, Reconstruct Loss = 0.0000, Cls Loss = 1.8556, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8419, Reg Loss = 0.0374, Reconstruct Loss = 0.0015, Cls Loss = 1.8404, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 56%|█████▌    | 44/79 [00:01<00:00, 40.47it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.69it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.69it/s]
+Epoch [147/200], Validation Loss: 1.8074, Validation Accuracy: 75.80%
+Iteration 0: Loss = 1.8160, Reg Loss = 0.0257, Reconstruct Loss = 0.0000, Cls Loss = 1.8160, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0282, Reconstruct Loss = 0.0014, Cls Loss = 1.8404, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.35it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.35it/s]
+Epoch [148/200], Validation Loss: 1.8074, Validation Accuracy: 75.87%
+100%|██████████| 79/79 [00:01<00:00, 41.62it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.62it/s]
+Iteration 250: Loss = 1.8406, Reg Loss = 0.0265, Reconstruct Loss = 0.0008, Cls Loss = 1.8399, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 95%|█████████▍| 75/79 [00:01<00:00, 41.49it/s]
+ 95%|█████████▍| 75/79 [00:01<00:00, 41.49it/s]
+Epoch [149/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+100%|██████████| 79/79 [00:01<00:00, 41.57it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.57it/s]
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0174, Reconstruct Loss = 0.0009, Cls Loss = 1.8408, Weight LR = 1.0000e-04, Bias LR = 1.0000e-04
+ 13%|█▎        | 10/79 [00:00<00:01, 40.50it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.01it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.01it/s]
+Epoch [150/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8462, Reg Loss = 0.0230, Reconstruct Loss = 0.0000, Cls Loss = 1.8462, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8428, Reg Loss = 0.0219, Reconstruct Loss = 0.0011, Cls Loss = 1.8417, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 38%|███▊      | 30/79 [00:00<00:01, 41.18it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.55it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.55it/s]
+Epoch [151/200], Validation Loss: 1.8074, Validation Accuracy: 75.89%
+Iteration 0: Loss = 1.8370, Reg Loss = 0.0158, Reconstruct Loss = 0.0000, Cls Loss = 1.8370, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8419, Reg Loss = 0.0146, Reconstruct Loss = 0.0014, Cls Loss = 1.8405, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.23it/s]
+ 70%|██████▉   | 55/79 [00:01<00:00, 41.23it/s]
+Epoch [152/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+100%|██████████| 79/79 [00:01<00:00, 41.57it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.57it/s]
+Iteration 250: Loss = 1.8415, Reg Loss = 0.0089, Reconstruct Loss = 0.0006, Cls Loss = 1.8409, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  5%|▌         | 4/79 [00:00<00:01, 39.24it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.14it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.14it/s]
+Epoch [153/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8386, Reg Loss = 0.0112, Reconstruct Loss = 0.0000, Cls Loss = 1.8386, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8407, Reg Loss = 0.0096, Reconstruct Loss = 0.0008, Cls Loss = 1.8399, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 24%|██▍       | 19/79 [00:00<00:01, 40.29it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.07it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.07it/s]
+Epoch [154/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8242, Reg Loss = 0.0097, Reconstruct Loss = 0.0000, Cls Loss = 1.8242, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8423, Reg Loss = 0.0089, Reconstruct Loss = 0.0015, Cls Loss = 1.8407, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 44%|████▍     | 35/79 [00:00<00:01, 41.43it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.75it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.75it/s]
+Epoch [155/200], Validation Loss: 1.8074, Validation Accuracy: 75.93%
+Iteration 0: Loss = 1.8452, Reg Loss = 0.0083, Reconstruct Loss = 0.0000, Cls Loss = 1.8452, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8425, Reg Loss = 0.0078, Reconstruct Loss = 0.0014, Cls Loss = 1.8411, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.11it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.11it/s]
+Epoch [156/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+100%|██████████| 79/79 [00:01<00:00, 41.69it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.69it/s]
+Iteration 250: Loss = 1.8423, Reg Loss = 0.0070, Reconstruct Loss = 0.0020, Cls Loss = 1.8403, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  0%|          | 0/79 [00:00<?, ?it/s]1.69it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+Epoch [157/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8493, Reg Loss = 0.0093, Reconstruct Loss = 0.0000, Cls Loss = 1.8493, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0094, Reconstruct Loss = 0.0014, Cls Loss = 1.8403, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  6%|▋         | 5/79 [00:00<00:01, 40.60it/s]]
+100%|██████████| 79/79 [00:01<00:00, 40.75it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.75it/s]
+Epoch [158/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8535, Reg Loss = 0.0091, Reconstruct Loss = 0.0000, Cls Loss = 1.8535, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8428, Reg Loss = 0.0096, Reconstruct Loss = 0.0012, Cls Loss = 1.8416, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 25%|██▌       | 20/79 [00:00<00:01, 40.88it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.22it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.22it/s]
+Epoch [159/200], Validation Loss: 1.8074, Validation Accuracy: 75.93%
+Iteration 0: Loss = 1.8302, Reg Loss = 0.0061, Reconstruct Loss = 0.0000, Cls Loss = 1.8302, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8427, Reg Loss = 0.0074, Reconstruct Loss = 0.0021, Cls Loss = 1.8406, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 38%|███▊      | 30/79 [00:00<00:01, 41.19it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.45it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.45it/s]
+Epoch [160/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8187, Reg Loss = 0.0100, Reconstruct Loss = 0.0000, Cls Loss = 1.8187, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8436, Reg Loss = 0.0111, Reconstruct Loss = 0.0018, Cls Loss = 1.8418, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 44%|████▍     | 35/79 [00:00<00:01, 40.90it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.23it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.23it/s]
+Epoch [161/200], Validation Loss: 1.8074, Validation Accuracy: 75.93%
+Iteration 0: Loss = 1.8524, Reg Loss = 0.0119, Reconstruct Loss = 0.0000, Cls Loss = 1.8524, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8415, Reg Loss = 0.0100, Reconstruct Loss = 0.0011, Cls Loss = 1.8404, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 57%|█████▋    | 45/79 [00:01<00:00, 40.83it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.34it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.34it/s]
+Epoch [162/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8367, Reg Loss = 0.0089, Reconstruct Loss = 0.0000, Cls Loss = 1.8367, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0103, Reconstruct Loss = 0.0015, Cls Loss = 1.8401, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 19%|█▉        | 15/79 [00:00<00:01, 42.38it/s]
+100%|██████████| 79/79 [00:01<00:00, 42.45it/s]
+100%|██████████| 79/79 [00:01<00:00, 42.45it/s]
+Epoch [163/200], Validation Loss: 1.8074, Validation Accuracy: 75.89%
+Iteration 0: Loss = 1.8169, Reg Loss = 0.0083, Reconstruct Loss = 0.0000, Cls Loss = 1.8169, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0100, Reconstruct Loss = 0.0012, Cls Loss = 1.8405, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 57%|█████▋    | 45/79 [00:01<00:00, 40.69it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.26it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.26it/s]
+Epoch [164/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8210, Reg Loss = 0.0100, Reconstruct Loss = 0.0000, Cls Loss = 1.8210, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8424, Reg Loss = 0.0084, Reconstruct Loss = 0.0009, Cls Loss = 1.8415, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 94%|█████████▎| 74/79 [00:01<00:00, 38.86it/s]
+ 94%|█████████▎| 74/79 [00:01<00:00, 38.86it/s]
+Epoch [165/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+100%|██████████| 79/79 [00:01<00:00, 40.71it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.71it/s]
+Iteration 250: Loss = 1.8426, Reg Loss = 0.0058, Reconstruct Loss = 0.0018, Cls Loss = 1.8407, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  0%|          | 0/79 [00:00<?, ?it/s]0.71it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.63it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.63it/s]
+Epoch [166/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8151, Reg Loss = 0.0068, Reconstruct Loss = 0.0000, Cls Loss = 1.8151, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8404, Reg Loss = 0.0063, Reconstruct Loss = 0.0009, Cls Loss = 1.8395, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 38%|███▊      | 30/79 [00:00<00:01, 41.07it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.27it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.27it/s]
+Epoch [167/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8439, Reg Loss = 0.0054, Reconstruct Loss = 0.0000, Cls Loss = 1.8439, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0044, Reconstruct Loss = 0.0005, Cls Loss = 1.8412, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 63%|██████▎   | 50/79 [00:01<00:00, 40.91it/s]
+ 63%|██████▎   | 50/79 [00:01<00:00, 40.91it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.34it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.34it/s]
+Iteration 0: Loss = 1.8253, Reg Loss = 0.0047, Reconstruct Loss = 0.0000, Cls Loss = 1.8253, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8408, Reg Loss = 0.0040, Reconstruct Loss = 0.0009, Cls Loss = 1.8399, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.32it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.32it/s]
+Epoch [169/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+100%|██████████| 79/79 [00:01<00:00, 41.59it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.59it/s]
+Iteration 250: Loss = 1.8436, Reg Loss = 0.0049, Reconstruct Loss = 0.0020, Cls Loss = 1.8416, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  0%|          | 0/79 [00:00<?, ?it/s]1.59it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.16it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.16it/s]
+Epoch [170/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8377, Reg Loss = 0.0046, Reconstruct Loss = 0.0000, Cls Loss = 1.8377, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8410, Reg Loss = 0.0053, Reconstruct Loss = 0.0009, Cls Loss = 1.8401, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 32%|███▏      | 25/79 [00:00<00:01, 41.37it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.64it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.64it/s]
+Epoch [171/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8402, Reg Loss = 0.0043, Reconstruct Loss = 0.0000, Cls Loss = 1.8402, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8408, Reg Loss = 0.0053, Reconstruct Loss = 0.0012, Cls Loss = 1.8396, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 63%|██████▎   | 50/79 [00:01<00:00, 41.52it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.78it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.78it/s]
+Epoch [172/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8394, Reg Loss = 0.0047, Reconstruct Loss = 0.0000, Cls Loss = 1.8394, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8405, Reg Loss = 0.0037, Reconstruct Loss = 0.0006, Cls Loss = 1.8399, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  6%|▋         | 5/79 [00:00<00:01, 40.69it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.43it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.43it/s]
+Epoch [173/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8639, Reg Loss = 0.0028, Reconstruct Loss = 0.0000, Cls Loss = 1.8639, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8415, Reg Loss = 0.0025, Reconstruct Loss = 0.0005, Cls Loss = 1.8411, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 19%|█▉        | 15/79 [00:00<00:01, 40.98it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.20it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.20it/s]
+Epoch [174/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8071, Reg Loss = 0.0027, Reconstruct Loss = 0.0000, Cls Loss = 1.8071, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8424, Reg Loss = 0.0040, Reconstruct Loss = 0.0012, Cls Loss = 1.8412, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 57%|█████▋    | 45/79 [00:01<00:00, 41.71it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.88it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.88it/s]
+Epoch [175/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8693, Reg Loss = 0.0054, Reconstruct Loss = 0.0000, Cls Loss = 1.8693, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8422, Reg Loss = 0.0051, Reconstruct Loss = 0.0014, Cls Loss = 1.8408, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  0%|          | 0/79 [00:00<?, ?it/s]1.88it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.42it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.42it/s]
+Epoch [176/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8269, Reg Loss = 0.0074, Reconstruct Loss = 0.0000, Cls Loss = 1.8269, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8424, Reg Loss = 0.0069, Reconstruct Loss = 0.0006, Cls Loss = 1.8418, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 44%|████▍     | 35/79 [00:00<00:01, 41.35it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.41it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.41it/s]
+Epoch [177/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8268, Reg Loss = 0.0040, Reconstruct Loss = 0.0000, Cls Loss = 1.8268, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8418, Reg Loss = 0.0040, Reconstruct Loss = 0.0012, Cls Loss = 1.8406, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 76%|███████▌  | 60/79 [00:01<00:00, 41.45it/s]
+ 76%|███████▌  | 60/79 [00:01<00:00, 41.45it/s]
+Epoch [178/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+100%|██████████| 79/79 [00:01<00:00, 41.74it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.74it/s]
+Iteration 250: Loss = 1.8415, Reg Loss = 0.0047, Reconstruct Loss = 0.0009, Cls Loss = 1.8406, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+100%|██████████| 79/79 [00:01<00:00, 40.43it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.43it/s]
+Epoch [179/200], Validation Loss: 1.8074, Validation Accuracy: 75.90%
+Iteration 0: Loss = 1.8184, Reg Loss = 0.0066, Reconstruct Loss = 0.0000, Cls Loss = 1.8184, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8419, Reg Loss = 0.0060, Reconstruct Loss = 0.0014, Cls Loss = 1.8405, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 19%|█▉        | 15/79 [00:00<00:01, 41.51it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.68it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.68it/s]
+Epoch [180/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8613, Reg Loss = 0.0052, Reconstruct Loss = 0.0000, Cls Loss = 1.8613, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8430, Reg Loss = 0.0052, Reconstruct Loss = 0.0014, Cls Loss = 1.8416, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 19%|█▉        | 15/79 [00:00<00:01, 40.69it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.64it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.64it/s]
+Epoch [181/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8131, Reg Loss = 0.0060, Reconstruct Loss = 0.0000, Cls Loss = 1.8131, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8419, Reg Loss = 0.0059, Reconstruct Loss = 0.0009, Cls Loss = 1.8409, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 68%|██████▊   | 54/79 [00:01<00:00, 40.42it/s]
+ 68%|██████▊   | 54/79 [00:01<00:00, 40.42it/s]
+Epoch [182/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+100%|██████████| 79/79 [00:01<00:00, 40.96it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.96it/s]
+Iteration 250: Loss = 1.8409, Reg Loss = 0.0041, Reconstruct Loss = 0.0009, Cls Loss = 1.8400, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.33it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.33it/s]
+Epoch [183/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+100%|██████████| 79/79 [00:01<00:00, 41.63it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.63it/s]
+Iteration 250: Loss = 1.8402, Reg Loss = 0.0036, Reconstruct Loss = 0.0011, Cls Loss = 1.8391, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  6%|▋         | 5/79 [00:00<00:01, 40.89it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.58it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.58it/s]
+Epoch [184/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8212, Reg Loss = 0.0024, Reconstruct Loss = 0.0000, Cls Loss = 1.8212, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8416, Reg Loss = 0.0030, Reconstruct Loss = 0.0015, Cls Loss = 1.8400, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 19%|█▉        | 15/79 [00:00<00:01, 41.06it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.45it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.45it/s]
+Epoch [185/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8679, Reg Loss = 0.0026, Reconstruct Loss = 0.0000, Cls Loss = 1.8679, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8419, Reg Loss = 0.0026, Reconstruct Loss = 0.0014, Cls Loss = 1.8406, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 53%|█████▎    | 42/79 [00:01<00:00, 38.36it/s]
+ 53%|█████▎    | 42/79 [00:01<00:00, 38.36it/s]
+Epoch [186/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+100%|██████████| 79/79 [00:01<00:00, 40.36it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.36it/s]
+Iteration 250: Loss = 1.8417, Reg Loss = 0.0038, Reconstruct Loss = 0.0011, Cls Loss = 1.8407, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  0%|          | 0/79 [00:00<?, ?it/s]0.36it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.63it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.63it/s]
+Epoch [187/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8528, Reg Loss = 0.0035, Reconstruct Loss = 0.0000, Cls Loss = 1.8528, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8429, Reg Loss = 0.0060, Reconstruct Loss = 0.0020, Cls Loss = 1.8409, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 44%|████▍     | 35/79 [00:00<00:01, 41.52it/s]
+ 44%|████▍     | 35/79 [00:00<00:01, 41.52it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.86it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.86it/s]
+Iteration 0: Loss = 1.8540, Reg Loss = 0.0032, Reconstruct Loss = 0.0000, Cls Loss = 1.8540, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8425, Reg Loss = 0.0043, Reconstruct Loss = 0.0023, Cls Loss = 1.8402, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 75%|███████▍  | 59/79 [00:01<00:00, 41.56it/s]
+ 75%|███████▍  | 59/79 [00:01<00:00, 41.56it/s]
+Epoch [189/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+100%|██████████| 79/79 [00:01<00:00, 41.54it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.54it/s]
+Iteration 250: Loss = 1.8423, Reg Loss = 0.0052, Reconstruct Loss = 0.0014, Cls Loss = 1.8409, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+  6%|▋         | 5/79 [00:00<00:01, 40.31it/s]]
+100%|██████████| 79/79 [00:01<00:00, 41.59it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.59it/s]
+Epoch [190/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8382, Reg Loss = 0.0034, Reconstruct Loss = 0.0000, Cls Loss = 1.8382, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8423, Reg Loss = 0.0032, Reconstruct Loss = 0.0014, Cls Loss = 1.8409, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 38%|███▊      | 30/79 [00:00<00:01, 41.67it/s]
+ 38%|███▊      | 30/79 [00:00<00:01, 41.67it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.94it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.94it/s]
+Iteration 0: Loss = 1.8606, Reg Loss = 0.0017, Reconstruct Loss = 0.0000, Cls Loss = 1.8606, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8429, Reg Loss = 0.0021, Reconstruct Loss = 0.0015, Cls Loss = 1.8414, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 68%|██████▊   | 54/79 [00:01<00:00, 41.60it/s]
+ 68%|██████▊   | 54/79 [00:01<00:00, 41.60it/s]
+Epoch [192/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+100%|██████████| 79/79 [00:01<00:00, 41.79it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.79it/s]
+Iteration 250: Loss = 1.8418, Reg Loss = 0.0026, Reconstruct Loss = 0.0014, Cls Loss = 1.8404, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 11%|█▏        | 9/79 [00:00<00:01, 40.23it/s]]
+100%|██████████| 79/79 [00:01<00:00, 40.36it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.36it/s]
+Epoch [193/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8510, Reg Loss = 0.0027, Reconstruct Loss = 0.0000, Cls Loss = 1.8510, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8426, Reg Loss = 0.0032, Reconstruct Loss = 0.0015, Cls Loss = 1.8411, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 38%|███▊      | 30/79 [00:00<00:01, 40.62it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.30it/s]
+Epoch [194/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8268, Reg Loss = 0.0027, Reconstruct Loss = 0.0000, Cls Loss = 1.8268, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8407, Reg Loss = 0.0037, Reconstruct Loss = 0.0017, Cls Loss = 1.8390, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 57%|█████▋    | 45/79 [00:01<00:00, 41.60it/s]
+ 57%|█████▋    | 45/79 [00:01<00:00, 41.60it/s]
+Epoch [195/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+100%|██████████| 79/79 [00:01<00:00, 41.47it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.47it/s]
+Iteration 250: Loss = 1.8424, Reg Loss = 0.0064, Reconstruct Loss = 0.0015, Cls Loss = 1.8409, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.36it/s]
+ 82%|████████▏ | 65/79 [00:01<00:00, 41.36it/s]
+Epoch [196/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+100%|██████████| 79/79 [00:01<00:00, 41.62it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.62it/s]
+Iteration 250: Loss = 1.8411, Reg Loss = 0.0057, Reconstruct Loss = 0.0012, Cls Loss = 1.8398, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 89%|████████▊ | 70/79 [00:01<00:00, 41.15it/s]
+ 89%|████████▊ | 70/79 [00:01<00:00, 41.15it/s]
+Epoch [197/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+100%|██████████| 79/79 [00:01<00:00, 41.43it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.43it/s]
+Iteration 250: Loss = 1.8423, Reg Loss = 0.0058, Reconstruct Loss = 0.0023, Cls Loss = 1.8401, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 13%|█▎        | 10/79 [00:00<00:01, 41.35it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.72it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.72it/s]
+Epoch [198/200], Validation Loss: 1.8074, Validation Accuracy: 75.92%
+Iteration 0: Loss = 1.8675, Reg Loss = 0.0084, Reconstruct Loss = 0.0000, Cls Loss = 1.8675, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8430, Reg Loss = 0.0072, Reconstruct Loss = 0.0012, Cls Loss = 1.8417, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 38%|███▊      | 30/79 [00:00<00:01, 40.86it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.09it/s]
+100%|██████████| 79/79 [00:01<00:00, 41.09it/s]
+Epoch [199/200], Validation Loss: 1.8074, Validation Accuracy: 75.91%
+Iteration 0: Loss = 1.8291, Reg Loss = 0.0067, Reconstruct Loss = 0.0000, Cls Loss = 1.8291, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+Iteration 250: Loss = 1.8411, Reg Loss = 0.0062, Reconstruct Loss = 0.0009, Cls Loss = 1.8402, Weight LR = 1.0000e-05, Bias LR = 1.0000e-05
+ 75%|███████▍  | 59/79 [00:01<00:00, 40.55it/s]
+ 75%|███████▍  | 59/79 [00:01<00:00, 40.55it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.70it/s]
+100%|██████████| 79/79 [00:01<00:00, 40.70it/s]
