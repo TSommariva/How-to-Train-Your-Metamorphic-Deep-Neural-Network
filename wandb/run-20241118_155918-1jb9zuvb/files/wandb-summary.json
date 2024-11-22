@@ -1,1 +1,0 @@
-{"Loss": 1.8425851609513224, "Cls Loss": 1.840050789074955, "Reg Loss": 14.148913311101149, "Reconstruct Loss": 0.0011194814963839184, "Learning rate": 0.001, "_timestamp": 1731946697.1327403, "_runtime": 4739.101495265961, "_step": 46888, "Validation Loss": 1.8076773433928277, "Validation Accuracy": 0.7581, "_wandb": {"runtime": 4738}}
