@@ -32,6 +32,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 import sys
+import torch
 import torch.nn as nn
 try:
     from torch.hub import load_state_dict_from_url
@@ -130,6 +131,7 @@ class CifarResNet(nn.Module):
     def __init__(self, block, hidden_dim, layers, num_classes=10, num_layers_inr=1):
         super(CifarResNet, self).__init__()
         self.layers = layers
+        self.num_layers_inr = num_layers_inr
         self.inplanes = 16
         self.conv1 = conv3x3(3, 16)
         self.bn1 = nn.BatchNorm2d(16)
@@ -142,7 +144,7 @@ class CifarResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(64 * block.expansion, num_classes)
         
-        self.num_layers_inr = max(sum(1 for key in self.learnable_parameter.keys() if 'conv' in key),1)
+        #self.num_layers_inr = max(sum(1 for key in self.learnable_parameter.keys() if 'conv' in key) - 1 , 1 )
         self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
 
         for m in self.modules():
@@ -179,6 +181,7 @@ class CifarResNet(nn.Module):
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
+        #x = torch.flatten(x, 1)
         x = self.fc(x)
 
         return x
@@ -200,6 +203,8 @@ class CifarResNet(nn.Module):
         # self.keys = [k for k, w in self.named_parameters() if k.startswith('layer3.2.conv') ] #  ork.startswith('layer3.2')
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.2.conv2') ]#{self.layers[-1]-1}') ]
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer') ] # or k.startswith('layer3.1') or k.startswith('layer3.0')
+        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}.conv1') ]
+        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') or 'fc' in k]
         self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
 

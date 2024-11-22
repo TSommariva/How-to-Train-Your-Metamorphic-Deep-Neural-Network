@@ -3,8 +3,8 @@
 #SBATCH --job-name=INR_test            # Set the job name (optional, default is "slurm-[jobid]")
 #SBATCH --output=log/%j.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
 #SBATCH --error=log/%j.err                 # Redirect errors to this file (optional, default is the same as --output)
-#SBATCH --time=5:00:00                # Set a limit on the total run time (mandatory if there's a system-wide default time limit)
-#SBATCH --account=tesi_tsommariva
+#SBATCH --time=10:00:00                # Set a limit on the total run time (mandatory if there's a system-wide default time limit)
+#SBATCH --account=cvcs_2023_group25
 #SBATCH --partition=all_usr_prod       # Specify the partition/queue to submit to (optional, default depends on the system configuration)
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1                     # Total number of tasks across all nodes (optional, default is 1)
@@ -20,4 +20,4 @@ conda activate neumeta
 # Command to execute Python program
 
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
-python3 /homes/tsommariva/neumeta/neumeta/train_cifar10.py --config neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml
+python3 /homes/tsommariva/neumeta/neumeta/train_cifar10.py --config /homes/tsommariva/neumeta/neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml

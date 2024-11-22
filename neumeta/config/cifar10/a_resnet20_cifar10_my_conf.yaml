@@ -8,10 +8,10 @@ model:
   smooth: True
 
 experiment:
-  name: ${model.type}_myConf
-  num_epochs: 200
+  name: ${model.type}_3_LearnableLayer_2conv_1fc
+  num_epochs: 400
   log_interval: 250
-  seed: 42  # Random seed
+  eval_interval: 5
 
 # Training configurations
 training:
@@ -19,9 +19,9 @@ training:
   learning_rate: 1e-3
   batch_size: 128
   coordinate_noise: 1.0
-  lr_steps: [100, 150]
-  #scheduler: cosine
-  #T_max: 200
+  #lr_steps: [100, 150]
+  scheduler: cosine
+  T_max: 400
   weight_decay: 1e-2
   clip_grad: 10.0
   save_model_path: experiments/${experiment.name} # Directory to save the trained model

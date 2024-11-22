@@ -6,4 +6,7 @@
     "terminal.integrated.env.osx": {
         "PYTHONPATH" : "/Users/Thomas/tesi:${env:PYTHONPATH}"
     },
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH" : ".:${env:PYTHONPATH}"
+    }
 }

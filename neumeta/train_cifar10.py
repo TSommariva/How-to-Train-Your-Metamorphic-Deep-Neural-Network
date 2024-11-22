@@ -16,6 +16,7 @@ from neumeta.utils import (AverageMeter, EMA, load_checkpoint, print_omegaconf,
                        get_hypernet, get_optimizer,
                        parse_args, 
                        weighted_regression_loss)
+from neumeta.models import BasicBlock, BasicBlock_Resize
 
 # Print message
 print("Training INR On CIFAR10")
@@ -152,6 +153,39 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
     return losses.avg, dim_dict, gt_model_dict
+
+# Function to register hooks and print output shapes
+def register_hooks_and_print_shapes(model, input_tensor):
+    output_shapes = {}
+    learnable_keys = set(model.learnable_parameter.keys())
+    def hook_fnc(module_name):
+        def hook_fn(module, input, output):
+            class_name = module.__class__.__name__
+            module_idx = len(output_shapes)
+            m_key = f"{module_name}_{module_idx}_{class_name}"
+            output_shapes[m_key] = output.shape
+        return hook_fn
+
+    # Register hooks to all layers
+    hooks = []
+    for name, module in model.named_modules():
+        if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize)) and module != model:
+            #if any(key.startswith(name) for key in learnable_keys):
+                hook = module.register_forward_hook(hook_fnc(name))
+                hooks.append(hook)
+
+    # Perform a forward pass to trigger the hooks
+    model(input_tensor)
+
+    # Print the output shapes
+    for key, shape in output_shapes.items():
+        print(f"{key}: {shape}")
+
+    # Remove hooks after use
+    for hook in hooks:
+        hook.remove()
+
+
  
 # Function to initialize the model dictionary
 def init_model_dict(args):
@@ -177,6 +211,12 @@ def init_model_dict(args):
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
         # Add the model, coordinates, keys, indices, size, and key mask to the dictionary
         dim_dict[f"{dim}"] = (model_cls, coords_tensor, keys_list, indices_list, size_list, None)
+        
+        # Register hooks and print output shapes
+        #input_tensor = torch.randn(1, 3, 32, 32).to(device)
+        #register_hooks_and_print_shapes(model_cls, input_tensor)
+        
+        
         # If the dimension is the starting dimension, add the ground truth model to the dictionary
         if dim == args.dimensions.start:
             print(f"Loading model for dim {dim}")
