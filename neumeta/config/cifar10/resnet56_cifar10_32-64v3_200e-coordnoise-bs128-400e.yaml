@@ -8,10 +8,10 @@ model:
   smooth: True
 
 experiment:
-  name: ${model.type}_myConf
-  num_epochs: 400
-  log_interval: 100
-  eval_interval: 1
+  name: ${model.type}_Base
+  num_epochs: 200
+  log_interval: 200
+  eval_interval: 5
   seed: 42  # Random seed
 
 # Training configurations
@@ -19,16 +19,19 @@ training:
   learning_rate: 1e-3
   batch_size: 128
   coordinate_noise: 1.0
-  lr_steps: [100, 150]
+  #lr_steps: [100, 150]
+  scheduler: cosine
+  T_max: 200
   weight_decay: 1e-2
   clip_grad: 10.0
   save_model_path: experiments/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
+  type: resmlp
   input_dim: 6
   hidden_dim: 256
-  num_layers: 4
+  num_layers: 5
   num_freqs: 16
   output_dim: 9
   ema_decay: 0.995  # Exponential moving average decay

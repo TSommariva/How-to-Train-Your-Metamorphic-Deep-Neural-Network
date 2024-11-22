@@ -330,37 +330,43 @@ def main():
                     "Validation Accuracy": val_acc
                 })
                 # Print the validation loss and accuracy
+                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
                 print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
                 print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
                 
                 # Save the checkpoint if the accuracy is better than the previous best
                 if val_acc > best_acc:
                     best_acc = val_acc
                     save_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth",hyper_model,optimizer,ema,epoch,best_acc)
+                    print("------------------------------------------------------------------------------------------------------------------------------")
                     print(f"Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
+                    print("------------------------------------------------------------------------------------------------------------------------------")
         wandb.finish()
-    
-    #testing the best model
-    checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, ema, device=device)
-    for hidden_dim in range(16, 65):
-        # Create a model for the given hidden dimension
-        model = create_model(args.model.type, 
-                                hidden_dim=hidden_dim, 
-                                path=args.model.pretrained_path, 
-                                smooth=args.model.smooth).to(device)
-            
-        # Sample the merged model for K times
-        accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
+        
+        print("Training finished.")
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        #testing the best model
+        checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, ema, device=device)
+        for hidden_dim in range(16, 81):
+            # Create a model for the given hidden dimension
+            model = create_model(args.model.type, 
+                                    hidden_dim=hidden_dim, 
+                                    path=args.model.pretrained_path, 
+                                    smooth=args.model.smooth).to(device)
 
-        # Validate the merged model
-        val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
+            # Sample the merged model for K times
+            accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
 
-        # Print the results
-        print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+            # Validate the merged model
+            val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
+
+            # Print the results
+            print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
 
     # If testing, iterate over the hidden dimensions and test the model
     else:
-        for hidden_dim in range(16, 65):
+        for hidden_dim in range(16, 81):
             # Create a model for the given hidden dimension
             model = create_model(args.model.type, 
                                  hidden_dim=hidden_dim, 
@@ -397,7 +403,7 @@ def main():
             with open(filepath, "a") as file:
                 file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%\n")
                 # Print message
-    print("Training finished.")
+    
  
   
 if __name__ == "__main__":
