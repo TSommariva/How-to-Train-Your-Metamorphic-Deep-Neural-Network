@@ -2,12 +2,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Train Cifar10",
+      "name": "Train Cifar10 - Resnet20",
       "type": "debugpy",
       "request": "launch",
       "program": "neumeta/train_cifar10.py",
-      "args": ["--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"], //Resnet20
-      //"args": ["--config", "neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml"], //Resnet56
+      "args": ["--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"], 
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Train Cifar10 - Resnet56",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/train_cifar10.py",
+      "args": ["--config", "neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml"],
       "console": "integratedTerminal"
     },
     {

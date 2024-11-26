@@ -158,6 +158,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
 def register_hooks_and_print_shapes(model, input_tensor):
     output_shapes = {}
     learnable_keys = set(model.learnable_parameter.keys())
+    
     def hook_fnc(module_name):
         def hook_fn(module, input, output):
             class_name = module.__class__.__name__
@@ -170,7 +171,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     hooks = []
     for name, module in model.named_modules():
         if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize)) and module != model:
-            #if any(key.startswith(name) for key in learnable_keys):
+            if any(key.startswith(name) for key in learnable_keys):
                 hook = module.register_forward_hook(hook_fnc(name))
                 hooks.append(hook)
 
@@ -185,8 +186,6 @@ def register_hooks_and_print_shapes(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-
- 
 # Function to initialize the model dictionary
 def init_model_dict(args):
     """
@@ -213,8 +212,8 @@ def init_model_dict(args):
         dim_dict[f"{dim}"] = (model_cls, coords_tensor, keys_list, indices_list, size_list, None)
         
         # Register hooks and print output shapes
-        #input_tensor = torch.randn(1, 3, 32, 32).to(device)
-        #register_hooks_and_print_shapes(model_cls, input_tensor)
+        input_tensor = torch.randn(1, 3, 32, 32).to(device)
+        register_hooks_and_print_shapes(model_cls, input_tensor)
         
         
         # If the dimension is the starting dimension, add the ground truth model to the dictionary
