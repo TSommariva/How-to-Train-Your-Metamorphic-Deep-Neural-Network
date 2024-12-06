@@ -262,7 +262,7 @@ def main():
     model = create_model(args.model.type, 
         hidden_dim=args.dimensions.start, 
         path=args.model.pretrained_path, 
-        smooth=args.model.smooth).to(device)
+        smooth=args.model.smooth, fuse=args.model.fuse).to(device)
 
     # Print the maximum dimension of the model
     print("Maximum DIM: ",find_max_dim(model))
