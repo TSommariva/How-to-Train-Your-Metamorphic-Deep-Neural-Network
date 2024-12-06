@@ -34,7 +34,7 @@ def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon
         element_loss = (w - w_gt) ** 2
         
         # Apply the weights to the loss
-        weighted_loss = element_loss # * element_weights 
+        weighted_loss = element_loss * element_weights 
         
         # Sum the weighted loss for the current pair and add it to the list
         losses.append(weighted_loss.mean())

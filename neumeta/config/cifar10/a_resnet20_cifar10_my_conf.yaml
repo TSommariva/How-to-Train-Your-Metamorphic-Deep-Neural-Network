@@ -4,12 +4,12 @@ base_config: neumeta/config/base_config.yaml
 # Model configurations
 model:
   type: ResNet20
-  pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt   # Path to pre-trained model
-  smooth: True
+  pretrained_path: neumeta/pretrained_models/cifar10_resnet20-smoothed.pt   # Path to pre-trained model
+  smooth: False
   fuse: False
 
 experiment:
-  name: ${model.type}_hiddden64_unweightedRecon_sample_single_elu_200e
+  name: ${model.type}_AlreadySmoothed_sample_single_elu_200e
   num_epochs: 200
   log_interval: 200
   eval_interval: 1

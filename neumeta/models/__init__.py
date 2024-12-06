@@ -41,7 +41,7 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse =
     
     if path and not smooth and not fuse:
         if os.path.exists(path):
-            model = torch.load(path)
+            model = torch.load(path,weights_only=False)
             return model
      
     if path:

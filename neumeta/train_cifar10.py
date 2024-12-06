@@ -74,7 +74,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         # Move the data to the device
         x, target = x.to(device), target.to(device)
         # Choose a random hidden dimension
-        hidden_dim = 64 #random.choice(args.dimensions.range)
+        hidden_dim = random.choice(args.dimensions.range)
+        if batch_idx % 20 == 0:
+            hidden_dim = 64
         # Get the model class, coordinates, keys, indices, size, and key mask for the chosen dimension
         model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
         # Sample a subset of the coordinates, keys, indices, size, and selected keys
