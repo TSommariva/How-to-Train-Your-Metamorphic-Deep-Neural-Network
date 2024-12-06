@@ -6,6 +6,7 @@ model:
   type: ResNet20
   pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt   # Path to pre-trained model
   smooth: True
+  fuse: False
 
 experiment:
   name: ${model.type}_hiddden64_unweightedRecon_sample_single_elu_200e

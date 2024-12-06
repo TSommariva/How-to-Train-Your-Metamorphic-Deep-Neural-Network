@@ -19,7 +19,8 @@ set_seed(args.experiment.seed)
 model = create_model_cifar10(args.model.type, 
         hidden_dim=args.dimensions.start, 
         path=args.model.pretrained_path, 
-        smooth=False).to(device)
+        smooth=False,
+        fuse=True).to(device)
 
 model.eval()  # Set to evaluation mode
 
@@ -41,4 +42,12 @@ val_loss, val_acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), ar
 print(f"Smoothed model Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
 
 
-torch.save(model.state_dict(),"/homes/tsommariva/neumeta/neumeta/pretrained_models/cifar10_resnet20-smoothed.pt")
+torch.save(model,"neumeta/pretrained_models/cifar10_resnet20-smoothed.pt")
+
+model = create_model_cifar10(args.model.type, 
+        hidden_dim=args.dimensions.start, 
+        path="neumeta/pretrained_models/cifar10_resnet20-smoothed.pt", 
+        smooth=False, fuse=False).to(device)
+
+val_loss, val_acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args, device=device)
+print(f"Saved model Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")

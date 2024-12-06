@@ -383,7 +383,8 @@ def main():
             model = create_model(args.model.type, 
                                  hidden_dim=hidden_dim, 
                                  path=args.model.pretrained_path, 
-                                 smooth=args.model.smooth).to(device)
+                                 smooth=args.model.smooth,
+                                 fuse=args.model.fuse).to(device)
 
             # If EMA is specified, apply it
             if ema:

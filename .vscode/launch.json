@@ -10,6 +10,14 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "Smooth Cifar10 - Resnet20",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/smoothing.py",
+      "args": ["--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"], 
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Train Cifar10 - Resnet20 - Debug Configuration",
       "type": "debugpy",
       "request": "launch",
