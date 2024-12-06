@@ -9,7 +9,7 @@ model:
   fuse: False
 
 experiment:
-  name: ${model.type}_AlreadySmoothed_sample_single_elu_200e
+  name: ${model.type}_AlreadySmoothed_hiddenDim64_reg1e-2_elu_200e
   num_epochs: 200
   log_interval: 200
   eval_interval: 1
@@ -31,15 +31,15 @@ training:
 hyper_model:
   type: resmlp
   input_dim: 6
-  hidden_dim: 512
-  num_layers: 8
-  num_freqs: 32
+  hidden_dim: 256
+  num_layers: 5
+  num_freqs: 16
   output_dim: 9
   ema_decay: 0.995  # Exponential moving average decay
   
   loss_weight:
     ce_weight: 1.0
-    reg_weight: 0.0001
+    reg_weight: 0.01
     recon_weight: 1.0
     kd_weight: 0.1
 

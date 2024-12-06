@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=smoothed            # Set the job name (optional, default is "slurm-[jobid]")
-#SBATCH --output=log/AlreadySmoothed5.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
-#SBATCH --error=log/AlreadySmoothed5.err                 # Redirect errors to this file (optional, default is the same as --output)
+#SBATCH --job-name=reg1e-2            # Set the job name (optional, default is "slurm-[jobid]")
+#SBATCH --output=log/AlreadySmoothed_hiddenDim64_reg1e-2_elu_200e.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
+#SBATCH --error=log/AlreadySmoothed_hiddenDim64_reg1e-2_elu_200e.err                 # Redirect errors to this file (optional, default is the same as --output)
 #SBATCH --time=12:00:00                # Set a limit on the total run time (mandatory if there's a system-wide default time limit)
 #SBATCH --account=tesi_tsommariva
 #SBATCH --partition=all_usr_prod       # Specify the partition/queue to submit to (optional, default depends on the system configuration)

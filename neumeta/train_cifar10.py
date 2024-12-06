@@ -74,9 +74,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         # Move the data to the device
         x, target = x.to(device), target.to(device)
         # Choose a random hidden dimension
-        hidden_dim = random.choice(args.dimensions.range)
-        if batch_idx % 20 == 0:
-            hidden_dim = 64
+        hidden_dim = 64 #random.choice(args.dimensions.range)
+        #if batch_idx % 20 == 0:
+        #    hidden_dim = 64
         # Get the model class, coordinates, keys, indices, size, and key mask for the chosen dimension
         model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
         # Sample a subset of the coordinates, keys, indices, size, and selected keys
@@ -220,7 +220,7 @@ def init_model_dict(args):
         model_cls = create_model(args.model.type, 
                                  hidden_dim=dim, 
                                  path=args.model.pretrained_path, 
-                                 smooth=args.model.smooth).to(device)
+                                 smooth=args.model.smooth, fuse=args.model.fuse).to(device)
         # Sample the coordinates, keys, indices, and size for the model
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
         # Add the model, coordinates, keys, indices, size, and key mask to the dictionary
@@ -237,7 +237,7 @@ def init_model_dict(args):
             model_trained = create_model(args.model.type, 
                                          hidden_dim=dim, 
                                          path=args.model.pretrained_path, 
-                                         smooth=args.model.smooth).to(device)
+                                         smooth=args.model.smooth, fuse=args.model.fuse).to(device)
             model_trained.eval()
             
             gt_model_dict[f"{dim}"] = model_trained
@@ -326,8 +326,8 @@ def main():
                     ema.apply()
                     
                 # Sample the merged model
-               # sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
-                sampled_model = sample_single_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"],cfg=args ,device=device)
+                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+                #sampled_model = sample_single_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"],cfg=args ,device=device)
                 # Validate the merged model
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
@@ -367,7 +367,7 @@ def main():
             model = create_model(args.model.type, 
                                     hidden_dim=hidden_dim, 
                                     path=args.model.pretrained_path, 
-                                    smooth=args.model.smooth).to(device)
+                                    smooth=args.model.smooth, fuse=args.model.fuse).to(device)
 
             # Sample the merged model for K times
             accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
