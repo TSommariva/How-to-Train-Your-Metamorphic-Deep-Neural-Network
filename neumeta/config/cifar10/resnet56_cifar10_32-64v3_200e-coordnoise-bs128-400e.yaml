@@ -8,8 +8,8 @@ model:
   smooth: True
 
 experiment:
-  name: ${model.type}_Base_6Learnable_4changable
-  num_epochs: 600
+  name: ${model.type}_Base_3Learnable_3changable_1000e
+  num_epochs: 1000
   log_interval: 200
   eval_interval: 5
 
@@ -21,7 +21,7 @@ training:
   coordinate_noise: 1.0
   #lr_steps: [100, 150]
   scheduler: cosine
-  T_max: 600
+  T_max: 1000
   weight_decay: 1e-2
   clip_grad: 10.0
   save_model_path: experiments/${experiment.name} # Directory to save the trained model

@@ -5,13 +5,15 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet20
   pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt   # Path to pre-trained model
-  smooth: True
+  smooth: False
 
 experiment:
-  name: ${model.type}_hiddden64_unweightedRecon_sample_single_elu_200e
+  name: ${model.type}_Debug
   num_epochs: 200
   log_interval: 200
   eval_interval: 1
+  seed: 42  # Random seed
+
 
 # Training configurations
 training:
@@ -38,7 +40,7 @@ hyper_model:
   
   loss_weight:
     ce_weight: 1.0
-    reg_weight: 0.0001
+    reg_weight: 0.01
     recon_weight: 1.0
     kd_weight: 0.1
 

@@ -10,6 +10,14 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "Train Cifar10 - Resnet20 - Debug Configuration",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/train_cifar10.py",
+      "args": ["--config", "neumeta/config/cifar10/debug.yaml"], 
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Train Cifar10 - Resnet56",
       "type": "debugpy",
       "request": "launch",

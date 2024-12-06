@@ -11,12 +11,13 @@ from neumeta.utils import (AverageMeter, EMA, load_checkpoint, print_omegaconf,
                        sample_coordinates, sample_merge_model, 
                        sample_subset, sample_weights, save_checkpoint, 
                        set_seed, shuffle_coordiates_all, 
-                       # validate, validate_ensemble, sample_single_model,validate_merge,
-                       validate_single, get_cifar10, 
+                       # validate, validate_ensemble,validate_merge,
+                       validate_single, get_cifar10, sample_single_model,
                        get_hypernet, get_optimizer,
                        parse_args, 
                        weighted_regression_loss)
 from neumeta.models import BasicBlock, BasicBlock_Resize
+from sklearn.metrics import accuracy_score
 
 # Print message
 print("Training INR On CIFAR10")
@@ -73,7 +74,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         # Move the data to the device
         x, target = x.to(device), target.to(device)
         # Choose a random hidden dimension
-        hidden_dim = random.choice(args.dimensions.range)
+        hidden_dim = 64 #random.choice(args.dimensions.range)
         # Get the model class, coordinates, keys, indices, size, and key mask for the chosen dimension
         model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
         # Sample a subset of the coordinates, keys, indices, size, and selected keys
@@ -93,6 +94,10 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
 
         # Forward pass
         predict = model_cls(x)
+        
+        results=torch.argmax(predict,dim=1)
+        train_acc=accuracy_score(results.cpu(), target.cpu())
+        
         # Compute classification loss
         cls_loss = criterion(predict, target) 
         # Compute regularization loss
@@ -143,7 +148,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         # Log the losses and learning rate to wandb
         if batch_idx % args.experiment.log_interval == 0:
             wandb.log({
-                "Loss": losses.avg,
+                "Running training accuracy argmax" : train_acc,
+                "Running average training loss": losses.avg,
                 "Cls Loss": cls_losses.avg,
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
@@ -152,6 +158,13 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             # Print the losses and learning rate
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
+        
+    tr_loss, tr_acc = validate_single(model_cls, train_loader, nn.CrossEntropyLoss(), args=args, device=device)
+    wandb.log({
+                "trainLoss_last model of the epoch" : tr_loss,
+                "trainAcc_last model of the epoch" : tr_acc
+                
+            })
     return losses.avg, dim_dict, gt_model_dict
 
 # Function to register hooks and print output shapes
@@ -213,7 +226,7 @@ def init_model_dict(args):
         
         # Register hooks and print output shapes
         input_tensor = torch.randn(1, 3, 32, 32).to(device)
-        register_hooks_and_print_shapes(model_cls, input_tensor)
+        #register_hooks_and_print_shapes(model_cls, input_tensor)
         
         
         # If the dimension is the starting dimension, add the ground truth model to the dictionary
@@ -241,8 +254,7 @@ def main():
 
     # Get the training and validation data loaders
     train_loader, val_loader = get_cifar10(args.training.batch_size, 
-                                           strong_transform=args.training.get('strong_aug', None),
-                                           )
+                                           strong_transform=args.training.get('strong_aug', None))
     
     # Create the model for the starting dimension
     model = create_model(args.model.type, 
@@ -298,7 +310,7 @@ def main():
         for epoch in range(start_epoch, args.experiment.num_epochs):
             
             # Train the model for one epoch
-            train_loss, dim_dict, _ = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
+            train_loss, dim_dict, gt_model_dict = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
             # Step the scheduler
             scheduler.step()
 
@@ -312,7 +324,8 @@ def main():
                     ema.apply()
                     
                 # Sample the merged model
-                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+               # sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+                sampled_model = sample_single_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"],cfg=args ,device=device)
                 # Validate the merged model
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
@@ -323,10 +336,10 @@ def main():
                     
                 # Log the validation loss and accuracy to wandb
                 wandb.log({
-                    "Train Loss": train_loss,
-                    "Train Accuracy": train_acc,
-                    "Validation Loss": val_loss,
-                    "Validation Accuracy": val_acc
+                    "Train Loss_model sampled outside training": train_loss,
+                    "Train Accuracy_model sampled outside training": train_acc,
+                    "Validation Loss_model sampled outside training": val_loss,
+                    "Validation Accuracy_model sampled outside training": val_acc
                 })
                 # Print the validation loss and accuracy
                 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -335,7 +348,7 @@ def main():
                 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
                 
                 # Save the checkpoint if the accuracy is better than the previous best
-                if val_acc > best_acc:
+                if (val_acc > best_acc) and (epoch > 20):
                     best_acc = val_acc
                     save_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth",hyper_model,optimizer,ema,epoch,best_acc)
                     print("------------------------------------------------------------------------------------------------------------------------------")

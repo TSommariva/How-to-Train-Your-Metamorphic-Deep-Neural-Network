@@ -79,7 +79,8 @@ class NeRF_MLP_Residual_Scaled(nn.Module):
             self.scalars.append(nn.Parameter(torch.tensor(scalar), requires_grad=True))
         
         # Activation function
-        self.act = nn.ReLU(inplace=True)
+        #self.act = nn.ReLU(inplace=True)
+        self.act = nn.ELU(inplace=True)
         
         # Define the output layer
         self.output_layer = nn.Linear(hidden_dim, output_dim)
