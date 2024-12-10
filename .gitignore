@@ -1,6 +1,6 @@
 # Directories to ignore
 **/__pycache__/
 data/
-experiments/
 log/
 wandb/
+**/experiments/

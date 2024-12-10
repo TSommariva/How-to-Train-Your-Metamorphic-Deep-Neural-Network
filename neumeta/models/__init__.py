@@ -41,7 +41,10 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse =
     
     if path and not smooth and not fuse:
         if os.path.exists(path):
-            model = torch.load(path,weights_only=False)
+            #model = torch.load(path,weights_only=False)
+            fuse_module(model)
+            state_dict = torch.load(path, map_location=torch.device('cpu'))
+            load_checkpoint(model, state_dict)
             return model
      
     if path:
@@ -64,7 +67,7 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse =
     return model    
 
 
-def create_model_cifar100(model_name, hidden_dim, path=None, smooth=False):
+def create_model_cifar100(model_name, hidden_dim, path=None, smooth=False, fuse=True):
     """
     Create a model based on the specified name.
 
@@ -83,35 +86,44 @@ def create_model_cifar100(model_name, hidden_dim, path=None, smooth=False):
     else:
         raise ValueError(f"Unsupported model: {model_name}")
     
-    if path and smooth:
+    if path and not smooth and not fuse:
+        if os.path.exists(path):
+            #model = torch.load(path,weights_only=False)
+            fuse_module(model)
+            state_dict = torch.load(path, map_location=torch.device('cpu'))
+            load_checkpoint(model, state_dict)
+            return model
+        
+    if path:
         print("Loading model from", path)
         state_dict = torch.load(path, map_location=torch.device('cpu'))
         # model.load_state_dict(state_dict)
         load_checkpoint(model, state_dict)
-    
+    if fuse:
         fuse_module(model)
-        
+    if smooth:   
         print("Smooth the parameters of the model")
         input_tensor = torch.randn(1, 3, 32, 32)
         permute_func = PermutationManager(model, input_tensor)
         permute_dict = permute_func.compute_permute_dict()
         model = permute_func.apply_permutations(permute_dict, ignored_keys=[('conv1.weight', 'in_channels'), ('fc.weight', 'out_channels'), ('fc.bias', 'out_channels')])
     
-    elif path and not smooth:
-        fuse_module(model)
-        
-        print("Loading model from", path)
-        state_dict = torch.load(path, map_location=torch.device('cpu'))
-        load_checkpoint(model, state_dict)
-    elif not path and smooth:
-        fuse_module(model)
-        print("Smooth the parameters of the model")
-        input_tensor = torch.randn(1, 3, 32, 32)
-        permute_func = PermutationManager(model, input_tensor)
-        permute_dict = permute_func.compute_permute_dict()
-        model = permute_func.apply_permutations(permute_dict, ignored_keys=[('conv1.weight', 'in_channels'), ('fc.weight', 'out_channels'), ('fc.bias', 'out_channels')])
+   # elif path and not smooth:
+   #     fuse_module(model)
+   #     
+   #     print("Loading model from", path)
+   #     state_dict = torch.load(path, map_location=torch.device('cpu'))
+   #     load_checkpoint(model, state_dict)
+   # elif not path and smooth:
+   #     fuse_module(model)
+   #     print("Smooth the parameters of the model")
+   #     input_tensor = torch.randn(1, 3, 32, 32)
+   #     permute_func = PermutationManager(model, input_tensor)
+   #     permute_dict = permute_func.compute_permute_dict()
+   #     model = permute_func.apply_permutations(permute_dict, ignored_keys=[('conv1.weight', 'in_channels'), ('fc.weight', 'out_channels'), ('fc.bias', 'out_channels')])
         
     return model
+   
     
 def create_model_imagenet(model_name, hidden_dim, path=None, smooth=None):
     """

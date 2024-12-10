@@ -1,28 +1,28 @@
 # Experiment settings
+# Experiment settings
 base_config: neumeta/config/base_config.yaml
-
 # Model configurations
 model:
-  type: ResNet20
-  pretrained_path: neumeta/pretrained_models/cifar10_resnet20-smoothed.pt
+  type: ResNet56
+  pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
   smooth: False
   fuse: False
 
 experiment:
-  name: ${model.type}Already_hiddenDim64_smoothed_ce1e2_rec1_reg1e-3_elu_600eT200_V2
+  name: CIFAR100_${model.type}_${experiment.num_epochs}e_1Learnable
   num_epochs: 600
   log_interval: 100
   eval_interval: 1
 
+
 # Training configurations
 training:
-  optimizer: adam
   learning_rate: 1e-3
   batch_size: 128
   coordinate_noise: 1.0
-  #lr_steps: [100, 150]
   scheduler: cosine
   T_max: 200
+  # strong_aug: v1
   weight_decay: 1e-2
   clip_grad: 10.0
   save_model_path: experiments/${experiment.name} # Directory to save the trained model
@@ -36,12 +36,13 @@ hyper_model:
   num_freqs: 32
   output_dim: 9
   ema_decay: 0.995  # Exponential moving average decay
-  
+
   loss_weight:
     ce_weight: 100.0
     reg_weight: 0.001
     recon_weight: 1.0
     kd_weight: 0.1
+
 
 # Experiment dimensions configuration
 dimensions:

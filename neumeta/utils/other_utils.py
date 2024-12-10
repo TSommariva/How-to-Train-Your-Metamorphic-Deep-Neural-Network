@@ -23,22 +23,19 @@ def parse_args():
     parser.add_argument('--test', action='store_true',
                         default=False, help='Test the model')
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     config = OmegaConf.load(args.config)
 
-    # Load the base configuration
     if config.get('base_config', None):
         print("Loading base config from " + config.base_config)
         base_config = OmegaConf.load(config.base_config)
         config = OmegaConf.merge(base_config, config)
 
-    # Convert args to a dictionary
-    # We filter out None values and the 'config' argument
-    cli_args = {k: v for k, v in vars(args).items()}
+    cli_args = vars(args)
+    unknown_args = OmegaConf.from_dotlist(unknown)
 
-    # Merge command-line arguments into the configuration
-    config = OmegaConf.merge(config, OmegaConf.create(cli_args))
+    config = OmegaConf.merge(config, OmegaConf.create(cli_args), unknown_args)
     if len(config.dimensions.range) == 2:
         interval = config.dimensions.get('interval', 1)
         config.dimensions.range = list(
@@ -203,10 +200,15 @@ def load_checkpoint(filepath, model, optimizer, ema, device='cuda'):
     ema (EMA): The EMA object.
     """
     checkpoint = torch.load(filepath, map_location='cpu')
-    if 'state_dict' in checkpoint:
-        model.load_state_dict(checkpoint['state_dict'])
-    else:
-        model.load_state_dict(checkpoint['model_state_dict'])
+    
+    # After loading the checkpoint
+    saved_keys = set(checkpoint['model_state_dict'].keys())
+    model_keys = set(model.state_dict().keys())
+    print("Keys in saved state_dict but not in model:", saved_keys - model_keys)
+    print("Keys in model but not in saved state_dict:", model_keys - saved_keys)
+    
+    model.load_state_dict(checkpoint['model_state_dict'])
+    
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     if ema is not None:

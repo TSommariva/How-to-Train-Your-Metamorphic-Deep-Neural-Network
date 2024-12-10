@@ -144,7 +144,7 @@ class CifarResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(64 * block.expansion, num_classes)
         
-        #self.num_layers_inr = max(sum(1 for key in self.learnable_parameter.keys() if 'conv' in key) // 2 , 1 )
+        self.num_layers_inr = max(sum(1 for key in self.learnable_parameter.keys() if 'conv' in key) // 2 - 1, 1 )
         self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
 
         for m in self.modules():
@@ -205,7 +205,7 @@ class CifarResNet(nn.Module):
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}.conv1') ]
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') or 'fc' in k]
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3') and '0' not in k ] # or k.startswith('layer3.1') or k.startswith('layer3.0')
-        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') or k.startswith(f'layer3.{self.layers[-1]-2}') or k.startswith(f'layer3.{self.layers[-1]-3}')]
+        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') or k.startswith(f'layer3.{self.layers[-1]-2}')]
         
         self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}

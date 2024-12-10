@@ -1,8 +1,8 @@
-from neumeta.models import create_model_cifar10
+from neumeta.models import create_model_cifar10, create_model_cifar100
 import torch
 import torch.nn as nn
 from smooth.permute import PermutationManager, compute_tv_loss_for_network
-from neumeta.utils import parse_args, print_omegaconf, set_seed, get_cifar10,validate_single
+from neumeta.utils import parse_args, print_omegaconf, set_seed, get_cifar10, get_cifar100,validate_single
 
 
 device = "cpu"
@@ -13,18 +13,26 @@ args = parse_args()
 print_omegaconf(args)
 # Set the random seed
 set_seed(args.experiment.seed)
+if "cifar10_" in args.model.pretrained_path:
+        create_model= create_model_cifar10
+        get_cifar = get_cifar10
+        save_path= f"neumeta/pretrained_models/cifar10_{args.model.type}-smoothed.pt"
+elif "cifar100_" in args.model.pretrained_path:
+        create_model= create_model_cifar100
+        get_cifar = get_cifar100
+        save_path = f"neumeta/pretrained_models/cifar100_{args.model.type}-smoothed.pt"
 
 
 # Create the model for CIFAR10
-model = create_model_cifar10(args.model.type, 
+model = create_model(args.model.type, 
         hidden_dim=args.dimensions.start, 
         path=args.model.pretrained_path, 
-        smooth=False,
-        fuse=True).to(device)
+        smooth=False,fuse=True
+        ).to(device)
 
 model.eval()  # Set to evaluation mode
 
-train_loader, val_loader = get_cifar10(args.training.batch_size, 
+train_loader, val_loader = get_cifar(args.training.batch_size, 
                                            strong_transform=args.training.get('strong_aug', None))
 
 val_loss, val_acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args, device=device)
@@ -42,12 +50,13 @@ val_loss, val_acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), ar
 print(f"Smoothed model Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
 
 
-torch.save(model,"neumeta/pretrained_models/cifar10_resnet20-smoothed.pt")
+torch.save(model.state_dict(),save_path)
 
-model = create_model_cifar10(args.model.type, 
+model = create_model(args.model.type, 
         hidden_dim=args.dimensions.start, 
-        path="neumeta/pretrained_models/cifar10_resnet20-smoothed.pt", 
-        smooth=False, fuse=False).to(device)
+        path=save_path, 
+        smooth=False, fuse=False
+        ).to(device)
 
 val_loss, val_acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args, device=device)
 print(f"Saved model Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")

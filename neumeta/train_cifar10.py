@@ -61,21 +61,16 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     model.train()
     total_loss = 0.0
 
-    # Initialize AverageMeter objects to track the losses
     losses = AverageMeter()
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
 
-    # Iterate over the training data
     for batch_idx, (x, target) in enumerate(train_loader):
-        # Zero the gradients
         optimizer.zero_grad()
-        # Move the data to the device
         x, target = x.to(device), target.to(device)
-        # Choose a random hidden dimension
         hidden_dim = 64 #random.choice(args.dimensions.range)
-        #if batch_idx % 20 == 0:
+        #if batch_idx % 5 == 0:
         #    hidden_dim = 64
         # Get the model class, coordinates, keys, indices, size, and key mask for the chosen dimension
         model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
@@ -180,6 +175,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
             module_idx = len(output_shapes)
             m_key = f"{module_name}_{module_idx}_{class_name}"
             output_shapes[m_key] = output.shape
+            
         return hook_fn
 
     # Register hooks to all layers
@@ -228,7 +224,7 @@ def init_model_dict(args):
         
         # Register hooks and print output shapes
         input_tensor = torch.randn(1, 3, 32, 32).to(device)
-        #register_hooks_and_print_shapes(model_cls, input_tensor)
+        register_hooks_and_print_shapes(model_cls, input_tensor)
         
         
         # If the dimension is the starting dimension, add the ground truth model to the dictionary
@@ -387,12 +383,15 @@ def main():
                                  path=args.model.pretrained_path, 
                                  smooth=args.model.smooth,
                                  fuse=args.model.fuse).to(device)
+            
+            input_tensor = torch.randn(1, 3, 32, 32).to(device)
+            register_hooks_and_print_shapes(model, input_tensor)
 
             # If EMA is specified, apply it
             if ema:
                 print("Applying EMA")
                 ema.apply()
-                
+               
             # Sample the merged model
             accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
 
