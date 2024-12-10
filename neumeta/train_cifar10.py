@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import wandb
+import numpy as np
 # Import functions from neumeta module
 from neumeta.models import create_model_cifar10 as create_model
 from neumeta.utils import (AverageMeter, EMA, load_checkpoint, print_omegaconf, 
@@ -358,6 +359,7 @@ def main():
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         #testing the best model
         checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, ema, device=device)
+        accuracies = []
         for hidden_dim in range(16, 81):
             # Create a model for the given hidden dimension
             model = create_model(args.model.type, 
@@ -370,22 +372,30 @@ def main():
 
             # Validate the merged model
             val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
+            accuracies.append(val_acc)
 
             # Print the results
             print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+        
+        mean_accuracy = np.mean(accuracies)
+        variance_accuracy = np.var(accuracies)
+
+        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}%")
+        print(f"Variance of Validation Accuracy: {variance_accuracy * 100:.2f}%")
 
     # If testing, iterate over the hidden dimensions and test the model
     else:
-        for hidden_dim in range(16, 81):
+        for hidden_dim in range(16, 80):
             # Create a model for the given hidden dimension
+            accuracies = []
             model = create_model(args.model.type, 
                                  hidden_dim=hidden_dim, 
                                  path=args.model.pretrained_path, 
                                  smooth=args.model.smooth,
                                  fuse=args.model.fuse).to(device)
             
-            input_tensor = torch.randn(1, 3, 32, 32).to(device)
-            register_hooks_and_print_shapes(model, input_tensor)
+            #input_tensor = torch.randn(1, 3, 32, 32).to(device)
+            #register_hooks_and_print_shapes(model, input_tensor)
 
             # If EMA is specified, apply it
             if ema:
@@ -397,6 +407,7 @@ def main():
 
             # Validate the merged model
             val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
+            accuracies.append(val_acc)
             
             # If EMA is specified, restore the original weights after applying EMA
             if ema:
@@ -417,6 +428,11 @@ def main():
             with open(filepath, "a") as file:
                 file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%\n")
                 # Print message
+        mean_accuracy = np.mean(accuracies)
+        variance_accuracy = np.var(accuracies)
+
+        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}%")
+        print(f"Variance of Validation Accuracy: {variance_accuracy * 100:.2f}%")
     
  
   

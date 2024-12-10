@@ -43,7 +43,7 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse =
         if os.path.exists(path):
             #model = torch.load(path,weights_only=False)
             fuse_module(model)
-            state_dict = torch.load(path, map_location=torch.device('cpu'))
+            state_dict = torch.load(path, map_location=torch.device('cpu'), weights_only=False)
             load_checkpoint(model, state_dict)
             return model
      

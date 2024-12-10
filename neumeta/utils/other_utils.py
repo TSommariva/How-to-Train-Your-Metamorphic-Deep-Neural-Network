@@ -202,10 +202,10 @@ def load_checkpoint(filepath, model, optimizer, ema, device='cuda'):
     checkpoint = torch.load(filepath, map_location='cpu')
     
     # After loading the checkpoint
-    saved_keys = set(checkpoint['model_state_dict'].keys())
-    model_keys = set(model.state_dict().keys())
-    print("Keys in saved state_dict but not in model:", saved_keys - model_keys)
-    print("Keys in model but not in saved state_dict:", model_keys - saved_keys)
+    #saved_keys = set(checkpoint['model_state_dict'].keys())
+    #model_keys = set(model.state_dict().keys())
+    #print("Keys in saved state_dict but not in model:", saved_keys - model_keys)
+    #print("Keys in model but not in saved state_dict:", model_keys - saved_keys)
     
     model.load_state_dict(checkpoint['model_state_dict'])
     
