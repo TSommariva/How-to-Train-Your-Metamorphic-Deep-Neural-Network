@@ -158,7 +158,7 @@ class EMA:
                     self.shadow[name] + (1.0 - self.decay) * param.data
 
 
-def save_checkpoint(filepath, model, optimizer, ema, epoch, best_acc):
+def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -176,6 +176,7 @@ def save_checkpoint(filepath, model, optimizer, ema, epoch, best_acc):
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict' : scheduler.state_dict(),
             'ema_shadow': ema.shadow,  # specifically saving shadow weights
             'best_acc': best_acc,
         }
@@ -184,12 +185,13 @@ def save_checkpoint(filepath, model, optimizer, ema, epoch, best_acc):
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict' : scheduler.state_dict(),
             'best_acc': best_acc,
         }
     torch.save(checkpoint, filepath)
 
 
-def load_checkpoint(filepath, model, optimizer, ema, device='cuda'):
+def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda'):
     """
     Loads the state from a checkpoint into the model, optimizer, and EMA object.
 
@@ -211,6 +213,8 @@ def load_checkpoint(filepath, model, optimizer, ema, device='cuda'):
     
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    if scheduler is not None:
+        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
     if ema is not None:
         ema.shadow = {k: checkpoint['ema_shadow'][k].to(
             device) for k in checkpoint['ema_shadow']}

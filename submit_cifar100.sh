@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=NeRF            # Set the job name (optional, default is "slurm-[jobid]")
-#SBATCH --output=log/Cifar100_1Learnable_AlreadySmoothed_ce1e2_rec1_reg1e-3_elu_600e_T200.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
-#SBATCH --error=log/Cifar100_1Learnable_AlreadySmoothed_ce1e2_rec1_reg1e-3_elu_600e_T200.err                 # Redirect errors to this file (optional, default is the same as --output)
+#SBATCH --job-name=S&L2            # Set the job name (optional, default is "slurm-[jobid]")
+#SBATCH --output=log/Cifar100_SmallBottleneck_2Learnable_2Slim.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
+#SBATCH --error=log/Cifar100_SmallBottleneck_2Learnable_2Slim.err                 # Redirect errors to this file (optional, default is the same as --output)
 #SBATCH --time=24:00:00                # Set a limit on the total run time (mandatory if there's a system-wide default time limit)
 #SBATCH --account=tesi_tsommariva
 #SBATCH --partition=all_usr_prod       # Specify the partition/queue to submit to (optional, default depends on the system configuration)

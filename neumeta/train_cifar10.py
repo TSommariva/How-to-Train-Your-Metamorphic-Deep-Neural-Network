@@ -293,7 +293,7 @@ def main():
     # If specified, load the checkpoint
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, ema, device=device)
+        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema, device=device)
         start_epoch = checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         print(f"Resuming from epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
@@ -349,7 +349,7 @@ def main():
                 # Save the checkpoint if the accuracy is better than the previous best
                 if (val_acc > best_acc) and (epoch > 20):
                     best_acc = val_acc
-                    save_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth",hyper_model,optimizer,ema,epoch,best_acc)
+                    save_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc)
                     print("------------------------------------------------------------------------------------------------------------------------------")
                     print(f"Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                     print("------------------------------------------------------------------------------------------------------------------------------")
@@ -358,9 +358,9 @@ def main():
         print("Training finished.")
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         #testing the best model
-        checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, ema, device=device)
+        checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar10_nerf_best.pth", hyper_model, optimizer, scheduler, ema, device=device)
         accuracies = []
-        for hidden_dim in range(16, 81):
+        for hidden_dim in range(16, 65):
             # Create a model for the given hidden dimension
             model = create_model(args.model.type, 
                                     hidden_dim=hidden_dim, 
@@ -378,16 +378,16 @@ def main():
             print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
         
         mean_accuracy = np.mean(accuracies)
-        variance_accuracy = np.var(accuracies)
+        std_accuracy = np.std(accuracies)
 
-        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}%")
-        print(f"Variance of Validation Accuracy: {variance_accuracy * 100:.2f}%")
-
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
+   
     # If testing, iterate over the hidden dimensions and test the model
     else:
-        for hidden_dim in range(16, 80):
+        accuracies = []
+        for hidden_dim in range(16, 65):
             # Create a model for the given hidden dimension
-            accuracies = []
             model = create_model(args.model.type, 
                                  hidden_dim=hidden_dim, 
                                  path=args.model.pretrained_path, 
@@ -429,10 +429,12 @@ def main():
                 file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%\n")
                 # Print message
         mean_accuracy = np.mean(accuracies)
-        variance_accuracy = np.var(accuracies)
+        variance_accuracy = np.std(accuracies)
 
-        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}%")
-        print(f"Variance of Validation Accuracy: {variance_accuracy * 100:.2f}%")
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {variance_accuracy * 100:.2f}%")
+        print("finsh")
+        #print(f"Variance of Validation Accuracy: {variance_accuracy * 100:.2f}%")
     
  
   

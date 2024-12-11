@@ -2,6 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Cifar100 - Resnet56",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/train_cifar100.py",
+      "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml"], 
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Train Cifar100 - Resnet56",
       "type": "debugpy",
       "request": "launch",
@@ -10,11 +18,31 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "Test Cifar100 - Resnet56",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/train_cifar100.py",
+      "args": [
+          "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml",
+          "--resume_from", "experiments/CIFAR100_ResNet56_600e_1Learnable/cifar100_nerf_best.pth",
+          "--test", "True"
+        ],
+        "console": "integratedTerminal"
+    },
+    {
       "name": "Train Cifar10 - Resnet20",
       "type": "debugpy",
       "request": "launch",
       "program": "neumeta/train_cifar10.py",
       "args": ["--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf.yaml"], 
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Train Cifar10 - Resnet56",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/train_cifar10.py",
+      "args": ["--config", "neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml"],
       "console": "integratedTerminal"
     },
     {
@@ -26,8 +54,8 @@
           "--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf_test.yaml",
           "--resume_from", "experiments/ResNet20Already_hiddenDim64_smoothed_ce1e2_rec1_reg1e-3_elu_600eT200_V2/cifar10_nerf_best.pth",
           "--test", "True"
-      ],
-      "console": "integratedTerminal"
+        ],
+        "console": "integratedTerminal"
     },
     {
       "name": "Smooth Cifar10 - Resnet20",
@@ -43,22 +71,6 @@
       "request": "launch",
       "program": "neumeta/smoothing.py",
       "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf.yaml"], 
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Train Cifar10 - Resnet56",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "neumeta/train_cifar10.py",
-      "args": ["--config", "neumeta/config/cifar10/resnet56_cifar10_32-64v3_200e-coordnoise-bs128-400e.yaml"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Train ImageNet",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "neumeta/train_imagenet_ddp.py",
-      "args": ["--config", "neumeta/config/imagenet/resnet18_imagenet_256-200e-ccordnoise-bs256x2.yaml"],
       "console": "integratedTerminal"
     }
   ]

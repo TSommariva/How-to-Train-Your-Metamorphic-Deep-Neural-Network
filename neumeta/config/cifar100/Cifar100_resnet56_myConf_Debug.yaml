@@ -5,13 +5,13 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 2
+  num_param: 1
   smooth: False
   fuse: False
 
 experiment:
-  name: CIFAR100_${model.type}_${experiment.num_epochs}e_SmallBottleneck_${model.num_param}Learnable_${model.num_param}Slim
-  debug: False
+  name: CIFAR100_${model.type}_${experiment.num_epochs}e_LongBottleneck_${model.num_param}LearnableBlocks_DEBUG
+  debug: True
   num_epochs: 600
   log_interval: 100
   eval_interval: 1
