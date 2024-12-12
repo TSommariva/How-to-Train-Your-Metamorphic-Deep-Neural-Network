@@ -311,20 +311,29 @@ def main_nerf():
                 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
                 
                 # Save the checkpoint
-                if val_acc > best_acc:
+                if val_acc > best_acc and epoch > 20:
                     best_acc = val_acc
                     save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc)
                     print("------------------------------------------------------------------------------------------------------------------------------")
                     print(f"Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                     print("------------------------------------------------------------------------------------------------------------------------------")
+        
+        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+        save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc)
+        print("------------------------------------------------------------------------------------------------------------------------------")
+        print(f"Checkpoint saved at the end of training with accuracy: {val_acc*100:.2f}%")
+        print("------------------------------------------------------------------------------------------------------------------------------")
         if not args.experiment.debug:
             wandb.finish()
         
         print("Training finished.")
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         #testing the best model
-        checkpoint_info, hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", hyper_model, optimizer,scheduler ,ema, device=device)
-        accuracies = []
+        checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", hyper_model, optimizer,scheduler ,ema, device=device)
+        checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", hyper_model, optimizer,scheduler ,ema, device=device)
+        best_accuracies = []
+        last_accuracies = []
         for hidden_dim in range(16, 65):
             # Create a model for the given hidden dimension
             model = create_model(args.model.type, 
@@ -339,20 +348,28 @@ def main_nerf():
             #                        smooth=args.model.smooth, fuse=args.model.fuse).to(device)
 
             # Sample the merged model for K times
-            accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
+            accumulated_model_best = sample_merge_model(best_hyper_model, model, args, K=100, device=device)
+            accumulated_model_last = sample_merge_model(last_hyper_model, model, args, K=100, device=device)
 
             # Validate the merged model
-            val_loss, val_acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
-            accuracies.append(val_acc)
+            best_val_loss, best_val_acc = validate_single(accumulated_model_best, val_loader, val_criterion, args=args, device=device)
+            last_val_loss, last_val_acc = validate_single(accumulated_model_last, val_loader, val_criterion, args=args, device=device)
+            best_accuracies.append(best_val_acc)
+            last_accuracies.append(last_val_acc)
 
             # Print the results
-            print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+            print(f"Test using model {args.model}: hidden_dim {hidden_dim}")
+            print(f"\tValidation Loss best NeRF: {best_val_loss:.4f}, Validation Accuracy: {best_val_acc*100:.2f}%")
+            print(f"\tValidation Loss last NeRF: {last_val_loss:.4f}, Validation Accuracy: {last_val_acc*100:.2f}%")
         
-        mean_accuracy = np.mean(accuracies)
-        std_accuracy = np.std(accuracies)
+        best_mean_accuracy = np.mean(best_accuracies)
+        best_std_accuracy = np.std(best_accuracies)
+        last_mean_accuracy = np.mean(last_accuracies)
+        lasy_std_accuracy = np.std(last_accuracies)
 
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
+        print(f"Best NeRF Mean Validation Accuracy: {best_mean_accuracy * 100:.2f}% ± {best_std_accuracy * 100:.2f}%")
+        print(f"Last NeRF Mean Validation Accuracy: {last_mean_accuracy * 100:.2f}% ± {lasy_std_accuracy * 100:.2f}%")
     else:
         accuracies = []
         for hidden_dim in range(16, 65):
@@ -367,30 +384,25 @@ def main_nerf():
             #                     path=args.model.pretrained_path, 
             #                     smooth=args.model.smooth, fuse=args.model.smooth).to(device)
 
-            for valid_fn in [validate_single]:
-                print(f"Testing using fn {valid_fn.__name__}")
-
-                # Apply Exponential Moving Average (EMA) if enabled
-                if ema:
-                    print("Applying EMA")
-                    ema.apply()
-                    val_loss, acc = valid_fn(model, val_loader, val_criterion, args=args, device=device)
-                    ema.restore()  # Restore the original weights after applying EMA
-                else:
-                    val_loss, acc = valid_fn(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
-                    
-                accuracies.append(acc)
-
-                print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
                 
-                # Define the directory and filename structure
-                filename = f"cifar100_{valid_fn.__name__}_results_{args.experiment.name}.txt"
-                filepath = os.path.join(args.training.save_model_path, filename)
-
-
-                # Write the results. 'a' is used to append the results; a new file will be created if it doesn't exist.
-                with open(filepath, "a") as file:
-                    file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%\n")
+            # Apply Exponential Moving Average (EMA) if enabled
+            if ema:
+                print("Applying EMA")
+                ema.apply()
+                val_loss, acc = validate_single(model, val_loader, val_criterion, args=args, device=device)
+                ema.restore()  # Restore the original weights after applying EMA
+            else:
+                val_loss, acc = validate_single(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
+                
+            accuracies.append(acc)
+            print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+            
+            # Define the directory and filename structure
+            filename = f"cifar100_results_{args.experiment.name}.txt"
+            filepath = os.path.join(args.training.save_model_path, filename)
+            # Write the results. 'a' is used to append the results; a new file will be created if it doesn't exist.
+            with open(filepath, "a") as file:
+                file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%\n")
             
         mean_accuracy = np.mean(accuracies)
         std_accuracy = np.std(accuracies)

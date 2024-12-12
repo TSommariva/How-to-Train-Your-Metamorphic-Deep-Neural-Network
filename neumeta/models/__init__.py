@@ -217,8 +217,8 @@ def create_model_tinyimagenet(model_name, hidden_dim, path=None, smooth=False):
     :param path: Optional path for the model's weights.
     :return: The initialized model.
     """
-    if model_name == "ResNet18":
-        model = resnet18_tinyimagenet(hidden_dim)  # Adjust as needed based on your model's constructor
+    #if model_name == "ResNet18":
+    #    model = resnet18_tinyimagenet(hidden_dim)  # Adjust as needed based on your model's constructor
     if model_name == "ResNet56":
         model = tinyimagenet_resnet56(hidden_dim)  # Adjust as needed based on your model's constructor
     else:

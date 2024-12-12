@@ -3,6 +3,7 @@ experiment:
   name: ninr_resnet20_cifar10_32-64-4layer-5
   recononly: 0
   num_epochs: 30
+  debug: False
   log_interval: 250
   eval_interval: 1
   seed: 42  # Random seed
@@ -11,6 +12,7 @@ experiment:
 model:
   type: ResNet20
   pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt  # Path to pre-trained model
+  num_param: 1
   smooth: True
   fuse: True
 

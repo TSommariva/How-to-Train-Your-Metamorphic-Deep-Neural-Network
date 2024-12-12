@@ -132,7 +132,7 @@ class CifarResNet(nn.Module):
         super(CifarResNet, self).__init__()
         self.layers = layers
         self.num_param = num_param
-        self.num_layers_inr = num_param #- 1
+        self.num_layers_inr = num_param# - 1
         self.inplanes = 16
         self.conv1 = conv3x3(3, 16)
         self.bn1 = nn.BatchNorm2d(16)
@@ -192,7 +192,7 @@ class CifarResNet(nn.Module):
             if name == 'layer3':
                 print(f'Replace last {self.num_layers_inr} block of layer3 with new block with hidden dim {planes}')
                 # Get all the layers except the last block
-                layers = list(child.children())[:-self.num_layers_inr]
+                layers = list(child.children())[:-self.num_layers_inr] 
                 for i in range(self.num_layers_inr):
                     layers.append(BasicBlock_Resize(64, planes, stride))
                 # layers.append(BasicBlock_Resize(64, planes, stride))
