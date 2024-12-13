@@ -52,7 +52,7 @@
       "program": "neumeta/train_cifar10.py",
       "args": [
           "--config", "neumeta/config/cifar10/a_resnet20_cifar10_my_conf_test.yaml",
-          "--resume_from", "experiments/ResNet20Already_hiddenDim64_smoothed_ce1e2_rec1_reg1e-3_elu_600eT200_V2/cifar10_nerf_best.pth",
+          "--resume_from", "experiments/ResNet20Already_smoothed_ce1e2_rec1_reg1e-3_elu_600eT200_V2/cifar10_nerf_best.pth",
           "--test", "True"
         ],
         "console": "integratedTerminal"

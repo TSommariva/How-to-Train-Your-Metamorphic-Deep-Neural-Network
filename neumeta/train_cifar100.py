@@ -69,8 +69,7 @@ def initialize_wandb(config):
 
 def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx, ema=None, args=None):
     model.train()
-    total_loss = 0.0
-
+    
     losses = AverageMeter()
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
@@ -79,65 +78,93 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     for batch_idx, (x, target) in enumerate(train_loader):
         optimizer.zero_grad()
         x, target = x.to(device), target.to(device)
-        hidden_dim = random.choice(args.dimensions.range)
-        model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
-        coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor,
-                                                                                         keys_list,
-                                                                                         indices_list,
-                                                                                         size_list,
-                                                                                         key_mask,
-                                                                                         ratio=args.ratio)
-        if args.training.coordinate_noise > 0.0:
-            coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
-        model_cls, reconstructed_weights = sample_weights(model, model_cls,
-                                                          coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                                                          device=device, NORM=args.dimensions.norm)
-
-        # Forward pass
-        predict = model_cls(x)
         
-        results=torch.argmax(predict,dim=1)
-        train_acc=accuracy_score(results.cpu(), target.cpu())
+        accumulated_loss = accumulated_cls_loss = accumulated_reg_loss = accumulated_reconstruct_loss = 0
         
-        # Compute loss
-        cls_loss = criterion(predict, target)  # * 0.01
-        # Compute regularization loss
-        reg_loss = sum([torch.norm(w, p=2)
-                                for w in reconstructed_weights])
+        #gradient average aggregation
+        for accumulation_step in range(args.experiment.num_accumulation_steps):
+            
+            if accumulation_step != 0 or args.experiment.num_accumulation_steps == 1:
+                hidden_dim = random.choice(args.dimensions.range)
+            else:
+                hidden_dim = 64
+            
+            model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
+            coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor,
+                                                                                             keys_list,
+                                                                                             indices_list,
+                                                                                             size_list,
+                                                                                             key_mask,
+                                                                                             ratio=args.ratio)
+            if args.training.coordinate_noise > 0.0:
+                coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
+            model_cls, reconstructed_weights = sample_weights(model, model_cls,
+                                                              coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                              device=device, NORM=args.dimensions.norm)
 
-        if f"{hidden_dim}" in gt_model_dict:
-            gt_model = gt_model_dict[f"{hidden_dim}"]
-            gt_selected_weights = [
-                w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
+            # Forward pass
+            predict = model_cls(x)
 
-            reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
-                w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
-        else:
-            reconstruct_loss = torch.tensor(0.0)
+            results=torch.argmax(predict,dim=1)
+            train_acc=accuracy_score(results.cpu(), target.cpu())
 
-        loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
-            reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
+            # Compute loss
+            cls_loss = criterion(predict, target)
+            accumulated_cls_loss += cls_loss
+            
+            # Compute regularization loss
+            reg_loss = sum([torch.norm(w, p=2)
+                                    for w in reconstructed_weights])
+            accumulated_reg_loss += reg_loss
+            
+            # Compute MSE loss
+            if f"{hidden_dim}" in gt_model_dict:
+                gt_model = gt_model_dict[f"{hidden_dim}"]
+                gt_selected_weights = [
+                    w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
 
-        for updated_weight in model_cls.parameters():
-            updated_weight.grad = None
+                reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
+                    w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
+            else:
+                reconstruct_loss = torch.tensor(0.0)
+                
+            accumulated_reconstruct_loss += reconstruct_loss
 
-        loss.backward(retain_graph=True)
-        torch.autograd.backward(reconstructed_weights, [
-                                w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+            loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
+                reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
 
+            accumulated_loss += loss
+            
+            # Zero model_cls grads
+            for updated_weight in model_cls.parameters():
+                updated_weight.grad = None
+
+            loss.backward(retain_graph=True)
+            torch.autograd.backward(reconstructed_weights, [
+                                    w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+
+        # Average gradients
+        for parameter in model.parameters():
+            parameter.grad /= args.experiment.num_accumulation_steps
+        
         if args.training.get('clip_grad', 0.0) > 0:
             torch.nn.utils.clip_grad_value_(
                 model.parameters(), args.training.clip_grad)
 
         optimizer.step()
+        
         if ema:
             ema.update()  # Update the EMA after each training step
-        total_loss += loss.item()
-
-        losses.update(loss.item())
-        cls_losses.update(cls_loss.item())
-        reg_losses.update(reg_loss.item())
-        reconstruct_losses.update(reconstruct_loss.item())
+        
+        accumulated_loss /= args.experiment.num_accumulation_steps
+        accumulated_cls_loss /= args.experiment.num_accumulation_steps 
+        accumulated_reg_loss /= args.experiment.num_accumulation_steps 
+        accumulated_reconstruct_loss /= args.experiment.num_accumulation_steps
+        
+        losses.update(accumulated_loss.item())
+        cls_losses.update(accumulated_cls_loss.item())
+        reg_losses.update(accumulated_reg_loss.item())
+        reconstruct_losses.update(accumulated_reconstruct_loss.item())
 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             wandb.log({
@@ -409,7 +436,6 @@ def main_nerf():
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
 
-    print("Training finished.")
 
     
 if __name__ == "__main__":

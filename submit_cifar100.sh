@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=NeRF1            # Set the job name (optional, default is "slurm-[jobid]")
-#SBATCH --output=log/Cifar100_SmallBottleneck_1Learnable_1Slim.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
-#SBATCH --error=log/Cifar100_SmallBottleneck_1Learnable_1Slim.err                 # Redirect errors to this file (optional, default is the same as --output)
+#SBATCH --job-name=3L&SAggregated            # Set the job name (optional, default is "slurm-[jobid]")
+#SBATCH --output=log/Cifar100_200e_5e-4lr_3Learnable&Slim_5AccumulationSteps.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
+#SBATCH --error=log/Cifar100_200e_5e-4lr_3Learnable&Slim_5AccumulationSteps.err                 # Redirect errors to this file (optional, default is the same as --output)
 #SBATCH --time=24:00:00                # Set a limit on the total run time (mandatory if there's a system-wide default time limit)
 #SBATCH --account=tesi_tsommariva
 #SBATCH --partition=all_usr_prod       # Specify the partition/queue to submit to (optional, default depends on the system configuration)
@@ -14,6 +14,7 @@
 ##SBATCH --mem=1000                     # Memory per node (in MB, optional, default is system specific)
 #SBATCH --mail-type=END,FAIL           # Mail events (NONE, BEGIN, END, FAIL, ALL) (optional, default is NONE)
 #SBATCH --mail-user=ts.slurm@gmail.com  # Where to send the mail (mandatory if mail-type is specified)
+#SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
 
 . /usr/local/anaconda3/etc/profile.d/conda.sh
 conda activate neumeta
