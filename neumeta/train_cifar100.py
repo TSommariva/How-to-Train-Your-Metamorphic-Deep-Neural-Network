@@ -278,14 +278,14 @@ def main_nerf():
     
     print("Maximum DIM: ",find_max_dim(model))
 
-    val_loss, acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args)
+    val_loss, acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args, device=device)
     print(f"Initial Permutated model Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
     checkpoint = model.learnable_parameter
     # print(checkpoint)
     number_param = len(checkpoint)
     print(f"Number of parameters to be learned: {number_param}")
     print(f"Parameters keys: {model.keys}")
-    hyper_model = get_hypernet(args, number_param)
+    hyper_model = get_hypernet(args, number_param, device=device)
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
     
@@ -419,7 +419,7 @@ def main_nerf():
                 val_loss, acc = validate_single(model, val_loader, val_criterion, args=args, device=device)
                 ema.restore()  # Restore the original weights after applying EMA
             else:
-                val_loss, acc = validate_single(hyper_model, val_loader, val_criterion, model_cls=model, args=args)
+                val_loss, acc = validate_single(model, val_loader, val_criterion, args=args, device=device)
                 
             accuracies.append(acc)
             print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
