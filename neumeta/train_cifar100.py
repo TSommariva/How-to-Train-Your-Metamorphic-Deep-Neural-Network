@@ -88,7 +88,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         for accumulation_step in range(args.experiment.num_accumulation_steps):
             
             if accumulation_step != 0 or args.experiment.num_accumulation_steps == 1:
-                hidden_dim = random.choice(args.dimensions.range)
+                hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
             else:
                 hidden_dim = 64
             
@@ -235,7 +235,7 @@ def init_model_dict(args):
     """
     dim_dict = {}
     gt_model_dict = {}
-    for dim in args.dimensions.range:
+    for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1):
         # for dp in depth_range:
         model_cls = create_model(args.model.type, hidden_dim=dim,num_param=args.model.num_param, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
         #model_cls = create_model_cifar100_slim (args.model.type, hidden_dim=dim, args.model.num_param, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)

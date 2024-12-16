@@ -10,9 +10,9 @@ model:
   fuse: False
 
 experiment:
-  name: CIFAR100_${model.type}_${experiment.num_epochs}e_${training.learning_rate}lr_${model.num_param}Learnable&Slim_${experiment.num_accumulation_steps}AccumulationSteps_finish3
+  name: CIFAR100_${model.type}_${experiment.num_epochs}e_${training.learning_rate}lr_${model.num_param}Learnable&Slim_${experiment.num_accumulation_steps}AccumulationSteps_finish4
   debug: False
-  num_epochs: 130
+  num_epochs: 150
   log_interval: 25
   eval_interval: 10
   num_accumulation_steps: 10
