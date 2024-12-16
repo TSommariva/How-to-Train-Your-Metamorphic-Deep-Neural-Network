@@ -5,17 +5,17 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 8
+  num_param: 8 #Learnable Blocks
   smooth: False
   fuse: False
 
 experiment:
-  name: CIFAR100_${model.type}_${experiment.num_epochs}e_${training.learning_rate}lr_${model.num_param}Learnable&Slim_${experiment.num_accumulation_steps}AccumulationSteps_finish4
+  name: ITERATIVE_${model.num_param}Blocks_${experiment.num_epochs}e_${experiment.num_accumulation_steps}AccumulationSteps_${training.learning_rate}lr
   debug: False
-  num_epochs: 150
+  num_epochs: 100
   log_interval: 25
   eval_interval: 10
-  num_accumulation_steps: 10
+  num_accumulation_steps: 5
 
 
 # Training configurations
@@ -25,10 +25,9 @@ training:
   coordinate_noise: 1.0
   scheduler: cosine
   T_max: 100
-  # strong_aug: v1
   weight_decay: 1e-4
   clip_grad: 10.0
-  save_model_path: experiments/AACIFAR100/${experiment.name} # Directory to save the trained model
+  save_model_path: experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

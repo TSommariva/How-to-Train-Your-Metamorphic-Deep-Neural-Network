@@ -4,6 +4,10 @@ import random
 from prettytable import PrettyTable
 from omegaconf import OmegaConf
 import argparse
+import torch.nn as nn
+import torch.nn.functional as F
+from neumeta.models import BasicBlock, BasicBlock_Resize
+import wandb
 
 
 def parse_args():
@@ -158,7 +162,7 @@ class EMA:
                     self.shadow[name] + (1.0 - self.decay) * param.data
 
 
-def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc):
+def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -179,6 +183,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc):
             'scheduler_state_dict' : scheduler.state_dict(),
             'ema_shadow': ema.shadow,  # specifically saving shadow weights
             'best_acc': best_acc,
+            'trained_blocks': trained_blocks,
         }
     else:
         checkpoint = {
@@ -187,6 +192,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc):
             'optimizer_state_dict': optimizer.state_dict(),
             'scheduler_state_dict' : scheduler.state_dict(),
             'best_acc': best_acc,
+            'trained_blocks': trained_blocks,
         }
     torch.save(checkpoint, filepath)
 
@@ -227,3 +233,76 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda'):
     # ema.shadow = {k:checkpoint['ema_shadow'][k].to(device) for k in checkpoint['ema_shadow'] }  # specifically loading shadow weights
 
     return checkpoint, model  # Contains other information like epoch, best_acc
+
+def find_max_dim(model_cls):
+    checkpoint = model_cls.learnable_parameter
+    
+    max_value = len(checkpoint)
+    # Iterate over the new model's weights
+    for i, (k, tensor) in enumerate(checkpoint.items()):
+        
+        # Handle 2D tensors (e.g., weight matrices)
+        if len(tensor.shape) == 4:
+            coords = [tensor.shape[0], tensor.shape[1]]
+            max_value = max(max_value, max(coords))
+                    
+        elif len(tensor.shape) == 2:
+
+            coords = [tensor.shape[0], tensor.shape[1]]
+            max_value = max(max_value, max(coords))
+                    
+        # Handle 1D tensors (e.g., biases)
+        elif len(tensor.shape) == 1:
+          
+            max_value = max(max_value, tensor.shape[0])
+    
+    return max_value
+    
+def initialize_wandb(config):
+    import time
+    """
+    Initializes Weights and Biases (wandb) with the given configuration.
+    
+    Args:
+        configuration (dict): Configuration parameters for the run.
+    """
+    # Name the run using current time and configuration name
+    run_name = f"{config.experiment.name}-{time.strftime('%Y%m%d%H%M%S')}"
+    
+    wandb.init(project="ninr", name=run_name, config=dict(config), group='cifar100')
+
+def register_hooks_and_print_shapes(model, input_tensor):
+    output_shapes = {}
+    learnable_keys = set(model.learnable_parameter.keys())
+    
+    def hook_fnc(module_name):
+        def hook_fn(module, input, output):
+            class_name = module.__class__.__name__
+            #module_idx = len(output_shapes)
+            m_key = f"{module_name}_{class_name}"
+            output_shapes[m_key] = output.shape
+        return hook_fn
+
+    # Register hooks to all layers
+    hooks = []
+    for name, module in model.named_modules():
+        if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize)) and module != model:
+            if any(key.startswith(name) for key in learnable_keys):
+                hook = module.register_forward_hook(hook_fnc(name))
+                hooks.append(hook)
+
+    # Perform a forward pass to trigger the hooks
+    model(input_tensor)
+
+    # Print the output shapes
+    for key, shape in output_shapes.items():
+        print(f"{key}: {shape}")
+
+    # Remove hooks after use
+    for hook in hooks:
+        hook.remove()
+
+def freeze_modulelist(module_list):
+    for module in module_list:
+        for param in module.parameters():
+            param.requires_grad = False

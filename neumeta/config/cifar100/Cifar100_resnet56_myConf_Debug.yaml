@@ -5,7 +5,7 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 1
+  num_param: 8
   smooth: False
   fuse: False
 
