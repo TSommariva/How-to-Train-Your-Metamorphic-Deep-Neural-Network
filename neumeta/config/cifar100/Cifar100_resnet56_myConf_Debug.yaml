@@ -5,28 +5,28 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 3
+  num_param: 1
   smooth: False
   fuse: False
 
 experiment:
-  name: CIFAR100_${model.type}_${experiment.num_epochs}e_LongBottleneck_${model.num_param}LearnableBlocks_DEBUG
-  debug: True
-  num_epochs: 200
-  log_interval: 100
+  name: TEST
+  debug: False
+  num_epochs: 20
+  log_interval: 25
   eval_interval: 1
-  num_accumulation_steps: 5
+  num_accumulation_steps: 1
 
 
 # Training configurations
 training:
-  learning_rate: 1e-3
+  learning_rate: 5e-4
   batch_size: 128
   coordinate_noise: 1.0
   scheduler: cosine
-  T_max: 100
+  T_max: 10
   # strong_aug: v1
-  weight_decay: 1e-2
+  weight_decay: 1e-4
   clip_grad: 10.0
   save_model_path: experiments/${experiment.name} # Directory to save the trained model
 

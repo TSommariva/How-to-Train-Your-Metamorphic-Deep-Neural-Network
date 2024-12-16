@@ -4,8 +4,7 @@ import torch.nn as nn
 from smooth.permute import PermutationManager, compute_tv_loss_for_network
 from neumeta.utils import parse_args, print_omegaconf, set_seed, get_cifar10, get_cifar100,validate_single
 
-
-device = "cpu"
+device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
 # Parse the arguments
 args = parse_args()
@@ -26,7 +25,8 @@ elif "cifar100_" in args.model.pretrained_path:
 # Create the model for CIFAR10
 model = create_model(args.model.type, 
         hidden_dim=args.dimensions.start, 
-        path=args.model.pretrained_path, 
+        path=args.model.pretrained_path,
+        num_param=1, 
         smooth=False,fuse=True
         ).to(device)
 
@@ -54,7 +54,8 @@ torch.save(model.state_dict(),save_path)
 
 model = create_model(args.model.type, 
         hidden_dim=args.dimensions.start, 
-        path=save_path, 
+        path=save_path,
+        num_param=1, 
         smooth=False, fuse=False
         ).to(device)
 

@@ -79,7 +79,10 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         optimizer.zero_grad()
         x, target = x.to(device), target.to(device)
         
-        accumulated_loss = accumulated_cls_loss = accumulated_reg_loss = accumulated_reconstruct_loss = 0
+        accumulated_loss = torch.tensor(0.0).to(device)
+        accumulated_cls_loss = torch.tensor(0.0).to(device)
+        accumulated_reg_loss = torch.tensor(0.0).to(device)
+        accumulated_reconstruct_loss = torch.tensor(0.0).to(device)
         
         #gradient average aggregation
         for accumulation_step in range(args.experiment.num_accumulation_steps):
@@ -256,9 +259,6 @@ def main_nerf():
     args = parse_args()
     print_omegaconf(args)
     
-    #if args.model.num_param < 3:
-    #    raise ValueError(f"num_param must be >= 3, got {args.model.num_param}")
-
     set_seed(args.experiment.seed)
     train_loader, val_loader = get_cifar100(args.training.batch_size, 
                                            strong_transform=args.training.get('strong_aug', None),
@@ -298,6 +298,12 @@ def main_nerf():
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
         checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema)
+        for param in hyper_model.parameters():
+            if not param.requires_grad:
+                param.requires_grad = True
+            if torch.isnan(param).any() or torch.isinf(param).any():
+                raise ValueError("Model parameters contain NaN or Inf values after loading")
+        
         start_epoch = checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         print(f"Resuming from epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
@@ -315,7 +321,7 @@ def main_nerf():
 
             print(f"Epoch [{epoch+1}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
-            if (epoch + 1) % 1 == 0: #args.experiment.eval_interval == 0:
+            if (epoch + 1) % args.experiment.eval_interval == 0:
                 if ema:
                     ema.apply()
 
@@ -338,7 +344,7 @@ def main_nerf():
                 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
                 
                 # Save the checkpoint
-                if val_acc > best_acc and epoch > 20:
+                if val_acc > best_acc:# and epoch > 20:
                     best_acc = val_acc
                     save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc)
                     print("------------------------------------------------------------------------------------------------------------------------------")
@@ -399,7 +405,7 @@ def main_nerf():
         print(f"Last NeRF Mean Validation Accuracy: {last_mean_accuracy * 100:.2f}% ± {lasy_std_accuracy * 100:.2f}%")
     else:
         accuracies = []
-        for hidden_dim in range(16, 65):
+        for hidden_dim in range(32, 65):
             model = create_model(args.model.type, 
                                     hidden_dim=hidden_dim,
                                     path=args.model.pretrained_path,
@@ -416,10 +422,12 @@ def main_nerf():
             if ema:
                 print("Applying EMA")
                 ema.apply()
-                val_loss, acc = validate_single(model, val_loader, val_criterion, args=args, device=device)
+                accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
+                val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
                 ema.restore()  # Restore the original weights after applying EMA
             else:
-                val_loss, acc = validate_single(model, val_loader, val_criterion, args=args, device=device)
+                accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
+                val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
                 
             accuracies.append(acc)
             print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
@@ -439,6 +447,4 @@ def main_nerf():
 
     
 if __name__ == "__main__":
-    # main_fit_nerf()
     main_nerf()
-# 

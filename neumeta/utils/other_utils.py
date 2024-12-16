@@ -8,7 +8,8 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(
-    description="Train a NeRF model with CIFAR-10")
+        description="Train a NeRF model with CIFAR-10"
+    )
 
     parser.add_argument('--config', type=str, required=True,
                         help='Path to the configuration file')
@@ -23,8 +24,10 @@ def parse_args():
     parser.add_argument('--test', action='store_true',
                         default=False, help='Test the model')
 
-    args, unknown = parser.parse_known_args()
-
+    args, overrides = parser.parse_known_args()
+    # Remove leading '--' if present in overrides
+    overrides = [arg.lstrip('--') for arg in overrides]
+    
     config = OmegaConf.load(args.config)
 
     if config.get('base_config', None):
@@ -33,13 +36,10 @@ def parse_args():
         config = OmegaConf.merge(base_config, config)
 
     cli_args = vars(args)
-    unknown_args = OmegaConf.from_dotlist(unknown)
+    overrides_args = OmegaConf.from_dotlist(overrides)
 
-    config = OmegaConf.merge(config, OmegaConf.create(cli_args), unknown_args)
-    if len(config.dimensions.range) == 2:
-        interval = config.dimensions.get('interval', 1)
-        config.dimensions.range = list(
-            range(config.dimensions.range[0], config.dimensions.range[1] + 1, interval))
+    config = OmegaConf.merge(config, OmegaConf.create(cli_args), overrides_args)
+
     return config
 
 
@@ -210,10 +210,16 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda'):
     #print("Keys in model but not in saved state_dict:", model_keys - saved_keys)
     
     model.load_state_dict(checkpoint['model_state_dict'])
+    # Verify model loaded correctly
+    for param in model.parameters():
+        if not param.requires_grad:
+            param.requires_grad = True
+        if torch.isnan(param).any() or torch.isinf(param).any():
+            raise ValueError("Model parameters contain NaN or Inf values after loading")
     
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    if scheduler is not None:
+    if 'scheduler_state_dict' in checkpoint and scheduler is not None:
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
     if ema is not None:
         ema.shadow = {k: checkpoint['ema_shadow'][k].to(
