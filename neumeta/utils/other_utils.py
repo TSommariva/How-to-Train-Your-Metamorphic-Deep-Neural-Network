@@ -302,7 +302,22 @@ def register_hooks_and_print_shapes(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-def freeze_modulelist(module_list):
-    for module in module_list:
-        for param in module.parameters():
-            param.requires_grad = False
+def extend_nerf_compose(base_model, extension_model):
+    """
+    Extends existing NeRF_ResMLP_Compose model with a new one.
+
+    Args:
+        existing_model (NeRF_ResMLP_Compose): The model to be extended.
+        new_model (NeRF_ResMLP_Compose): The model to extend with.
+
+    Returns:
+        NeRF_ResMLP_Compose: The extended model.
+    """
+    # Extend the internal ModuleList
+    base_model.model.extend(extension_model.model)
+    
+    # Update num_compose if it exists
+    if hasattr(base_model, 'num_compose') and hasattr(extension_model, 'num_compose'):
+        base_model.num_compose += extension_model.num_compose
+    
+    return base_model

@@ -77,7 +77,7 @@ def get_optimizer(args, hyper_model):
     # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
     if scheduler_name == 'cosine':
         print("Using cosine scheduler, T_max:", args.training.T_max)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=1e-5)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=5e-5)
     elif scheduler_name == 'multistep':
         scheduler = MultiStepLR(optimizer,
                                 milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 

@@ -67,7 +67,7 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse =
     return model    
 
 
-def create_model_cifar100(model_name, hidden_dim,num_param ,path=None, smooth=False, fuse=True):
+def create_model_cifar100(model_name, hidden_dim,num_param,bottom_up=False ,path=None, smooth=False, fuse=True):
     """
     Create a model based on the specified name.
 
@@ -76,13 +76,13 @@ def create_model_cifar100(model_name, hidden_dim,num_param ,path=None, smooth=Fa
     :return: The initialized model.
     """
     if model_name == "ResNet20":
-        model = cifar100_resnet20(hidden_dim=hidden_dim, num_param=num_param)  # Adjust as needed based on your model's constructor
+        model = cifar100_resnet20(hidden_dim=hidden_dim, num_param=num_param, bottom_up=bottom_up) 
     elif model_name == "ResNet32":  # Add other models as you support them
-        model = cifar100_resnet32(hidden_dim=hidden_dim, num_param=num_param)
+        model = cifar100_resnet32(hidden_dim=hidden_dim, num_param=num_param, bottom_up=bottom_up)
     elif model_name == "ResNet44":  # Add other models as you support them
-        model = cifar100_resnet44(hidden_dim=hidden_dim, num_param=num_param)
+        model = cifar100_resnet44(hidden_dim=hidden_dim, num_param=num_param, bottom_up=bottom_up)
     elif model_name == "ResNet56":  # Add other models as you support them
-        model = cifar100_resnet56(hidden_dim=hidden_dim, num_param=num_param)
+        model = cifar100_resnet56(hidden_dim=hidden_dim, num_param=num_param, bottom_up=bottom_up)
     else:
         raise ValueError(f"Unsupported model: {model_name}")
     

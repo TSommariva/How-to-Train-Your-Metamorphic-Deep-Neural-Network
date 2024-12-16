@@ -17,7 +17,7 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            sample_subset, sample_weights, save_checkpoint,
                            set_seed, shuffle_coordiates_all, #validate, validate_merge, 
                            validate_single, sample_merge_model,
-                           initialize_wandb,find_max_dim, register_hooks_and_print_shapes, freeze_modulelist)
+                           initialize_wandb,find_max_dim, register_hooks_and_print_shapes, extend_nerf_compose)
 import wandb
 from omegaconf import OmegaConf
 from sklearn.metrics import accuracy_score
@@ -43,7 +43,9 @@ def init_model_dict(args, num_blocks = 1):
     dim_dict = {}
     gt_model_dict = {}
     for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1):
-        model_cls = create_model(args.model.type, hidden_dim=dim,num_param=num_blocks, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+        model_cls = create_model(args.model.type, 
+                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, 
+                                 path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
         #model_cls = create_model_cifar100_slim (args.model.type, hidden_dim=dim, num_blocks, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
         
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
@@ -54,7 +56,9 @@ def init_model_dict(args, num_blocks = 1):
 
         if dim == args.dimensions.start:
             print(f"Loading model for dim {dim}")
-            model_trained = create_model(args.model.type, hidden_dim=dim,num_param=num_blocks, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+            model_trained = create_model(args.model.type, 
+                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, 
+                                 path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
             #model_trained = create_model_cifar100_slim(args.model.type, hidden_dim=dim,num_param=num_blocks ,path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
             model_trained.eval()
             
@@ -111,7 +115,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             reg_loss = sum([torch.norm(w, p=2)
                                     for w in reconstructed_weights])
             accumulated_reg_loss += reg_loss
-            
+
             # Compute MSE loss
             if f"{hidden_dim}" in gt_model_dict:
                 gt_model = gt_model_dict[f"{hidden_dim}"]
@@ -140,7 +144,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
 
         # Average gradients
         for parameter in model.parameters():
-            parameter.grad /= args.experiment.num_accumulation_steps
+            if parameter.requires_grad:
+                parameter.grad /= args.experiment.num_accumulation_steps
         
         if args.training.get('clip_grad', 0.0) > 0:
             torch.nn.utils.clip_grad_value_(
@@ -199,6 +204,7 @@ def main_nerf():
     model = create_model(args.model.type, 
                          hidden_dim=args.dimensions.start,
                          num_param=args.model.num_param, 
+                         bottom_up=args.model.bottom_up, 
                          path=args.model.pretrained_path, 
                          smooth=args.model.smooth, fuse=args.model.smooth).to(device)
     
@@ -304,6 +310,7 @@ def main_nerf():
             model = create_model(args.model.type, 
                                     hidden_dim=hidden_dim,
                                     num_param=args.model.num_param,
+                                    bottom_up=args.model.bottom_up, 
                                     path=args.model.pretrained_path, 
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
             #model = create_model_cifar100_slim(args.model.type, 
@@ -342,6 +349,7 @@ def main_nerf():
                                     hidden_dim=hidden_dim,
                                     path=args.model.pretrained_path,
                                     num_param=args.model.num_param, 
+                                    bottom_up=args.model.bottom_up, 
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
             #model = create_model_cifar100_slim(args.model.type, 
             #                     hidden_dim=hidden_dim,
@@ -385,7 +393,8 @@ def main_iterative_nerf():
     
     model = create_model(args.model.type, 
                          hidden_dim=args.dimensions.start,
-                         num_param=args.model.num_param, 
+                         num_param=args.model.num_param,
+                         bottom_up=args.model.bottom_up, 
                          path=args.model.pretrained_path, 
                          smooth=args.model.smooth, fuse=args.model.smooth).to(device)
     
@@ -413,7 +422,15 @@ def main_iterative_nerf():
     start_block = 1
     start_epoch = 1
     best_acc = 0.0
-    frozen_NeRF = nn.ModuleList()
+    
+    frozen_NeRF = NeRF_ResMLP_Compose(
+        input_dim=args.hyper_model.input_dim,
+        hidden_dim=args.hyper_model.hidden_dim,
+        num_layers=args.hyper_model.num_layers,
+        output_dim=args.hyper_model.output_dim,
+        num_freqs=args.hyper_model.num_freqs,
+        scalar=args.hyper_model.get('scalar', 0.1),
+        num_compose=0).to(device)
 
     # If specified, load the checkpoint
     if args.resume_from:
@@ -430,10 +447,14 @@ def main_iterative_nerf():
             initialize_wandb(args)
         
         for block_id in range(start_block, args.model.num_param + 1):
+            os.makedirs(f"{args.training.save_model_path}/block{block_id}", exist_ok=True)
             print(f"BLOCK[{block_id}/{args.model.num_param}]")
             if(block_id != start_block):
                 hyper_model = get_hypernet(args, 4, device=device)
-                hyper_model.extend(frozen_NeRF)
+                if(args.model.bottom_up):
+                    hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)
+                else:
+                    hyper_model=extend_nerf_compose(hyper_model,frozen_NeRF)
 
                 ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
                 criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
@@ -449,7 +470,7 @@ def main_iterative_nerf():
                 train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
                 scheduler.step()
 
-                print(f"Epoch [{epoch}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
+                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
                 if epoch % args.experiment.eval_interval == 0:
                     if ema:
@@ -469,23 +490,24 @@ def main_iterative_nerf():
                             "Validation Accuracy_model sampled outside training": val_acc
                         })
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                    print(f"Block[{block_id}/{args.model.num_param}] Epoch [{epoch}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                    print(f"Block[{block_id}/{args.model.num_param}] Epoch [{epoch}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
+                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
                     # Save the checkpoint
-                    if val_acc > best_acc:# and epoch > 20:
+                    if val_acc > best_acc:
                         best_acc = val_acc
                         save_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc, block_id)
                         print("------------------------------------------------------------------------------------------------------------------------------")
                         print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                         print("------------------------------------------------------------------------------------------------------------------------------")
             
-            freeze_modulelist(hyper_model)
+            for param in hyper_model.parameters():
+                param.requires_grad = False
             frozen_NeRF = hyper_model
             
 
-        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+        sampled_model = sample_merge_model(frozen_NeRF, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
         val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
         save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc, args.model.num_param)
         print("------------------------------------------------------------------------------------------------------------------------------")
@@ -498,8 +520,8 @@ def main_iterative_nerf():
         print("Training finished.")
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         #testing the best model
-        checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{args.model.num_param}/cifar100_nerf_best.pth", hyper_model, optimizer,scheduler ,ema, device=device)
-        checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", hyper_model, optimizer,scheduler ,ema, device=device)
+        checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{args.model.num_param}/cifar100_nerf_best.pth", frozen_NeRF, optimizer,scheduler ,ema, device=device)
+        checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", frozen_NeRF, optimizer,scheduler ,ema, device=device)
         best_accuracies = []
         last_accuracies = []
         for hidden_dim in range(16, 65):
@@ -507,6 +529,7 @@ def main_iterative_nerf():
             model = create_model(args.model.type, 
                                     hidden_dim=hidden_dim,
                                     num_param=args.model.num_param,
+                                    bottom_up=args.model.bottom_up,
                                     path=args.model.pretrained_path, 
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
             #model = create_model_cifar100_slim(args.model.type, 
@@ -545,6 +568,7 @@ def main_iterative_nerf():
                                     hidden_dim=hidden_dim,
                                     path=args.model.pretrained_path,
                                     num_param=args.model.num_param, 
+                                    bottom_up=args.model.bottom_up,
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
             #model = create_model_cifar100_slim(args.model.type, 
             #                     hidden_dim=hidden_dim,

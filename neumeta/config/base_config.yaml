@@ -14,6 +14,7 @@ model:
   type: ResNet20
   pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt  # Path to pre-trained model
   num_param: 1
+  bottom_up: False
   smooth: True
   fuse: True
 

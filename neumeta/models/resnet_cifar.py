@@ -128,12 +128,13 @@ class BasicBlock_Resize(BasicBlock):
 
 class CifarResNet(nn.Module):
 
-    def __init__(self, block, hidden_dim, num_param ,layers ,num_classes=10, num_layers_inr=1):
+    def __init__(self, block, hidden_dim, num_param ,layers, bottom_up=False ,num_classes=10, num_layers_inr=1):
         super(CifarResNet, self).__init__()
         self.layers = layers
         self.num_param = num_param
         self.num_layers_inr = num_param# - 1
         self.inplanes = 16
+        self.bottom_up = bottom_up
         self.conv1 = conv3x3(3, 16)
         self.bn1 = nn.BatchNorm2d(16)
         self.relu = nn.ReLU(inplace=True)
@@ -152,8 +153,8 @@ class CifarResNet(nn.Module):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
-
+                nn.init.constant_(m.bias, 0)  
+                       
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
@@ -190,25 +191,40 @@ class CifarResNet(nn.Module):
         for name, child in self.named_children():
         # Change the last block of layer3
             if name == 'layer3':
-                print(f'Replace last {self.num_layers_inr} block of layer3 with new block with hidden dim {planes}')
-                # Get all the layers except the last block
-                layers = list(child.children())[:-self.num_layers_inr]
-                #if not layers:
-                #    #TODO: handle first block of the layer, build a custom block, inplanes:32, bottleneck, outplanes: 64
-                for i in range(self.num_layers_inr):
-                    layers.append(BasicBlock_Resize(64, planes, stride))
-                # layers.append(BasicBlock_Resize(64, planes, stride))
-                self._modules[name] = nn.Sequential(*layers)
+                if not self.bottom_up:
+                    print(f'Replace last {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {planes}')
+                    # Get all the layers except the last block
+                    layers = list(child.children())[:-self.num_layers_inr]
+                    #if not layers:
+                    #    #TODO: handle first block of the layer, build a custom block, inplanes:32, bottleneck, outplanes: 64
+                    for i in range(self.num_layers_inr):
+                        layers.append(BasicBlock_Resize(64, planes, stride))
+                    # layers.append(BasicBlock_Resize(64, planes, stride))
+                    self._modules[name] = nn.Sequential(*layers)
+                else:
+                    print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {planes}')
+                    # Get all the layers except the last block
+                    layers = []
+                    layers.append(list(child.children())[0])
+                    for i in range(self.num_layers_inr):
+                        layers.append(BasicBlock_Resize(64, planes, stride))
+                        
+                    layers.extend(list(child.children())[self.num_layers_inr+1:])
+                    self._modules[name] = nn.Sequential(*layers)
     
     @property
     def learnable_parameter(self):
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
-        
-        self.keys = [
-            k for k, _ in self.named_parameters()
-            if any(k.startswith(f'layer3.{self.layers[-1]-i}') for i in range(1, self.num_param + 1))
-            #or k.startswith('fc')
-        ]
+        if not self.bottom_up:
+            self.keys = [
+                k for k, _ in self.named_parameters()
+                if any(k.startswith(f'layer3.{self.layers[-1]-i}') for i in range(1, self.num_param + 1))
+            ]
+        else:
+            self.keys = [
+                k for k, _ in self.named_parameters()
+                if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1))
+            ]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
 
 
@@ -352,11 +368,12 @@ def _resnet(
     num_param:int,
     layers: List[int],
     model_urls: Dict[str, str],
+    bottom_up: bool = False,
     progress: bool = True,
     pretrained: bool = True,
     **kwargs: Any
 ) -> CifarResNet:
-    model = CifarResNet(BasicBlock, hidden_dim, num_param, layers, **kwargs)
+    model = CifarResNet(BasicBlock, hidden_dim, num_param, layers, bottom_up,**kwargs)
     if pretrained:
         print("Loading pretrained weights for {}".format(arch))
         state_dict = load_state_dict_from_url(model_urls[arch],
@@ -428,44 +445,48 @@ def cifar10_resnet56(hidden_dim, num_classes=10, pretrained=True, *args, **kwarg
                    **kwargs)
 
 # Functions for CIFAR-100
-def cifar100_resnet20(hidden_dim,num_param, num_classes=100, pretrained=True, *args, **kwargs):
+def cifar100_resnet20(hidden_dim,num_param,bottom_up ,num_classes=100, pretrained=True,*args, **kwargs):
     return _resnet(arch="resnet20", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
                    layers=[3]*3, 
+                   bottom_up=bottom_up, 
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
                    *args, 
                    **kwargs)
 
-def cifar100_resnet32(hidden_dim,num_param, num_classes=100,pretrained=True, *args, **kwargs):
+def cifar100_resnet32(hidden_dim,num_param,bottom_up ,num_classes=100, pretrained=True,*args, **kwargs):
     return _resnet(arch="resnet32", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
-                   layers=[5]*3, 
+                   layers=[5]*3,
+                   bottom_up=bottom_up,  
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
                    *args, 
                    **kwargs)
 
-def cifar100_resnet44(hidden_dim,num_param, num_classes=100, pretrained=True,*args, **kwargs):
+def cifar100_resnet44(hidden_dim,num_param,bottom_up ,num_classes=100, pretrained=True,*args, **kwargs):
     return _resnet(arch="resnet44", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
                    layers=[7]*3, 
+                   bottom_up=bottom_up, 
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
                    *args, 
                    **kwargs)
 
-def cifar100_resnet56(hidden_dim,num_param, num_classes=100, pretrained=True,*args, **kwargs):
+def cifar100_resnet56(hidden_dim,num_param,bottom_up ,num_classes=100, pretrained=True,*args, **kwargs):
     return _resnet(arch="resnet56", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
-                   layers=[9]*3, 
+                   layers=[9]*3,
+                   bottom_up=bottom_up, 
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
