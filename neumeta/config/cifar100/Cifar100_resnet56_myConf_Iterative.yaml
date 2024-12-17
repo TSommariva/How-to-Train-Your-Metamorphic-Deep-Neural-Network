@@ -11,13 +11,13 @@ model:
   fuse: False
 
 experiment:
-  name: ${model.num_param}Blocks_${experiment.num_epochs}e_${experiment.num_accumulation_steps}AccumulationSteps_bottomUp:${model.bottom_up}_Iterative:${experiment.iterative}
+  name: ${model.num_param}Blocks_${experiment.num_epochs}e_${experiment.num_accumulation_steps}AccumulationSteps_bottomUp:${model.bottom_up}_Iterative:${experiment.iterative}_Full
   debug: False
-  num_epochs: 160
+  num_epochs: 80
   log_interval: 26
   eval_interval: 10
-  num_accumulation_steps: 8
-  iterative: False
+  num_accumulation_steps: 3
+  iterative: True
 
 
 # Training configurations
@@ -26,10 +26,10 @@ training:
   batch_size: 128
   coordinate_noise: 1.0
   scheduler: cosine
-  T_max: 160
+  T_max: 80
   weight_decay: 1e-4
   clip_grad: 10.0
-  save_model_path: experiments/AACIFAR100/${experiment.name} # Directory to save the trained model
+  save_model_path: experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

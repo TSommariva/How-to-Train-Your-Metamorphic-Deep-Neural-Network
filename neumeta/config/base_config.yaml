@@ -8,6 +8,7 @@ experiment:
   eval_interval: 1
   num_accumulation_steps: 1
   seed: 42  # Random seed
+  iterative: False
 
 # Model configurations
 model:

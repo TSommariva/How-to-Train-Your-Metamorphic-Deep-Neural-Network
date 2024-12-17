@@ -42,6 +42,8 @@ def init_model_dict(args, num_blocks = 1):
     """
     dim_dict = {}
     gt_model_dict = {}
+    if not args.experiment.iterative:
+        num_blocks=args.model.num_param
     for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1):
         model_cls = create_model(args.model.type, 
                                  hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, 
@@ -65,7 +67,7 @@ def init_model_dict(args, num_blocks = 1):
             gt_model_dict[f"{dim}"] = model_trained
     return dim_dict, gt_model_dict
 
-def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx, ema=None, args=None):
+def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx, ema=None, args=None, block_idx=1, max_epochs=200):
     model.train()
     
     losses = AverageMeter()
@@ -144,7 +146,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
 
         # Average gradients
         for parameter in model.parameters():
-            if parameter.requires_grad:
+            if parameter.requires_grad and parameter.grad != None:
                 parameter.grad /= args.experiment.num_accumulation_steps
         
         if args.training.get('clip_grad', 0.0) > 0:
@@ -174,7 +176,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
                 "Learning rate": optimizer.param_groups[0]['lr']
-            }, step=batch_idx + (epoch_idx - 1) * len(train_loader))
+            }, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
     
@@ -188,10 +190,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 })
     return losses.avg
 
-def main_nerf():
-    args = parse_args()
-    print_omegaconf(args)
-    
+def main_nerf(args):
     set_seed(args.experiment.seed)
     train_loader, val_loader = get_cifar100(args.training.batch_size)
     
@@ -384,10 +383,8 @@ def main_nerf():
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
 
-def main_iterative_nerf():
-    args = parse_args()
-    print_omegaconf(args)
-    
+def main_iterative_nerf(args):
+
     set_seed(args.experiment.seed)
     train_loader, val_loader = get_cifar100(args.training.batch_size)
     
@@ -467,7 +464,7 @@ def main_iterative_nerf():
             dim_dict = shuffle_coordiates_all(dim_dict)
 
             for epoch in range(start_epoch, args.experiment.num_epochs + 1):
-                train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
+                train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs)
                 scheduler.step()
 
                 print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
@@ -502,8 +499,8 @@ def main_iterative_nerf():
                         print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                         print("------------------------------------------------------------------------------------------------------------------------------")
             
-            for param in hyper_model.parameters():
-                param.requires_grad = False
+            #for param in hyper_model.parameters():
+            #    param.requires_grad = False
             frozen_NeRF = hyper_model
             
 
@@ -606,5 +603,11 @@ def main_iterative_nerf():
 
     
 if __name__ == "__main__":
-    #main_nerf()
-    main_iterative_nerf()
+    args = parse_args()
+    print_omegaconf(args)
+    
+    if args.experiment.iterative:
+        main_iterative_nerf(args)
+    else:
+        main_nerf(args)
+    
