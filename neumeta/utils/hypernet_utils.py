@@ -8,6 +8,7 @@ from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
 from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
+from torch.amp import autocast
 
 def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon=1e-6):
     """
@@ -187,6 +188,9 @@ def average_models(models):
 
 def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
     # Initialize a model to accumulate the weights over K samples
+    if isinstance(hyper_model, torch.nn.parallel.DistributedDataParallel):
+        hyper_model = hyper_model.module
+        
     hyper_model.eval()
     models = []
     for k in range(K):
@@ -207,6 +211,32 @@ def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
     accumulated_model.eval()
     return accumulated_model
 
+def sample_merge_model_mxp(hyper_model, model, args, K=50, device='cuda'):
+    # Initialize a model to accumulate the weights over K samples
+    if isinstance(hyper_model, torch.nn.parallel.DistributedDataParallel):
+        hyper_model = hyper_model.module
+        
+    hyper_model.eval()
+    models = []
+    for k in range(K):
+        model_cls_temp = copy.deepcopy(model)
+        model_cls_temp.to(device)
+        
+        # Sampling and merging weights
+        coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
+        key_mask = create_key_masks(keys_list=keys_list)
+        if k > 0:
+            coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
+        model_cls_temp, _ = sample_weights_mxp(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
+        
+        models.append(model_cls_temp)
+    
+    accumulated_model = average_models(models)
+
+    accumulated_model.eval()
+    return accumulated_model
+
+
 def sample_coordinates(model_cls):
     """
     Sample coordinates for the given model_cls.
@@ -220,6 +250,9 @@ def sample_coordinates(model_cls):
         - keys_list: A list of keys corresponding to each coordinate.
         - indices_list: A list of in_channel and out_channel indices.
     """
+    if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
+        model_cls = model_cls.module
+        
     checkpoint = model_cls.learnable_parameter
     
     coords_list = []  # List to store all coordinates
@@ -275,7 +308,7 @@ def sample_single_model(hyper_model, model, device='cuda', cfg=None):
     model.eval()
     return model
 
-def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1):
+def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
     """
     Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
 
@@ -292,6 +325,11 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     Returns:
         tuple: A tuple containing the updated model_cls and the list of predicted weights.
     """
+    if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+        model = model.module
+    if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
+        model_cls = model_cls.module
+    
     if selected_keys is None:
         predicted_checkpoint = model_cls.learnable_parameter
     else:
@@ -304,6 +342,85 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     input_dim = coords_tensor[:, -1]
     input_tensor = (coords_tensor/NORM) 
     predicted_weights = model(input_tensor, layer_id=layer_id, input_dim=input_dim)
+    
+    selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
+    # Iterate over the keys that have been selected for processing.
+    for key in selected_keys:
+        # print(key)
+        # Create a boolean mask based on the selected mask from the key_mask dictionary.
+        boolean_mask = key_mask[key][selected_mask].bool()
+
+        # Check the size information for the current mask and proceed accordingly.
+        if size_list[boolean_mask][0] == 4:  # Condition for a specific size.
+            # Extract height and width from the indices list.
+            height, width = indices_list[boolean_mask][0, 2:]
+            
+            # Extract the relevant weights based on the mask.
+            current_weights = predicted_weights[boolean_mask]
+            total_weights = current_weights.size(-1)
+            
+            # Adjust weights if they don't match the expected size (h*w).
+            if height * width < total_weights:
+                start_index = torch.div(total_weights, 2, rounding_mode='trunc') - torch.div(height * width, 2, rounding_mode='trunc')
+                end_index = start_index + height * width
+                current_weights = current_weights[:, start_index:end_index]
+            
+            # Reshape and assign the adjusted weights to the appropriate position in the checkpoint dictionary.
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = current_weights.view(-1, height, width)
+
+        elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
+            # Directly assign the weights without reshaping.
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
+
+        elif size_list[boolean_mask][0] == 1:  # Condition for yet another size.
+            # Assign the weights to the specified indices.
+            # print(predicted_weights[boolean_mask][:, 0].shape, predicted_checkpoint[key].shape)
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights[boolean_mask][:, 0]
+
+        
+    for name, param in model_cls.learnable_parameter.items():
+        if name in predicted_checkpoint:
+            param.data = predicted_checkpoint[name].data
+
+    return model_cls, list(predicted_checkpoint.values())
+
+def sample_weights_mxp(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
+    """
+    Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
+
+    Args:
+        model (nn.Module): The neural network model.
+        model_cls (nn.Module): The neural network model class.
+        coords_tensor (torch.Tensor): The coordinates tensor.
+        keys_list (list): The list of keys.
+        indices_list (list): The list of indices.
+        selected_keys (list, optional): The list of selected keys. Defaults to None.
+        device (str, optional): The device to use. Defaults to 'cuda'.
+        large_batch_size (int, optional): The large batch size. Defaults to 4096.
+
+    Returns:
+        tuple: A tuple containing the updated model_cls and the list of predicted weights.
+    """
+    use_amp = scaler is not None
+    if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+        model = model.module
+    if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
+        model_cls = model_cls.module
+    
+    if selected_keys is None:
+        predicted_checkpoint = model_cls.learnable_parameter
+    else:
+        predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
+    
+
+    # Sample a batch of coordinates
+    coords_tensor = coords_tensor.to(device)
+    layer_id = coords_tensor[:, 0].int()
+    input_dim = coords_tensor[:, -1]
+    input_tensor = (coords_tensor/NORM) 
+    with autocast(device_type='cuda', enabled=use_amp):
+        predicted_weights = model(input_tensor, layer_id=layer_id, input_dim=input_dim)
+        predicted_weights = predicted_weights.to(torch.float32)
     
     selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
     # Iterate over the keys that have been selected for processing.

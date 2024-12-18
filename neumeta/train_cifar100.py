@@ -17,7 +17,7 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            sample_subset, sample_weights, save_checkpoint,
                            set_seed, shuffle_coordiates_all, #validate, validate_merge, 
                            validate_single, sample_merge_model,
-                           initialize_wandb,find_max_dim, register_hooks_and_print_shapes, extend_nerf_compose)
+                           initialize_wandb,find_max_dim, register_hooks_and_print_shapes, extend_nerf_compose, load_trained_blocks)
 import wandb
 from omegaconf import OmegaConf
 from sklearn.metrics import accuracy_score
@@ -176,7 +176,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
                 "Learning rate": optimizer.param_groups[0]['lr']
-            }, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
+            })#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
     
@@ -432,7 +432,11 @@ def main_iterative_nerf(args):
     # If specified, load the checkpoint
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema)
+        if args.experiment.iterative:
+            hyper_model = get_hypernet(args, 4 * load_trained_blocks(args.resume_from), device=device)
+            criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
+            
+        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema,args=args)
         start_epoch = checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         start_block = checkpoint_info['trained_blocks']
@@ -599,8 +603,6 @@ def main_iterative_nerf(args):
         std_accuracy = np.std(accuracies)
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
-
-
     
 if __name__ == "__main__":
     args = parse_args()

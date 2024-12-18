@@ -214,3 +214,38 @@ def get_cifar100(batch_size, strong_transform=False):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     return train_loader, val_loader
+
+def get_cifar100_ddp(batch_size,num_workers ,strong_transform=False):
+    """
+    Returns train and validation data loaders for CIFAR-10 dataset.
+
+    Args:
+        batch_size (int): Number of samples per batch to load.
+
+    Returns:
+        tuple: A tuple of train and validation data loaders.
+    """
+    # Data preparation
+    
+   
+    transform_train = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.507, 0.4865, 0.4409],
+                            std=[0.2673, 0.2564, 0.2761])
+    ])
+    transform_test = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.507, 0.4865, 0.4409],
+                            std=[0.2673, 0.2564, 0.2761])
+    ])
+    train_dataset = datasets.CIFAR100(root='./data', train=True, transform=transform_train, download=False)
+    val_dataset = datasets.CIFAR100(root='./data', train=False, transform=transform_test, download=False)
+    
+    train_sampler = DistributedSampler(dataset=train_dataset)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, sampler=train_sampler, num_workers=num_workers, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+    
+    return train_loader, val_loader

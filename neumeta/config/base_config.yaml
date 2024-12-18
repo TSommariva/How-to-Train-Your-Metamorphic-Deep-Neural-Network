@@ -9,6 +9,7 @@ experiment:
   num_accumulation_steps: 1
   seed: 42  # Random seed
   iterative: False
+  convertToDdp: False
 
 # Model configurations
 model:

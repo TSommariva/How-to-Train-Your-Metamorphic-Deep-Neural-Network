@@ -2,6 +2,7 @@ import torch.nn as nn
 import math
 import numpy as np
 import torch
+from torch.amp import autocast
 
 def weights_init_uniform_relu(m):
     classname = m.__class__.__name__
@@ -142,7 +143,7 @@ class NeRF_MLP_Compose(nn.Module):
             
         self.apply(weights_init_uniform_relu)
             
-    def forward(self, x, layer_id=None, input_dim=None):
+    def forward(self, x, layer_id=None, input_dim=None, use_amp=False):
         """
         Forward pass of the NeRF_MLP_Compose model.
 
@@ -164,7 +165,9 @@ class NeRF_MLP_Compose(nn.Module):
         output_x = torch.zeros((x.size(0), self.output_dim)).to(x.device)
         for lid in unique_layer_ids:
             mask = lid == layer_id
-            output_x[mask] = self.model[lid].forward(x[mask])
+            with autocast(device_type='cuda',enabled=use_amp):
+                model_output = self.model[lid].forward(x[mask])
+                output_x[mask] = model_output
         return output_x / (input_dim.unsqueeze(-1))
 
 
