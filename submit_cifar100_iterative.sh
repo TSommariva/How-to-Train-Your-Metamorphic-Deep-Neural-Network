@@ -1,24 +1,23 @@
 #!/bin/bash
 
-#SBATCH --job-name=finBu6           # Set the job name (optional, default is "slurm-[jobid]")
-#SBATCH --output=log/AaITERATIVE/8Blocks_80e_6AccumulationSteps_BottomUp_Full_FINISH.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
-#SBATCH --error=log/AaITERATIVE/8Blocks_80e_6AccumulationSteps_BottomUp_Full_FINISH.err                 # Redirect errors to this file (optional, default is the same as --output)
-#SBATCH --time=24:00:00                # Set a limit on the total run time (mandatory if there's a system-wide default time limit)
-#SBATCH --account=tesi_tsommariva
-#SBATCH --partition=all_usr_prod       # Specify the partition/queue to submit to (optional, default depends on the system configuration)
-#SBATCH --gres=gpu:1
-#SBATCH --ntasks=1                     # Total number of tasks across all nodes (optional, default is 1)
-#SBATCH --nodes=1                      # Number of nodes to allocate (optional, default is 1)
-#SBATCH --ntasks-per-node=1            # Number of tasks to run per node (optional, default is to divide tasks evenly)
-#SBATCH --cpus-per-task=1              # Number of CPUs to allocate per task (optional, default is 1)
-##SBATCH --mem=1000                     # Memory per node (in MB, optional, default is system specific)
-#SBATCH --mail-type=END,FAIL           # Mail events (NONE, BEGIN, END, FAIL, ALL) (optional, default is NONE)
-#SBATCH --mail-user=ts.slurm@gmail.com  # Where to send the mail (mandatory if mail-type is specified)
+#SBATCH --job-name=Bu300_4           
+#SBATCH --output=log/AaITERATIVE/8Blocks_300e_4AccumulationSteps_BottomUp_Full_FINISH.out
+#SBATCH --error=log/AaITERATIVE/8Blocks_300e_4AccumulationSteps_BottomUp_Full_FINISH.err 
+#SBATCH --time=24:00:00                         
 #SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
+
+#SBATCH --gres=gpu:1                            
+#SBATCH --cpus-per-task=2
+
+#SBATCH --account=tesi_tsommariva               
+#SBATCH --partition=all_usr_prod                
+#SBATCH --mail-type=END,FAIL                    
+#SBATCH --mail-user=ts.slurm@gmail.com          
 
 . /usr/local/anaconda3/etc/profile.d/conda.sh
 conda activate neumeta
 # Command to execute Python program
 
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
-python3 /homes/tsommariva/neumeta/neumeta/train_cifar100.py --config /homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml --resume_from "experiments/AaITERATIVE/8Blocks_80e_6AccumulationSteps_bottomUp:True_Iterative:True_Full/block3/cifar100_nerf_best.pth"
+python3 /homes/tsommariva/neumeta/neumeta/train_cifar100.py --config /homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
+    --resume_from "experiments/AaITERATIVE/8Blocks_300e_4AccumulationSteps_bottomUp:True_Iterative:True_FINISHfromOldBlock2_150e/block3/cifar100_nerf_best.pth"

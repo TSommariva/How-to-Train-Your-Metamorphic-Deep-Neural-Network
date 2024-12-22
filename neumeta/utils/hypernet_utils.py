@@ -45,6 +45,49 @@ def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon
 
     return reconstruct_loss
 
+def get_optimizer2(args, hyper_model):
+    criterion = torch.nn.CrossEntropyLoss()
+    val_criterion = torch.nn.CrossEntropyLoss()
+    optimizer_name = args.training.get('optimizer', 'adamw')
+    lr = 1e-4
+    
+    if optimizer_name == 'adamw':
+        optimizer = AdamW([{'params': p,'initial_lr': lr} for p in hyper_model.parameters()],
+                          lr=lr,
+                          weight_decay=args.training.weight_decay)
+    elif optimizer_name == 'adam':
+        optimizer = Adam(hyper_model.parameters(), 
+                         lr=args.training.learning_rate, 
+                         weight_decay=args.training.weight_decay)
+    elif optimizer_name == 'sgd':
+        optimizer = torch.optim.SGD(hyper_model.parameters(), 
+                                    lr=args.training.learning_rate, 
+                                    momentum=args.training.get('momentum', 0.9),
+                                    weight_decay=args.training.weight_decay)
+    elif optimizer_name == 'rmsprop':
+        optimizer = torch.optim.RMSprop(hyper_model.parameters(), 
+                                        lr=args.training.learning_rate, 
+                                        momentum=args.training.get('momentum', 0.9),
+                                        weight_decay=args.training.weight_decay)
+    elif optimizer_name == 'adagrad':
+        optimizer = torch.optim.Adagrad(hyper_model.parameters(), 
+                                        lr=args.training.learning_rate, 
+                                        weight_decay=args.training.weight_decay)
+    else:
+        raise ValueError(f"Unknown optimizer: {optimizer_name}")
+    scheduler_name = args.training.get('scheduler', 'multistep')
+    # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
+    if scheduler_name == 'cosine':
+        print("Using cosine scheduler, T_max:", args.training.T_max)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=5e-5, last_epoch=649)
+    elif scheduler_name == 'multistep':
+        scheduler = MultiStepLR(optimizer,
+                                milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 
+                                gamma=0.1)
+    return criterion, val_criterion, optimizer, scheduler
+
+
+
 def get_optimizer(args, hyper_model):
     criterion = torch.nn.CrossEntropyLoss()
     # criterion = LabelSmoothingCrossEntropy()
@@ -78,7 +121,7 @@ def get_optimizer(args, hyper_model):
     # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
     if scheduler_name == 'cosine':
         print("Using cosine scheduler, T_max:", args.training.T_max)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=5e-5)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=1e-5)
     elif scheduler_name == 'multistep':
         scheduler = MultiStepLR(optimizer,
                                 milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 
@@ -211,7 +254,7 @@ def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
     accumulated_model.eval()
     return accumulated_model
 
-def sample_merge_model_mxp(hyper_model, model, args, K=50, device='cuda'):
+def sample_merge_model_mxp(hyper_model, model, args, K=50, device='cuda', scaler = None):
     # Initialize a model to accumulate the weights over K samples
     if isinstance(hyper_model, torch.nn.parallel.DistributedDataParallel):
         hyper_model = hyper_model.module
@@ -227,9 +270,10 @@ def sample_merge_model_mxp(hyper_model, model, args, K=50, device='cuda'):
         key_mask = create_key_masks(keys_list=keys_list)
         if k > 0:
             coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
-        model_cls_temp, _ = sample_weights_mxp(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
+        model_cls_temp, _ = sample_weights_mxp(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm, scaler=scaler)
         
         models.append(model_cls_temp)
+        
     
     accumulated_model = average_models(models)
 
@@ -425,7 +469,7 @@ def sample_weights_mxp(model, model_cls, coords_tensor, keys_list, indices_list,
     selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
-        # print(key)
+        #print(key)
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
 

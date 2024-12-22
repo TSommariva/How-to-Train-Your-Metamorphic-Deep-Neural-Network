@@ -183,7 +183,7 @@ def get_mnist(batch_size, strong_transform=False):
     return train_loader, val_loader
     
 
-def get_cifar100(batch_size, strong_transform=False):
+def get_cifar100(batch_size, num_workers=0 ,strong_transform=False):
     """
     Returns train and validation data loaders for CIFAR-10 dataset.
 
@@ -211,8 +211,8 @@ def get_cifar100(batch_size, strong_transform=False):
     train_dataset = datasets.CIFAR100(root='./data', train=True, transform=transform_train, download=True)
     val_dataset = datasets.CIFAR100(root='./data', train=False, transform=transform_test)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, num_workers=num_workers, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, num_workers=num_workers, shuffle=False)
     return train_loader, val_loader
 
 def get_cifar100_ddp(batch_size,num_workers ,strong_transform=False):

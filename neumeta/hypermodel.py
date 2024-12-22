@@ -98,13 +98,11 @@ class NeRF_MLP_Residual_Scaled(nn.Module):
         """
         # Initial transformation
         x = self.act(self.initial_layer(x))
-        
         # Process through each residual block
         for block, scale in zip(self.residual_blocks, self.scalars):
             residual = x  # Store the residual
             out = block(x)
             x = scale * self.act(out) + residual  # Apply scaled activation and add residual
-
         # Final transformation
         x = self.output_layer(x)
         return x

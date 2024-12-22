@@ -1,3 +1,4 @@
+import datetime
 import torch
 import numpy as np
 import random
@@ -171,6 +172,7 @@ class EMA_ddp:
         for name, param in model.named_parameters():
             if param.requires_grad:
                 self.shadow[name] = torch.zeros_like(param.data)
+                self.backup[name] = torch.zeros_like(param.data)
                 
         self.set_shadow(model)
 
@@ -191,28 +193,34 @@ class EMA_ddp:
         if self.rank == 0: 
             for name, param in self.model.named_parameters():
                 if param.requires_grad:
-                    self.backup[name] = param.data.clone()
-                    param.data = self.shadow[name]
+                    module_name = f"module.{name}" if not name.startswith('module.') else name
+                    self.backup[module_name] = param.data.clone()
+                    param.data = self.shadow[module_name]
         
         # Synchronize model parameters across ranks
         if torch.distributed.is_initialized():
             for name, param in self.model.named_parameters():
                 if param.requires_grad:
                     torch.distributed.broadcast(param.data, src=0)
+                    torch.distributed.broadcast(self.backup[name], src=0)
 
     def restore(self):
         if self.rank == 0:
             # Restore weights only on rank 0
             for name, param in self.model.named_parameters():
                 if param.requires_grad:
-                    param.data = self.backup[name]
+                    module_name = f"module.{name}" if not name.startswith('module.') else name
+                    if module_name in self.backup:
+                        param.data = self.backup[module_name]
+                    else:
+                        print(f"Warning: {module_name} not found in backup")
 
         # Sync restored weights across all ranks
         if torch.distributed.is_initialized():
             for name, param in self.model.named_parameters():
                 if param.requires_grad:
                     torch.distributed.broadcast(param.data, src=0)
-
+                    
     def update(self):
         # Update the shadow weights
         if self.rank==0:
@@ -229,7 +237,7 @@ class EMA_ddp:
 
 
 
-def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, trained_blocks=1):
+def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, trained_blocks=1, scaler=None):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -242,25 +250,19 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
     best_acc (float): The best accuracy observed during training.
     """
     # Save the model, optimizer, EMA shadow weights, and other elements
+    
+    checkpoint = {
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'scheduler_state_dict' : scheduler.state_dict(),
+        'best_acc': best_acc,
+        'trained_blocks': trained_blocks,
+    }
     if ema is not None:
-        checkpoint = {
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'scheduler_state_dict' : scheduler.state_dict(),
-            'ema_shadow': ema.shadow,  # specifically saving shadow weights
-            'best_acc': best_acc,
-            'trained_blocks': trained_blocks,
-        }
-    else:
-        checkpoint = {
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'scheduler_state_dict' : scheduler.state_dict(),
-            'best_acc': best_acc,
-            'trained_blocks': trained_blocks,
-        }
+        checkpoint['ema_shadow']=ema.shadow
+    if scheduler is not None:
+        checkpoint['scaler_state_dict'] = scaler.state_dict()
     torch.save(checkpoint, filepath)
     
 def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_acc ,trained_blocks=1, scaler=None):
@@ -277,27 +279,19 @@ def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_a
     """
     # Save the model, optimizer, EMA shadow weights, and other elements
     if torch.distributed.get_rank() == 0:
+        checkpoint = {
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict' : scheduler.state_dict(),
+            'best_acc': best_acc,
+            'trained_blocks': trained_blocks,
+        }
         if ema is not None:
-            checkpoint = {
-                'epoch': epoch,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'scheduler_state_dict' : scheduler.state_dict(),
-                'ema_shadow': ema.shadow,  # specifically saving shadow weights
-                'best_acc': best_acc,
-                'trained_blocks': trained_blocks,
-                'scaler_state_dict': scaler.state_dict(),
-            }
-        else:
-            checkpoint = {
-                'epoch': epoch,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'scheduler_state_dict' : scheduler.state_dict(),
-                'best_acc': best_acc,
-                'trained_blocks': trained_blocks,
-                'scaler_state_dict': scaler.state_dict(),
-            }
+            checkpoint['ema_shadow']=ema.shadow
+        if scheduler is not None:
+            checkpoint['scaler_state_dict'] = scaler.state_dict()
+        
         torch.save(checkpoint, filepath)
 
 def load_trained_blocks(filepath):
@@ -352,19 +346,19 @@ def load_non_ddp_checkpoint_to_ddp(filepath, ddp_model, optimizer, scheduler, em
     ddp_model.to(device)
     
     # Load optimizer and scheduler states
-    if optimizer is not None:
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        for state in optimizer.state.values():
-            for k, v in state.items():
-                if isinstance(v, torch.Tensor):
-                    state[k] = v.to(device)
-                    
-    if scheduler is not None and 'scheduler_state_dict' in checkpoint:
-        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+    #if optimizer is not None:
+    #    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    #    for state in optimizer.state.values():
+    #        for k, v in state.items():
+    #            if isinstance(v, torch.Tensor):
+    #                state[k] = v.to(device)
+    #                
+    #if scheduler is not None and 'scheduler_state_dict' in checkpoint:
+    #    scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         
-    # Load EMA if present
-    if ema is not None and 'ema_shadow' in checkpoint:
-        ema.shadow = {k: v.to(device) for k, v in checkpoint['ema_shadow'].items()}
+    ## Load EMA if present
+    #if ema is not None and 'ema_shadow' in checkpoint:
+    #    ema.shadow = {k: v.to(device) for k, v in checkpoint['ema_shadow'].items()}
     
     return checkpoint, ddp_model
 
@@ -386,7 +380,7 @@ def load_checkpoint_ddp(filepath, model, optimizer, scheduler,ema, device='cuda'
     #print("Keys in saved state_dict but not in model:", saved_keys - model_keys)
     #print("Keys in model but not in saved state_dict:", model_keys - saved_keys)
     
-    model.module.load_state_dict(checkpoint['model_state_dict'])
+    model.load_state_dict(checkpoint['model_state_dict'])
     model.to(device)
     
     if optimizer is not None:

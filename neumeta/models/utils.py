@@ -9,14 +9,12 @@ def fuse_conv_bn(conv, bn):
     # Extract conv layer parameters
     conv_w = conv.weight
     conv_b = conv.bias if conv.bias is not None else torch.zeros_like(bn.running_mean)
-
     # Extract bn layer parameters
     bn_rm = bn.running_mean
     bn_rv = bn.running_var
     bn_eps = bn.eps
     bn_w = bn.weight
     bn_b = bn.bias
-
     # Calculate fused parameters
     inv_var = torch.rsqrt(bn_rv + bn_eps)
     bn_w_div_var = bn_w * inv_var

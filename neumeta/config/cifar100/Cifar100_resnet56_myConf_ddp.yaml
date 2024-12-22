@@ -11,12 +11,12 @@ model:
   fuse: False
 
 experiment:
-  name: ddp_${model.num_param}Blocks_${experiment.num_epochs}e_${experiment.num_accumulation_steps}AccumulationSteps_bottomUp:${model.bottom_up}_Iterative:${experiment.iterative}_FINISH
+  name: ddp_${model.num_param}Blocks_${experiment.num_epochs}e_${experiment.num_accumulation_steps}AccumulationSteps_bottomUp:${model.bottom_up}_Iterative:${experiment.iterative}
   debug: False
-  num_epochs: 150
+  num_epochs: 600
   log_interval: 25
-  eval_interval: 10
-  num_accumulation_steps: 4
+  eval_interval: 40
+  num_accumulation_steps: 2
   iterative: True
   convertToDdp: True
 
@@ -27,10 +27,10 @@ training:
   batch_size: 128
   coordinate_noise: 1.0
   scheduler: cosine
-  T_max: 150
+  T_max: 600
   weight_decay: 1e-4
   clip_grad: 10.0
-  save_model_path: experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
+  save_model_path: experiments/AaDDP/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

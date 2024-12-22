@@ -13,7 +13,7 @@ from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
 from neumeta.models import create_model_cifar100 as create_model
 from neumeta.models import create_model_cifar100_slim
 from neumeta.utils import (AverageMeter, create_key_masks, get_cifar100,get_cifar100_ddp,
-                           get_hypernet, get_optimizer, 
+                           get_hypernet, get_optimizer, get_optimizer2,
                            parse_args, print_omegaconf, sample_coordinates,
                            sample_subset, #sample_weights, sample_merge_model,
                            set_seed, shuffle_coordiates_all, #validate, validate_merge, 
@@ -35,7 +35,11 @@ from neumeta.models import BasicBlock, BasicBlock_Resize
 from torch.amp import autocast, GradScaler
 
 
-
+def get_num_workers():
+    try:
+        return int(os.environ.get("SLURM_CPUS_PER_TASK", 2))
+    except (ValueError, TypeError):
+        return 2
 
 def get_resources():
 
@@ -110,7 +114,7 @@ def init_model_dict(args, device, num_blocks = 1):
 
 def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx, rank, scaler, ema=None, args=None, block_idx=1, max_epochs=200):
     model.train()
-    
+    usa_amp = scaler is not None
     losses = AverageMeter()
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
@@ -131,9 +135,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         #gradient average aggregation
         for accumulation_step in range(args.experiment.num_accumulation_steps):
-            with autocast(device_type='cuda'):
-                if (accumulation_step != 0 or args.experiment.num_accumulation_steps == 1) and rank!=0:
-                    hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
+            with autocast(device_type='cuda', enabled=usa_amp):
+                if accumulation_step != 0 or args.experiment.num_accumulation_steps == 1 or rank!=0:
+                    hidden_dim = ((random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1)) + rank * 8) % 33) + 32
                 else:
                     hidden_dim = 64
 
@@ -184,7 +188,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             # Zero model_cls grads
             for updated_weight in model_cls.parameters():
                 updated_weight.grad = None
-
+            
             # Scale loss and do backward pass
             scaled_loss = loss / args.experiment.num_accumulation_steps
             scaler.scale(scaled_loss).backward(retain_graph=True)
@@ -218,6 +222,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         reg_losses.update(accumulated_reg_loss.item())
         reconstruct_losses.update(accumulated_reconstruct_loss.item())
 
+        
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug and rank==0:
             wandb.log({
                 "Running training accuracy argmax" : train_acc,
@@ -242,6 +247,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     
     loss_tensor = torch.tensor([losses.avg], device=device)
     torch.distributed.all_reduce(loss_tensor)
+    torch.distributed.barrier(device_ids=[local_rank])
+    torch.cuda.empty_cache()
     return loss_tensor.item() / torch.distributed.get_world_size()
 
 
@@ -275,8 +282,11 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
             print("Only residual block with no projection in the skip connection are supported")
             return -1
     
+    
     if rank == 0:    
         os.makedirs(args.training.save_model_path, exist_ok=True)
+    
+    torch.distributed.barrier(device_ids=[local_rank])
     
     hyper_model = get_hypernet(args, 4, device=device)
     
@@ -310,24 +320,29 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
             criterion, val_criterion, optimizer, scheduler = get_optimizer(args, ddp_hyper_model) 
         
         if args.experiment.convertToDdp:
+            #changes made here: load_checkpoint, new get_optimizer   
             checkpoint_info, ddp_hyper_model = load_non_ddp_checkpoint_to_ddp(args.resume_from, ddp_hyper_model, optimizer, scheduler, ema, device=device)
             ema = EMA(ddp_hyper_model, decay=args.hyper_model.ema_decay, rank=rank)
+            criterion, val_criterion, optimizer, scheduler = get_optimizer(args, ddp_hyper_model)
         else:    
             checkpoint_info, ddp_hyper_model = load_checkpoint(args.resume_from, ddp_hyper_model, optimizer, scheduler, ema, device=device)
         
-        start_epoch = checkpoint_info['epoch']
+        start_epoch = 300 #checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         start_block = checkpoint_info['trained_blocks']
         if 'scaler_state_dict' in checkpoint_info:
-            scaler = checkpoint_info['scaler_state_dict']
+            scaler.load_state_dict(checkpoint_info['scaler_state_dict'])
         if rank==0:
             print(f"Resuming from block: {start_block}, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
         # Note: If there are more elements to retrieve, do so here.
+    
     
     if args.test == False:
         
         if not args.experiment.debug and rank==0:
             initialize_wandb(args)
+        
+        torch.distributed.barrier(device_ids=[local_rank])
         
         for block_id in range(start_block, args.model.num_param + 1):
             if rank==0:
@@ -341,8 +356,8 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
                 else:
                     ddp_hyper_model=extend_nerf_compose(ddp_hyper_model,ddp_frozen_NeRF)
 
-                ema = EMA(hyper_model, decay=args.hyper_model.ema_decay, rank=rank)
-                criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
+                ema = EMA(ddp_hyper_model, decay=args.hyper_model.ema_decay, rank=rank)
+                criterion, val_criterion, optimizer, scheduler = get_optimizer(args, ddp_hyper_model)
 
                 start_epoch = 1
                 best_acc = 0.0
@@ -350,25 +365,30 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
             
             dim_dict, gt_model_dict = init_model_dict(args, device ,block_id)
             dim_dict = shuffle_coordiates_all(dim_dict)
+            torch.cuda.empty_cache()
 
             for epoch in range(start_epoch, args.experiment.num_epochs + 1):
-                #train_loader.sampler.set_epoch(epoch)
-                train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, rank=rank, scaler=scaler)
+                train_loader.sampler.set_epoch(epoch)
+                train_loss = train_one_epoch(ddp_hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, rank=rank, scaler=scaler)
                 scheduler.step()
 
                 if rank==0:
                     print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
-                    if epoch % args.experiment.eval_interval == 0:
-                        if ema:
-                            ema.apply()
-
-                        sampled_model = sample_merge_model(ddp_hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+                if epoch % args.experiment.eval_interval == 0:
+                    if ema:
+                        ema.apply()
+                    
+                    sampled_model = sample_merge_model(ddp_hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
+                    if rank == 0:
+                        
                         train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+                        
                         val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-
-                        if ema:
-                            ema.restore()
+                    if ema:
+                        
+                        ema.restore()
+                    if rank==0:
                         if not args.experiment.debug:    
                             wandb.log({
                                 "Train Loss_model sampled outside training": train_loss,
@@ -380,7 +400,6 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
                         print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
                         print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
                         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-
                         # Save the checkpoint
                         if val_acc > best_acc:
                             best_acc = val_acc
@@ -389,17 +408,22 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
                             print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                             print("------------------------------------------------------------------------------------------------------------------------------")
             
+            torch.distributed.barrier(device_ids=[local_rank])
+            torch.cuda.empty_cache()
+            
             #for param in hyper_model.parameters():
             #    param.requires_grad = False
             ddp_frozen_NeRF = ddp_hyper_model
             
-
-        sampled_model = sample_merge_model(ddp_frozen_NeRF, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
-        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-        save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc, args.model.num_param, scaler=scaler)
-        print("------------------------------------------------------------------------------------------------------------------------------")
-        print(f"Checkpoint saved at the end of training with accuracy: {val_acc*100:.2f}%")
-        print("------------------------------------------------------------------------------------------------------------------------------")
+        sampled_model = sample_merge_model(ddp_frozen_NeRF, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
+        if rank==0:
+            val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+            save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc, args.model.num_param, scaler=scaler)
+            print("------------------------------------------------------------------------------------------------------------------------------")
+            print(f"Checkpoint saved at the end of training with accuracy: {val_acc*100:.2f}%")
+            print("------------------------------------------------------------------------------------------------------------------------------")
+        
+        torch.distributed.barrier(device_ids=[local_rank])
         
         if not args.experiment.debug and rank==0:
             wandb.finish()
@@ -408,39 +432,41 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
             print("Training finished.")
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             #testing the best model
-            checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{args.model.num_param}/cifar100_nerf_best.pth", ddp_frozen_NeRF, optimizer,scheduler ,ema, device=device)
-            checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", ddp_frozen_NeRF, optimizer,scheduler ,ema, device=device)
-            best_accuracies = []
-            last_accuracies = []
-            for hidden_dim in range(16, 65):
-                # Create a model for the given hidden dimension
-                model = create_model(args.model.type, 
-                                        hidden_dim=hidden_dim,
-                                        num_param=args.model.num_param,
-                                        bottom_up=args.model.bottom_up,
-                                        path=args.model.pretrained_path, 
-                                        smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-                #model = create_model_cifar100_slim(args.model.type, 
-                #                        hidden_dim=hidden_dim,
-                #                        num_param=args.model.num_param, 
-                #                        path=args.model.pretrained_path, 
-                #                        smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-
-                # Sample the merged model for K times
-                accumulated_model_best = sample_merge_model(best_hyper_model, model, args, K=100, device=device)
-                accumulated_model_last = sample_merge_model(last_hyper_model, model, args, K=100, device=device)
-
-                # Validate the merged model
+        
+        checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{args.model.num_param}/cifar100_nerf_best.pth", ddp_frozen_NeRF, optimizer,scheduler ,ema, device=device)
+        checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", ddp_frozen_NeRF, optimizer,scheduler ,ema, device=device)
+        best_accuracies = []
+        last_accuracies = []
+        for hidden_dim in range(16, 65):
+            # Create a model for the given hidden dimension
+            model = create_model(args.model.type, 
+                                    hidden_dim=hidden_dim,
+                                    num_param=args.model.num_param,
+                                    bottom_up=args.model.bottom_up,
+                                    path=args.model.pretrained_path, 
+                                    smooth=args.model.smooth, fuse=args.model.fuse).to(device)
+            #model = create_model_cifar100_slim(args.model.type, 
+            #                        hidden_dim=hidden_dim,
+            #                        num_param=args.model.num_param, 
+            #                        path=args.model.pretrained_path, 
+            #                        smooth=args.model.smooth, fuse=args.model.fuse).to(device)
+            # Sample the merged model for K times
+            accumulated_model_best = sample_merge_model(best_hyper_model, model, args, K=100, device=device, scaler=scaler)
+            accumulated_model_last = sample_merge_model(last_hyper_model, model, args, K=100, device=device, scaler=scaler)
+            # Validate the merged model
+            if rank==0:
                 best_val_loss, best_val_acc = validate_single(accumulated_model_best, val_loader, val_criterion, args=args, device=device)
                 last_val_loss, last_val_acc = validate_single(accumulated_model_last, val_loader, val_criterion, args=args, device=device)
                 best_accuracies.append(best_val_acc)
                 last_accuracies.append(last_val_acc)
-
                 # Print the results
                 print(f"Test using model {args.model}: hidden_dim {hidden_dim}")
                 print(f"\tValidation Loss best NeRF: {best_val_loss:.4f}, Validation Accuracy: {best_val_acc*100:.2f}%")
                 print(f"\tValidation Loss last NeRF: {last_val_loss:.4f}, Validation Accuracy: {last_val_acc*100:.2f}%")
-
+        
+        torch.cuda.empty_cache()
+        torch.distributed.barrier(device_ids=[local_rank])
+        if rank==0:
             best_mean_accuracy = np.mean(best_accuracies)
             best_std_accuracy = np.std(best_accuracies)
             last_mean_accuracy = np.mean(last_accuracies)
@@ -449,8 +475,8 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             print(f"Best NeRF Mean Validation Accuracy: {best_mean_accuracy * 100:.2f}% ± {best_std_accuracy * 100:.2f}%")
             print(f"Last NeRF Mean Validation Accuracy: {last_mean_accuracy * 100:.2f}% ± {lasy_std_accuracy * 100:.2f}%")
+        
     else:
-        if rank==0:
             accuracies = []
             for hidden_dim in range(32, 65):
                 model = create_model(args.model.type, 
@@ -470,11 +496,11 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
                 if ema:
                     print("Applying EMA")
                     ema.apply()
-                    accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
+                    accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device, scaler=scaler)
                     val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
                     ema.restore()  # Restore the original weights after applying EMA
                 else:
-                    accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
+                    accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device, scaler=scaler)
                     val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
 
                 accuracies.append(acc)
@@ -491,12 +517,12 @@ def main_iterative_nerf(args, rank, device, world_size, num_workers):
             std_accuracy = np.std(accuracies)
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
-        
+    torch.distributed.barrier(device_ids=[local_rank])
         
 if __name__ == "__main__":
     
     rank, local_rank, world_size = get_resources()
-    num_workers = int(os.environ["SLURM_CPUS_PER_TASK"])
+    num_workers = get_num_workers()
     
     args = parse_args()
     if rank==0:
@@ -517,13 +543,9 @@ if __name__ == "__main__":
     device = torch.device("cuda:{}".format(local_rank))
     torch.cuda.set_device(local_rank)
 
+    torch.distributed.barrier(device_ids=[local_rank])
+    
     main_iterative_nerf(args, rank, device, world_size, num_workers)
     
+    torch.cuda.empty_cache()
     dist.destroy_process_group()
-
-    
-    
-
-
-
-    
