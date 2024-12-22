@@ -8,6 +8,7 @@ model:
   num_param: 1
   smooth: False
   fuse: False
+  bottom_up: True
 
 experiment:
   name: TEST
@@ -15,7 +16,9 @@ experiment:
   num_epochs: 100
   log_interval: 25
   eval_interval: 1
-  num_accumulation_steps: 1
+  arch_accumulation_steps: 4
+  batch_accumulation_steps: 1
+  iterative: True
 
 
 # Training configurations

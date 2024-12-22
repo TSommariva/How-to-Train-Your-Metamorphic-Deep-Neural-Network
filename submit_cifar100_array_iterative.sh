@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=ArcBatchAccumulation           
-#SBATCH --output=log/AaITERATIVE/arc_batch_accumulation_resumeFromBlock3_%a.out
-#SBATCH --error=log/AaITERATIVE/arc_batch_accumulation_resumeFromBlock3_%a.err
+#SBATCH --output=log/AaITERATIVE/arc_batch_accumulation_fromBeginning_variable_epochs_%a.out
+#SBATCH --error=log/AaITERATIVE/arc_batch_accumulation_fromBeginning_variable_epochs_%a.err
 #SBATCH --time=12:00:00                         
 #SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
 #SBATCH --array=0-2
@@ -19,18 +19,19 @@ conda activate neumeta
 
 # Define accumulation steps configurations
 case $SLURM_ARRAY_TASK_ID in
-    0) BATCH_ACCUM=1; ARCH_ACCUM=4 ;;
-    1) BATCH_ACCUM=2; ARCH_ACCUM=2 ;;
-    2) BATCH_ACCUM=4; ARCH_ACCUM=1 ;;
+    0) BATCH_ACCUM=4; ARCH_ACCUM=1; EPOCHS=50 ;; 
+    1) BATCH_ACCUM=2; ARCH_ACCUM=2; EPOCHS=50 ;;  
+    2) BATCH_ACCUM=1; ARCH_ACCUM=4; EPOCHS=50 ;;
     *) echo "Invalid array task ID"; exit 1 ;;
 esac
 
 # Define experiment name
-EXP_NAME="batch_accumulation_steps:${BATCH_ACCUM}_arch_accumulation_steps:${ARCH_ACCUM}"
+EXP_NAME="batch_accumulation_steps:${BATCH_ACCUM}_arch_accumulation_steps:${ARCH_ACCUM}__epchs:${EPOCHS}fromBeginning"
 
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
 python3 /homes/tsommariva/neumeta/neumeta/train_cifar100.py --config /homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
-    --resume_from "experiments/AaITERATIVE/8Blocks_300e_4AccumulationSteps_bottomUp:True_Iterative:True_FINISHfromOldBlock2_150e/block2/cifar100_nerf_best.pth" \
     --experiment.batch_accumulation_steps=$BATCH_ACCUM \
     --experiment.arch_accumulation_steps=$ARCH_ACCUM \
-    --experiment.name="$EXP_NAME"
+    --experiment.num_epochs=$EPOCHS \
+    --experiment.name="$EXP_NAME" 
+    #--resume_from "experiments/AaITERATIVE/8Blocks_300e_4AccumulationSteps_bottomUp:True_Iterative:True_FINISHfromOldBlock2_150e/block2/cifar100_nerf_best.pth" \

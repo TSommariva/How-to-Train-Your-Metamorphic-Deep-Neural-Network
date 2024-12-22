@@ -11,13 +11,14 @@ experiment:
   seed: 42  # Random seed
   iterative: False
   convertToDdp: False
+  scaler: False
 
 # Model configurations
 model:
   type: ResNet20
   pretrained_path: neumeta/pretrained_models/cifar10_resnet20-4118986f.pt  # Path to pre-trained model
   num_param: 1
-  bottom_up: False
+  bottom_up: True
   smooth: True
   fuse: True
 

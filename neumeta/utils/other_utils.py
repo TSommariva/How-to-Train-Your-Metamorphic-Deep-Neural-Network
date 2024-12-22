@@ -261,7 +261,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
     }
     if ema is not None:
         checkpoint['ema_shadow']=ema.shadow
-    if scheduler is not None:
+    if scaler is not None:
         checkpoint['scaler_state_dict'] = scaler.state_dict()
     torch.save(checkpoint, filepath)
     

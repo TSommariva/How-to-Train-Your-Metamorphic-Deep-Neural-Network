@@ -91,11 +91,13 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     
     use_amp = scaler is not None
     
+    no_accumulation = (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps) == 1
+    
     losses = AverageMeter()
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
-
+    step = 0
     for batch_idx, (x, target) in enumerate(train_loader):
         if torch.backends.cudnn.version() >= 7603:
             x, target = x.to(device, memory_format=torch.channels_last), target.to(device)
@@ -104,54 +106,47 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         #gradient aggregation
         for arch_step in range(args.experiment.arch_accumulation_steps):
-            with autocast(device_type='cuda', enabled=use_amp):    
-                if arch_step != 0 or args.experiment.arch_accumulation_steps == 1:
-                    hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
-                else:
-                    hidden_dim = 64
-
-                model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
-                selected_keys = np.unique(keys_list)
-                #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
-
-                if args.training.coordinate_noise > 0.0:
-                    coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
-                model_cls, reconstructed_weights = sample_weights(model, model_cls,
-                                                                  coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                                                                  device=device, NORM=args.dimensions.norm, scaler=scaler)
-
-                # Forward pass
-                predict = model_cls(x)
-
-                results=torch.argmax(predict,dim=1)
-                train_acc=accuracy_score(results.cpu(), target.cpu())
-
-                # Compute loss
-                cls_loss = criterion(predict, target)
-                cls_losses.update(cls_loss.item())
-                
-                # Compute regularization loss
-                reg_loss = sum([torch.norm(w, p=2)
-                                        for w in reconstructed_weights])
-                reg_losses.update(reg_loss.item())
-                
-                # Compute MSE loss
-                if f"{hidden_dim}" in gt_model_dict:
-                    gt_model = gt_model_dict[f"{hidden_dim}"]
-                    gt_selected_weights = [
-                        w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
-
-                    reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
-                        w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
-                else:
-                    reconstruct_loss = torch.tensor(0.0)
-
-                reconstruct_losses.update(reconstruct_loss.item())
-                
-                loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
-                    reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
-
-                losses.update(loss.item())
+            #with autocast(device_type='cuda', enabled=use_amp):
+            step +=1
+            if (step != (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)) or no_accumulation:
+                hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
+            else:
+                hidden_dim = 64
+            model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
+            selected_keys = np.unique(keys_list)
+            #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
+            if args.training.coordinate_noise > 0.0:
+                coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
+            model_cls, reconstructed_weights = sample_weights(model, model_cls,
+                                                              coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                              device=device, NORM=args.dimensions.norm, scaler=scaler)
+            # Forward pass
+            predict = model_cls(x)
+            results=torch.argmax(predict,dim=1)
+            train_acc=accuracy_score(results.cpu(), target.cpu())
+            # Compute loss
+            cls_loss = criterion(predict, target)
+            cls_losses.update(cls_loss.item())
+            
+            # Compute regularization loss
+            reg_loss = sum([torch.norm(w, p=2)
+                                    for w in reconstructed_weights])
+            reg_losses.update(reg_loss.item())
+            
+            # Compute MSE loss
+            if f"{hidden_dim}" in gt_model_dict:
+                gt_model = gt_model_dict[f"{hidden_dim}"]
+                gt_selected_weights = [
+                    w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
+                reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
+                    w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
+            else:
+                reconstruct_loss = torch.tensor(0.0)
+            reconstruct_losses.update(reconstruct_loss.item())
+            
+            loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
+                reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
+            losses.update(loss.item())
             
             # Zero model_cls grads
             for updated_weight in model_cls.parameters():
@@ -159,15 +154,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
 
             # Scale loss and do backward pass
             scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
-            if use_amp:
-                scaler.scale(scaled_loss).backward(retain_graph=True)
-                # Scale gradients for reconstructed weights
-                scaled_grads = [scaler.scale(w.grad) for k, w in model_cls.named_parameters() if k in selected_keys]
-                torch.autograd.backward(reconstructed_weights, scaled_grads)
-            else:
-                scaled_loss.backward(retain_graph=True)
-                torch.autograd.backward(reconstructed_weights, [
-                                w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+            scaled_loss.backward(retain_graph=True)
+            torch.autograd.backward(reconstructed_weights, [
+                            w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
                 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             wandb.log({
@@ -181,27 +170,27 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
             
-        if batch_idx % args.experiment.batch_accumulation_steps :
-            if args.training.get('clip_grad', 0.0) > 0:
-                torch.nn.utils.clip_grad_value_(
-                    model.parameters(), args.training.clip_grad)
-
-            # Optimizer step with scaler
-            if use_amp:
-                scaler.step(optimizer)
-                scaler.update()
-            else:
-                optimizer.step()
-                
-            optimizer.zero_grad()
-
-            if ema:
-                ema.update()  # Update the EMA after each training step
-
             losses.reset()
             cls_losses.reset()
             reg_losses.reset()
             reconstruct_losses.reset()
+            
+            
+        if (batch_idx % args.experiment.batch_accumulation_steps) == 0 :
+            if args.training.get('clip_grad', 0.0) > 0:
+                torch.nn.utils.clip_grad_value_(
+                    model.parameters(), args.training.clip_grad)
+            
+            optimizer.step()    
+            optimizer.zero_grad()
+            step = 0
+            
+            # Optimizer step with scaler
+            if use_amp:
+                scaler.update()
+            
+            if ema:
+                ema.update()  # Update the EMA after each training step
     
     tr_loss, tr_acc = validate_single(model_cls, train_loader, nn.CrossEntropyLoss(), args=args, device=device)
     
@@ -248,8 +237,10 @@ def main_nerf(args):
     hyper_model = get_hypernet(args, number_param, device=device)
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
-    scaler = GradScaler('cuda') if torch.cuda.is_available() else None
-
+    if args.experiment.scaler and torch.cuda.is_available():
+        scaler = GradScaler('cuda')
+    else:
+        scaler = None
     
     start_epoch = 1
     best_acc = 0.0
@@ -444,7 +435,10 @@ def main_iterative_nerf(args):
     hyper_model = get_hypernet(args, 4, device=device)
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
-    scaler = GradScaler('cuda') if torch.cuda.is_available() else None
+    if args.experiment.scaler and torch.cuda.is_available():
+        scaler = GradScaler('cuda')
+    else:
+        scaler = None
     
     start_block = 1
     start_epoch = 1

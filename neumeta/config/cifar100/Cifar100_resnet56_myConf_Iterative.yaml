@@ -16,9 +16,10 @@ experiment:
   num_epochs: 50
   log_interval: 26
   eval_interval: 10
-  arch_accumulation_steps: 2
-  batch_accumulation_steps: 2
+  arch_accumulation_steps: 1
+  batch_accumulation_steps: 1
   iterative: True
+  scaler: False
 
 
 # Training configurations
@@ -27,7 +28,7 @@ training:
   batch_size: 128
   coordinate_noise: 1.0
   scheduler: cosine
-  T_max: 300
+  T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
   clip_grad: 10.0
   save_model_path: experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
