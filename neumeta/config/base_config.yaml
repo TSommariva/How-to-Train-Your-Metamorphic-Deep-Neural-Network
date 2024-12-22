@@ -6,7 +6,8 @@ experiment:
   debug: False
   log_interval: 250
   eval_interval: 1
-  num_accumulation_steps: 1
+  arch_accumulation_steps: 1
+  batch_accumulation_steps: 1
   seed: 42  # Random seed
   iterative: False
   convertToDdp: False

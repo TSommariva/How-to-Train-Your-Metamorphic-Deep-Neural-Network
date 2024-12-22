@@ -88,28 +88,24 @@ def init_model_dict(args, num_blocks = 1):
 
 def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx, scaler=None ,ema=None, args=None, block_idx=1, max_epochs=200):
     model.train()
+    
     use_amp = scaler is not None
+    
     losses = AverageMeter()
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
 
     for batch_idx, (x, target) in enumerate(train_loader):
-        optimizer.zero_grad()
         if torch.backends.cudnn.version() >= 7603:
             x, target = x.to(device, memory_format=torch.channels_last), target.to(device)
         else:
             x, target = x.to(device), target.to(device)
         
-        accumulated_loss = torch.tensor(0.0).to(device)
-        accumulated_cls_loss = torch.tensor(0.0).to(device)
-        accumulated_reg_loss = torch.tensor(0.0).to(device)
-        accumulated_reconstruct_loss = torch.tensor(0.0).to(device)
-        
-        #gradient average aggregation
-        for accumulation_step in range(args.experiment.num_accumulation_steps):
+        #gradient aggregation
+        for arch_step in range(args.experiment.arch_accumulation_steps):
             with autocast(device_type='cuda', enabled=use_amp):    
-                if accumulation_step != 0 or args.experiment.num_accumulation_steps == 1:
+                if arch_step != 0 or args.experiment.arch_accumulation_steps == 1:
                     hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
                 else:
                     hidden_dim = 64
@@ -117,7 +113,6 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
                 selected_keys = np.unique(keys_list)
                 #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
-
 
                 if args.training.coordinate_noise > 0.0:
                     coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
@@ -133,13 +128,13 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
 
                 # Compute loss
                 cls_loss = criterion(predict, target)
-                accumulated_cls_loss += cls_loss
-
+                cls_losses.update(cls_loss.item())
+                
                 # Compute regularization loss
                 reg_loss = sum([torch.norm(w, p=2)
                                         for w in reconstructed_weights])
-                accumulated_reg_loss += reg_loss
-
+                reg_losses.update(reg_loss.item())
+                
                 # Compute MSE loss
                 if f"{hidden_dim}" in gt_model_dict:
                     gt_model = gt_model_dict[f"{hidden_dim}"]
@@ -151,46 +146,29 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 else:
                     reconstruct_loss = torch.tensor(0.0)
 
-                accumulated_reconstruct_loss += reconstruct_loss
-
+                reconstruct_losses.update(reconstruct_loss.item())
+                
                 loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
                     reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
 
-                accumulated_loss += loss
+                losses.update(loss.item())
             
             # Zero model_cls grads
             for updated_weight in model_cls.parameters():
                 updated_weight.grad = None
 
             # Scale loss and do backward pass
-            scaled_loss = loss / args.experiment.num_accumulation_steps
-            scaler.scale(scaled_loss).backward(retain_graph=True)
-            # Scale gradients for reconstructed weights
-            scaled_grads = [scaler.scale(w.grad) for k, w in model_cls.named_parameters() if k in selected_keys]
-            torch.autograd.backward(reconstructed_weights, scaled_grads)
-        
-        
-        if args.training.get('clip_grad', 0.0) > 0:
-            torch.nn.utils.clip_grad_value_(
-                model.parameters(), args.training.clip_grad)
-
-        # Optimizer step with scaler
-        scaler.step(optimizer)
-        scaler.update()
-        
-        if ema:
-            ema.update()  # Update the EMA after each training step
-        
-        accumulated_loss /= args.experiment.num_accumulation_steps
-        accumulated_cls_loss /= args.experiment.num_accumulation_steps 
-        accumulated_reg_loss /= args.experiment.num_accumulation_steps 
-        accumulated_reconstruct_loss /= args.experiment.num_accumulation_steps
-        
-        losses.update(accumulated_loss.item())
-        cls_losses.update(accumulated_cls_loss.item())
-        reg_losses.update(accumulated_reg_loss.item())
-        reconstruct_losses.update(accumulated_reconstruct_loss.item())
-
+            scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
+            if use_amp:
+                scaler.scale(scaled_loss).backward(retain_graph=True)
+                # Scale gradients for reconstructed weights
+                scaled_grads = [scaler.scale(w.grad) for k, w in model_cls.named_parameters() if k in selected_keys]
+                torch.autograd.backward(reconstructed_weights, scaled_grads)
+            else:
+                scaled_loss.backward(retain_graph=True)
+                torch.autograd.backward(reconstructed_weights, [
+                                w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+                
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             wandb.log({
                 "Running training accuracy argmax" : train_acc,
@@ -202,6 +180,28 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             })#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
+            
+        if batch_idx % args.experiment.batch_accumulation_steps :
+            if args.training.get('clip_grad', 0.0) > 0:
+                torch.nn.utils.clip_grad_value_(
+                    model.parameters(), args.training.clip_grad)
+
+            # Optimizer step with scaler
+            if use_amp:
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                optimizer.step()
+                
+            optimizer.zero_grad()
+
+            if ema:
+                ema.update()  # Update the EMA after each training step
+
+            losses.reset()
+            cls_losses.reset()
+            reg_losses.reset()
+            reconstruct_losses.reset()
     
     tr_loss, tr_acc = validate_single(model_cls, train_loader, nn.CrossEntropyLoss(), args=args, device=device)
     

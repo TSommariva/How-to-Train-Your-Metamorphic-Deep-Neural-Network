@@ -7,7 +7,8 @@
       "request": "launch",
       "program": "neumeta/train_cifar100.py",
       "args": [
-        "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml"
+        "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml",
+        "--experiment.batch_accumulation_steps=4"
     ], 
       "console": "integratedTerminal"
     },
