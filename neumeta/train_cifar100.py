@@ -60,7 +60,7 @@ def init_model_dict(args, num_blocks = 1):
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
         #model_cls = create_model_cifar100_slim (args.model.type, hidden_dim=dim, num_blocks, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
          
-        if torch.backends.cudnn.version() >= 7603:
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model_cls = model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model_cls = model_cls.to(device)
@@ -68,7 +68,7 @@ def init_model_dict(args, num_blocks = 1):
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
         dim_dict[f"{dim}"] = (model_cls, coords_tensor, keys_list, indices_list, size_list, None)
         
-        if torch.backends.cudnn.version() >= 7603:
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             input_tensor = torch.randn(1, 3, 32, 32).to(device, memory_format=torch.channels_last)
         else:
             input_tensor = torch.randn(1, 3, 32, 32).to(device)
@@ -81,7 +81,7 @@ def init_model_dict(args, num_blocks = 1):
                                  hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, single_block=args.model.single_block,
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
             #model_trained = create_model_cifar100_slim(args.model.type, hidden_dim=dim,num_param=num_blocks ,path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
-            if torch.backends.cudnn.version() >= 7603:
+            if device=="cuda" and torch.backends.cudnn.version() >= 7603:
                 model_trained = model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
             else:
                 model_trained = model_trained.to(device)
@@ -104,7 +104,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     reconstruct_losses = AverageMeter()
     
     for batch_idx, (x, target) in enumerate(train_loader):
-        if torch.backends.cudnn.version() >= 7603:
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             x, target = x.to(device, memory_format=torch.channels_last), target.to(device)
         else:
             x, target = x.to(device), target.to(device)
@@ -520,15 +520,15 @@ def main_iterative_nerf(args):
                         
                         hyper_model = copyParams(frozen_NeRF.model[-4:],hyper_model)
                         
-                        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
-                        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-                        print(f"copy intialize model: Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
-                        
-                        hyper_model = load_prev_model(frozen_NeRF.model[-4:],hyper_model)
-                        
-                        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
-                        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-                        print(f"load state dict intialize model: Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                        #sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
+                        #val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                        #print(f"copy intialize model: Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                        #
+                        #hyper_model = load_prev_model(frozen_NeRF.model[-4:],hyper_model)
+                        #
+                        #sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
+                        #val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                        #print(f"load state dict intialize model: Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
                         
                         
                     hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)     

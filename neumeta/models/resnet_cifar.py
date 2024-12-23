@@ -216,8 +216,7 @@ class CifarResNet(nn.Module):
                     else:
                         print(f'Replace block number {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {planes}')
                         # Get all the layers except the last block
-                        layers = []
-                        layers.append(list(child.children())[:self.num_layers_inr])
+                        layers = list(child.children())[:self.num_layers_inr]
                         
                         layers.append(BasicBlock_Resize(64, planes, stride))
 

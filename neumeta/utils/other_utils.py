@@ -448,6 +448,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     for name, module in model.named_modules():
         if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize)) and module != model:
             #if any(key.startswith(name) for key in learnable_keys):
+            if 'layer3' in name:
                 hook = module.register_forward_hook(hook_fnc(name))
                 hooks.append(hook)
 
