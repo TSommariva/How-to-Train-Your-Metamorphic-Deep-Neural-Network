@@ -56,7 +56,7 @@ def init_model_dict(args, num_blocks = 1):
         num_blocks=args.model.num_param
     for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1):
         model_cls = create_model(args.model.type, 
-                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, 
+                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=args.model.single_block ,
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
         #model_cls = create_model_cifar100_slim (args.model.type, hidden_dim=dim, num_blocks, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
          
@@ -68,13 +68,17 @@ def init_model_dict(args, num_blocks = 1):
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
         dim_dict[f"{dim}"] = (model_cls, coords_tensor, keys_list, indices_list, size_list, None)
         
-        #input_tensor = torch.randn(1, 3, 32, 32).to(device)
-        #register_hooks_and_print_shapes(model_cls, input_tensor)
+        if torch.backends.cudnn.version() >= 7603:
+            input_tensor = torch.randn(1, 3, 32, 32).to(device, memory_format=torch.channels_last)
+        else:
+            input_tensor = torch.randn(1, 3, 32, 32).to(device)
+        
+        register_hooks_and_print_shapes(model_cls, input_tensor)
 
         if dim == args.dimensions.start:
             print(f"Loading model for dim {dim}")
             model_trained = create_model(args.model.type, 
-                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, 
+                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, single_block=args.model.single_block,
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
             #model_trained = create_model_cifar100_slim(args.model.type, hidden_dim=dim,num_param=num_blocks ,path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
             if torch.backends.cudnn.version() >= 7603:
@@ -88,16 +92,17 @@ def init_model_dict(args, num_blocks = 1):
 
 def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx, scaler=None ,ema=None, args=None, block_idx=1, max_epochs=200):
     model.train()
+    optimizer.zero_grad()
     
     use_amp = scaler is not None
-    
     no_accumulation = (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps) == 1
+    step = 0
     
     losses = AverageMeter()
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
-    step = 0
+    
     for batch_idx, (x, target) in enumerate(train_loader):
         if torch.backends.cudnn.version() >= 7603:
             x, target = x.to(device, memory_format=torch.channels_last), target.to(device)
@@ -106,47 +111,47 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         #gradient aggregation
         for arch_step in range(args.experiment.arch_accumulation_steps):
-            #with autocast(device_type='cuda', enabled=use_amp):
-            step +=1
-            if (step != (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)) or no_accumulation:
-                hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
-            else:
-                hidden_dim = 64
-            model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
-            selected_keys = np.unique(keys_list)
-            #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
-            if args.training.coordinate_noise > 0.0:
-                coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
-            model_cls, reconstructed_weights = sample_weights(model, model_cls,
-                                                              coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                                                              device=device, NORM=args.dimensions.norm, scaler=scaler)
-            # Forward pass
-            predict = model_cls(x)
-            results=torch.argmax(predict,dim=1)
-            train_acc=accuracy_score(results.cpu(), target.cpu())
-            # Compute loss
-            cls_loss = criterion(predict, target)
-            cls_losses.update(cls_loss.item())
-            
-            # Compute regularization loss
-            reg_loss = sum([torch.norm(w, p=2)
-                                    for w in reconstructed_weights])
-            reg_losses.update(reg_loss.item())
-            
-            # Compute MSE loss
-            if f"{hidden_dim}" in gt_model_dict:
-                gt_model = gt_model_dict[f"{hidden_dim}"]
-                gt_selected_weights = [
-                    w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
-                reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
-                    w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
-            else:
-                reconstruct_loss = torch.tensor(0.0)
-            reconstruct_losses.update(reconstruct_loss.item())
-            
-            loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
-                reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
-            losses.update(loss.item())
+            with autocast(device_type='cuda', enabled=use_amp):
+                step +=1
+                if (step != 1) or no_accumulation:
+                    hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
+                else:
+                    hidden_dim = 64
+                model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
+                selected_keys = np.unique(keys_list)
+                #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
+                if args.training.coordinate_noise > 0.0:
+                    coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
+                model_cls, reconstructed_weights = sample_weights(model, model_cls,
+                                                                  coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                                  device=device, NORM=args.dimensions.norm, scaler=scaler)
+                # Forward pass
+                predict = model_cls(x)
+                results=torch.argmax(predict,dim=1)
+                train_acc=accuracy_score(results.cpu(), target.cpu())
+                # Compute loss
+                cls_loss = criterion(predict, target)
+                cls_losses.update(cls_loss.item())
+
+                # Compute regularization loss
+                reg_loss = sum([torch.norm(w, p=2)
+                                        for w in reconstructed_weights])
+                reg_losses.update(reg_loss.item())
+
+                # Compute MSE loss
+                if f"{hidden_dim}" in gt_model_dict:
+                    gt_model = gt_model_dict[f"{hidden_dim}"]
+                    gt_selected_weights = [
+                        w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
+                    reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
+                        w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
+                else:
+                    reconstruct_loss = torch.tensor(0.0)
+                reconstruct_losses.update(reconstruct_loss.item())
+
+                loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
+                    reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
+                losses.update(loss.item())
             
             # Zero model_cls grads
             for updated_weight in model_cls.parameters():
@@ -154,9 +159,15 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
 
             # Scale loss and do backward pass
             scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
-            scaled_loss.backward(retain_graph=True)
-            torch.autograd.backward(reconstructed_weights, [
-                            w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+            if not use_amp:
+                scaled_loss.backward(retain_graph=True)
+                torch.autograd.backward(reconstructed_weights, [
+                                w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+            else:
+                scaler.scale(scaled_loss).backward(retain_graph=True)
+                torch.autograd.backward(reconstructed_weights, [
+                                w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+                
                 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             wandb.log({
@@ -180,14 +191,14 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             if args.training.get('clip_grad', 0.0) > 0:
                 torch.nn.utils.clip_grad_value_(
                     model.parameters(), args.training.clip_grad)
-            
-            optimizer.step()    
+            if not use_amp:
+                optimizer.step() 
+            else:
+                scaler.step(optimizer)
+                scaler.update()
+                   
             optimizer.zero_grad()
             step = 0
-            
-            # Optimizer step with scaler
-            if use_amp:
-                scaler.update()
             
             if ema:
                 ema.update()  # Update the EMA after each training step
@@ -200,7 +211,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                     "trainAcc_last model of the epoch" : tr_acc
 
                 })
-    return losses.avg
+    return tr_loss
 
 def main_nerf(args):
     set_seed(args.experiment.seed)
@@ -402,6 +413,25 @@ def main_nerf(args):
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
 
+def copyParams(NerF_src, Nerf_dest):
+    print("initialize MLPs of the current block with the weights of the previous one")
+    with torch.no_grad():
+        for i in range(4):
+            for name, param in NerF_src[i].named_parameters():
+                dest_param = dict(Nerf_dest.model[i].named_parameters())[name]
+                if dest_param.shape == param.shape:
+                    dest_param.copy_(param)
+                else:
+                    print(f"src:{name} and dest params have different shapes")
+    return Nerf_dest
+
+def load_prev_model(source, dest):
+    with torch.no_grad():
+       for i in range(4):
+           dest.model[i].load_state_dict(source[i].state_dict())
+    return dest
+    
+    
 def main_iterative_nerf(args):
 
     set_seed(args.experiment.seed)
@@ -412,6 +442,7 @@ def main_iterative_nerf(args):
                          hidden_dim=args.dimensions.start,
                          num_param=args.model.num_param,
                          bottom_up=args.model.bottom_up, 
+                         single_block=args.model.single_block,
                          path=args.model.pretrained_path, 
                          smooth=args.model.smooth, fuse=args.model.smooth).to(device)
     
@@ -481,8 +512,29 @@ def main_iterative_nerf(args):
             if(block_id != start_block):
                 hyper_model = get_hypernet(args, 4, device=device)
                 if(args.model.bottom_up):
-                    hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)
+                    if args.experiment.custom_init :
+                        
+                        #sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
+                        #val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                        #print(f"random init model: Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                        
+                        hyper_model = copyParams(frozen_NeRF.model[-4:],hyper_model)
+                        
+                        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
+                        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                        print(f"copy intialize model: Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                        
+                        hyper_model = load_prev_model(frozen_NeRF.model[-4:],hyper_model)
+                        
+                        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device, scaler=scaler)
+                        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                        print(f"load state dict intialize model: Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                        
+                        
+                    hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)     
                 else:
+                    if args.experiment.custom_init :
+                        copyParams(frozen_NeRF.model[:4],hyper_model)
                     hyper_model=extend_nerf_compose(hyper_model,frozen_NeRF)
 
                 ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
@@ -559,6 +611,7 @@ def main_iterative_nerf(args):
                                     hidden_dim=hidden_dim,
                                     num_param=args.model.num_param,
                                     bottom_up=args.model.bottom_up,
+                                    single_block=args.model.single_block,
                                     path=args.model.pretrained_path, 
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
             #model = create_model_cifar100_slim(args.model.type, 
@@ -598,6 +651,7 @@ def main_iterative_nerf(args):
                                     path=args.model.pretrained_path,
                                     num_param=args.model.num_param, 
                                     bottom_up=args.model.bottom_up,
+                                    single_block=args.model.single_block,
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
             #model = create_model_cifar100_slim(args.model.type, 
             #                     hidden_dim=hidden_dim,

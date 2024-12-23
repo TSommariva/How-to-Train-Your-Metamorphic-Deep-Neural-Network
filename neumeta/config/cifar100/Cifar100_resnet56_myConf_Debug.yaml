@@ -5,20 +5,22 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 1
+  num_param: 8
   smooth: False
   fuse: False
   bottom_up: True
+  single_block: True
 
 experiment:
   name: TEST
   debug: True
-  num_epochs: 100
+  num_epochs: 1
   log_interval: 25
   eval_interval: 1
-  arch_accumulation_steps: 4
-  batch_accumulation_steps: 1
+  arch_accumulation_steps: 2
+  batch_accumulation_steps: 2
   iterative: True
+  custom_init: True
 
 
 # Training configurations

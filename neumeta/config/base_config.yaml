@@ -12,6 +12,7 @@ experiment:
   iterative: False
   convertToDdp: False
   scaler: False
+  custom_init: False
 
 # Model configurations
 model:
@@ -21,6 +22,7 @@ model:
   bottom_up: True
   smooth: True
   fuse: True
+  single_block: False
 
 # Training configurations
 training:

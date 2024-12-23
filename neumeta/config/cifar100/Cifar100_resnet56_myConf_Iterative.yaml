@@ -17,9 +17,10 @@ experiment:
   log_interval: 26
   eval_interval: 10
   arch_accumulation_steps: 1
-  batch_accumulation_steps: 1
+  batch_accumulation_steps: 4
   iterative: True
   scaler: False
+  custom_init: True
 
 
 # Training configurations

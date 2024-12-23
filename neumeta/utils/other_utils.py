@@ -447,7 +447,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     hooks = []
     for name, module in model.named_modules():
         if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize)) and module != model:
-            if any(key.startswith(name) for key in learnable_keys):
+            #if any(key.startswith(name) for key in learnable_keys):
                 hook = module.register_forward_hook(hook_fnc(name))
                 hooks.append(hook)
 
@@ -476,6 +476,7 @@ def extend_nerf_compose(base_model, extension_model):
     # Get underlying models if DDP
     base = base_model.module if isinstance(base_model, torch.nn.parallel.DistributedDataParallel) else base_model
     extension = extension_model.module if isinstance(extension_model, torch.nn.parallel.DistributedDataParallel) else extension_model
+    
 
     # Extend the internal ModuleList
     base.model.extend(extension.model)
