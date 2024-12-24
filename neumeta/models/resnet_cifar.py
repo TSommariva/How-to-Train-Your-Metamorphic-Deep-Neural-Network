@@ -214,7 +214,7 @@ class CifarResNet(nn.Module):
                         layers.extend(list(child.children())[self.num_layers_inr+1:])
                         self._modules[name] = nn.Sequential(*layers)
                     else:
-                        print(f'Replace block number {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {planes}')
+                        print(f'Replace block number {self.num_layers_inr} of layer3 with new blocks of hidden dim {planes}')
                         # Get all the layers except the last block
                         layers = list(child.children())[:self.num_layers_inr]
                         

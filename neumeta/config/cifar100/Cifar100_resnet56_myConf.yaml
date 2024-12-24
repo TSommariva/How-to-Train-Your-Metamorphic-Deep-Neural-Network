@@ -5,18 +5,19 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 8 #Learnable Blocks
+  num_param: 4 #Learnable Blocks
   bottom_up: False
   smooth: False
   fuse: False
 
 experiment:
-  name: ${model.num_param}Blocks_${experiment.num_epochs}e_${experiment.num_accumulation_steps}AccumulationSteps_bottomUp:${model.bottom_up}_Iterative:${experiment.iterative}
+  name: ${model.num_param}Blocks_${experiment.num_epochs}e_lr${training.learning_rate}_${experiment.arch_accumulation_steps}AccumulationSteps_bottomUp:${model.bottom_up}_Iterative:${experiment.iterative}
   debug: False
-  num_epochs: 160
+  num_epochs: 200
   log_interval: 26
   eval_interval: 10
-  num_accumulation_steps: 8
+  arch_accumulation_steps: 1
+  batch_accumulation_steps: 1
   iterative: False
 
 
@@ -26,7 +27,7 @@ training:
   batch_size: 128
   coordinate_noise: 1.0
   scheduler: cosine
-  T_max: 160
+  T_max: 100
   weight_decay: 1e-4
   clip_grad: 10.0
   save_model_path: experiments/AACIFAR100/${experiment.name} # Directory to save the trained model

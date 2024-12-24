@@ -237,7 +237,7 @@ class EMA_ddp:
 
 
 
-def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, trained_blocks=1, scaler=None):
+def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -261,11 +261,9 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
     }
     if ema is not None:
         checkpoint['ema_shadow']=ema.shadow
-    if scaler is not None:
-        checkpoint['scaler_state_dict'] = scaler.state_dict()
     torch.save(checkpoint, filepath)
     
-def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_acc ,trained_blocks=1, scaler=None):
+def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_acc ,trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -289,8 +287,6 @@ def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_a
         }
         if ema is not None:
             checkpoint['ema_shadow']=ema.shadow
-        if scheduler is not None:
-            checkpoint['scaler_state_dict'] = scaler.state_dict()
         
         torch.save(checkpoint, filepath)
 

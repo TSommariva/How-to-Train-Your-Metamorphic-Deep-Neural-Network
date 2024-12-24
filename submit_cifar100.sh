@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=NeRF            # Set the job name (optional, default is "slurm-[jobid]")
-#SBATCH --output=log/AACIFAR100/Cifar100_200e_5e-4lr_8Blocks_10AccumulationSteps_finish4.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
-#SBATCH --error=log/AACIFAR100/Cifar100_200e_5e-4lr_8Blocks_10AccumulationSteps_finish4.err                 # Redirect errors to this file (optional, default is the same as --output)
+#SBATCH --output=log/AACIFAR100/Cifar100_200e_5e-4lr_4Blocks_noAccumulationSteps.out               # Redirect output to this file (%j will expand to jobID, optional, default is "slurm-[jobid].out")
+#SBATCH --error=log/AACIFAR100/Cifar100_200e_5e-4lr_4Blocks_noAccumulationSteps.err                 # Redirect errors to this file (optional, default is the same as --output)
 #SBATCH --time=24:00:00                # Set a limit on the total run time (mandatory if there's a system-wide default time limit)
 #SBATCH --account=tesi_tsommariva
 #SBATCH --partition=all_usr_prod       # Specify the partition/queue to submit to (optional, default depends on the system configuration)
@@ -10,7 +10,7 @@
 #SBATCH --ntasks=1                     # Total number of tasks across all nodes (optional, default is 1)
 #SBATCH --nodes=1                      # Number of nodes to allocate (optional, default is 1)
 #SBATCH --ntasks-per-node=1            # Number of tasks to run per node (optional, default is to divide tasks evenly)
-#SBATCH --cpus-per-task=1              # Number of CPUs to allocate per task (optional, default is 1)
+#SBATCH --cpus-per-task=2              # Number of CPUs to allocate per task (optional, default is 1)
 ##SBATCH --mem=1000                     # Memory per node (in MB, optional, default is system specific)
 #SBATCH --mail-type=END,FAIL           # Mail events (NONE, BEGIN, END, FAIL, ALL) (optional, default is NONE)
 #SBATCH --mail-user=ts.slurm@gmail.com  # Where to send the mail (mandatory if mail-type is specified)
@@ -21,4 +21,5 @@ conda activate neumeta
 # Command to execute Python program
 
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
-python3 /homes/tsommariva/neumeta/neumeta/train_cifar100.py --config neumeta/config/cifar100/Cifar100_resnet56_myConf.yaml --resume_from "experiments/AACIFAR100/CIFAR100_ResNet56_120e_0.0005lr_8Learnable&Slim_10AccumulationSteps_finish3/cifar100_nerf_last.pth"
+python3 /homes/tsommariva/neumeta/neumeta/train_cifar100.py --config neumeta/config/cifar100/Cifar100_resnet56_myConf.yaml 
+# --resume_from "experiments/AACIFAR100/CIFAR100_ResNet56_120e_0.0005lr_8Learnable&Slim_10AccumulationSteps_finish3/cifar100_nerf_last.pth"
