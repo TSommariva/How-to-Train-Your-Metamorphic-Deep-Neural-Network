@@ -125,6 +125,31 @@ class BasicBlock_Resize(BasicBlock):
 
         return out
 
+class First_BasicBlock_Resize(BasicBlock):
+    expansion = 1
+    def __init__(self, inplanes, hidden_dim ,outplanes, stride=1, downsample=None):
+        super().__init__(inplanes, hidden_dim, stride, downsample)
+        self.conv2 = conv3x3(hidden_dim, outplanes)
+        self.bn2 = nn.BatchNorm2d(outplanes)
+    
+    def forward(self, x):
+        identity = x
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
+
+
 
 class CifarResNet(nn.Module):
 
@@ -188,39 +213,63 @@ class CifarResNet(nn.Module):
 
         return x
     
-    def set_changeable(self, block, planes, stride, num_classes=10):
+    
+    def set_changeable(self, block, bottleneck, stride, num_classes=10):
         for name, child in self.named_children():
         # Change the last block of layer3
             if name == 'layer3':
                 if not self.bottom_up:
-                    print(f'Replace last {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {planes}')
+                    print(f'Replace last {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
                     # Get all the layers except the last block
                     layers = list(child.children())[:-self.num_layers_inr]
                     #if not layers:
                     #    #TODO: handle first block of the layer, build a custom block, inplanes:32, bottleneck, outplanes: 64
                     for i in range(self.num_layers_inr):
-                        layers.append(BasicBlock_Resize(64, planes, stride))
+                        layers.append(BasicBlock_Resize(64, bottleneck, stride))
                     # layers.append(BasicBlock_Resize(64, planes, stride))
                     self._modules[name] = nn.Sequential(*layers)
                 else:
                     if not self.single_block:
-                        print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {planes}')
+                        print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
                         # Get all the layers except the last block
                         layers = []
                         layers.append(list(child.children())[0])
+                        
+                        #downsample = nn.Sequential(
+                        #    conv1x1(child[0].conv1.in_channels, child[0].conv2.out_channels * block.expansion, child[0].downsample[0].stride),
+                        #    nn.BatchNorm2d(child[0].conv2.out_channels * block.expansion),
+                        #)
+                        #
+                        #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
+                        #layers.append(first_Block)
+                        
                         for i in range(self.num_layers_inr):
-                            layers.append(BasicBlock_Resize(64, planes, stride))
+                            layers.append(BasicBlock_Resize(64, bottleneck, stride))
 
                         layers.extend(list(child.children())[self.num_layers_inr+1:])
                         self._modules[name] = nn.Sequential(*layers)
                     else:
-                        print(f'Replace block number {self.num_layers_inr} of layer3 with new blocks of hidden dim {planes}')
-                        # Get all the layers except the last block
-                        layers = list(child.children())[:self.num_layers_inr]
+                        print(f'Replace block number {self.num_layers_inr} of layer3 with new blocks of hidden dim {bottleneck}')
                         
-                        layers.append(BasicBlock_Resize(64, planes, stride))
-
-                        layers.extend(list(child.children())[self.num_layers_inr+1:])
+                        if self.num_layers_inr == 0:
+                            layers = []
+                            layers.append(list(child.children())[0])
+                            #downsample = nn.Sequential(
+                            #    conv1x1(child[0].conv1.in_channels, child[0].conv2.out_channels * block.expansion, child[0].downsample[0].stride),
+                            #    nn.BatchNorm2d(child[0].conv2.out_channels * block.expansion),
+                            #)
+                            #
+                            #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
+                            #layers.append(first_Block)
+                            layers.extend(list(child.children())[1:])
+                            
+                        else:
+                            # Get all the blocks up to num_layers_inr
+                            layers = list(child.children())[:self.num_layers_inr]
+                            # one block with bottleneck
+                            layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                            # tail of the layer
+                            layers.extend(list(child.children())[self.num_layers_inr+1:])
                         self._modules[name] = nn.Sequential(*layers)
     
     @property

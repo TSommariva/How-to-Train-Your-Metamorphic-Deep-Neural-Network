@@ -317,9 +317,16 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     model.load_state_dict(checkpoint['model_state_dict'])
     
     if optimizer is not None:
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    if 'scheduler_state_dict' in checkpoint and scheduler is not None:
+        try:
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        except ValueError as e:
+            print("ERROR!!")
+            print(f"{e}")
+            print("it's not possible to load the saved optimizer, a new one will be created instead")
+            optimizer = None
+    if 'scheduler_state_dict' in checkpoint and scheduler is not None and optimizer is not None:
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        
     if ema is not None:
         ema.shadow = {k: checkpoint['ema_shadow'][k].to(
             device) for k in checkpoint['ema_shadow']}
@@ -425,7 +432,7 @@ def initialize_wandb(config):
     # Name the run using current time and configuration name
     run_name = f"{config.experiment.name}-{time.strftime('%Y%m%d%H%M%S')}"
     
-    wandb.init(project="ninr", name=run_name, config=dict(config), group='cifar100')
+    wandb.init(project="ninr", name=run_name, config=dict(config), group='cifar100', dir='/work/tesi_tsommariva')
 
 def register_hooks_and_print_shapes(model, input_tensor):
     output_shapes = {}
@@ -443,8 +450,8 @@ def register_hooks_and_print_shapes(model, input_tensor):
     hooks = []
     for name, module in model.named_modules():
         if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize)) and module != model:
-            #if any(key.startswith(name) for key in learnable_keys):
-            if 'layer3' in name:
+            if any(key.startswith(name) for key in learnable_keys):
+            #if 'layer3' in name:
                 hook = module.register_forward_hook(hook_fnc(name))
                 hooks.append(hook)
 

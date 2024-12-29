@@ -9,29 +9,31 @@ model:
   bottom_up: True
   smooth: False
   fuse: False
-  single_block: False
+  single_block: True
 
 experiment:
-  name: 4BatchAccumulation_Baseline #singleBlock${model.single_block}_${model.num_param}Blocks_${experiment.num_epochs}e_${experiment.arch_accumulation_steps}ArchAccumulationSteps_${experiment.batch_accumulation_steps}BatchAccumulationSteps_CustomInit${experiment.custom_init}
+  name: singleBlock${model.single_block}_${model.num_param}Blocks_${experiment.batch_accumulation_steps}AccumulationSteps_CustomInit${experiment.custom_init}_lr${training.learning_rate}
   debug: False
-  num_epochs: 100
+  num_epochs: 160
   log_interval: 26
   eval_interval: 10
   arch_accumulation_steps: 1
   batch_accumulation_steps: 4
   iterative: True
-  custom_init: False
+  custom_init: True
 
 # Training configurations
 training:
-  learning_rate: 5e-4
+  learning_rate: 0.00085
+  eta_min: 8e-05
+  warmup_epochs: 10
   batch_size: 128
   coordinate_noise: 1.0
   scheduler: cosine
-  T_max: 100
+  T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
   clip_grad: 10.0
-  save_model_path: experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
+  save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:

@@ -44,49 +44,6 @@ def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon
 
     return reconstruct_loss
 
-def get_optimizer2(args, hyper_model):
-    criterion = torch.nn.CrossEntropyLoss()
-    val_criterion = torch.nn.CrossEntropyLoss()
-    optimizer_name = args.training.get('optimizer', 'adamw')
-    lr = 1e-4
-    
-    if optimizer_name == 'adamw':
-        optimizer = AdamW([{'params': p,'initial_lr': lr} for p in hyper_model.parameters()],
-                          lr=lr,
-                          weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'adam':
-        optimizer = Adam(hyper_model.parameters(), 
-                         lr=args.training.learning_rate, 
-                         weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'sgd':
-        optimizer = torch.optim.SGD(hyper_model.parameters(), 
-                                    lr=args.training.learning_rate, 
-                                    momentum=args.training.get('momentum', 0.9),
-                                    weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'rmsprop':
-        optimizer = torch.optim.RMSprop(hyper_model.parameters(), 
-                                        lr=args.training.learning_rate, 
-                                        momentum=args.training.get('momentum', 0.9),
-                                        weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'adagrad':
-        optimizer = torch.optim.Adagrad(hyper_model.parameters(), 
-                                        lr=args.training.learning_rate, 
-                                        weight_decay=args.training.weight_decay)
-    else:
-        raise ValueError(f"Unknown optimizer: {optimizer_name}")
-    scheduler_name = args.training.get('scheduler', 'multistep')
-    # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
-    if scheduler_name == 'cosine':
-        print("Using cosine scheduler, T_max:", args.training.T_max)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=5e-5, last_epoch=649)
-    elif scheduler_name == 'multistep':
-        scheduler = MultiStepLR(optimizer,
-                                milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 
-                                gamma=0.1)
-    return criterion, val_criterion, optimizer, scheduler
-
-
-
 def get_optimizer(args, hyper_model):
     criterion = torch.nn.CrossEntropyLoss()
     # criterion = LabelSmoothingCrossEntropy()
@@ -120,11 +77,18 @@ def get_optimizer(args, hyper_model):
     # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
     if scheduler_name == 'cosine':
         print("Using cosine scheduler, T_max:", args.training.T_max)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=1e-5)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=args.training.eta_min)
     elif scheduler_name == 'multistep':
         scheduler = MultiStepLR(optimizer,
                                 milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 
                                 gamma=0.1)
+    elif scheduler_name == 'warmup_cosine':
+        warmup_epochs = args.training.get('warmup_epochs', 5)
+        
+        warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-5, end_factor=1.0, total_iters=warmup_epochs)
+        cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(args.training.T_max - warmup_epochs),eta_min=args.training.eta_min)
+        
+        scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[warmup_epochs])
     return criterion, val_criterion, optimizer, scheduler
 
 def get_hypernet(args, number_param, device='cuda'):

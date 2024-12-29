@@ -14,11 +14,11 @@ model:
 experiment:
   name: TEST
   debug: True
-  num_epochs: 1
+  num_epochs: 10
   log_interval: 25
   eval_interval: 1
-  arch_accumulation_steps: 2
-  batch_accumulation_steps: 2
+  arch_accumulation_steps: 1
+  batch_accumulation_steps: 4
   iterative: True
   custom_init: True
 

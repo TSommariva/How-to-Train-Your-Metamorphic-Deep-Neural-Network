@@ -1,16 +1,11 @@
-import argparse
-import copy
-import math
 import os
 import random
-
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
 from neumeta.models import create_model_cifar100 as create_model
-from neumeta.models import create_model_cifar100_slim
 from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            get_hypernet, get_optimizer, load_checkpoint,
                            parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
@@ -20,22 +15,15 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            initialize_wandb,find_max_dim, register_hooks_and_print_shapes, extend_nerf_compose, load_trained_blocks)
 
 import wandb
-from omegaconf import OmegaConf
 from sklearn.metrics import accuracy_score
-from torch.optim import Adam, AdamW
-from torch.optim.lr_scheduler import MultiStepLR, StepLR
-from torch.utils.data import DataLoader, Dataset
-from torchvision import datasets, transforms
-from neumeta.models import BasicBlock, BasicBlock_Resize
-#from torch.amp import autocast, GradScaler
 
 device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
 def get_num_workers():
     try:
-        return int(os.environ.get("SLURM_CPUS_PER_TASK", 2))
+        return int(os.environ.get("SLURM_CPUS_PER_TASK", 1))
     except (ValueError, TypeError):
-        return 2
+        return 1
 
 def init_model_dict(args, num_blocks = 1, single_block = False):
     """
@@ -99,6 +87,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
+    extracted_dim = []
     
     for batch_idx, (x, target) in enumerate(train_loader):
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
@@ -109,10 +98,20 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         #gradient aggregation
         for arch_step in range(args.experiment.arch_accumulation_steps):
             step +=1
+            
             if (step != 1) or no_accumulation:
                 hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
+                #if hidden dim has already been extracted for this accumulation step, extract another one
+                if not hidden_dim in extracted_dim:
+                    extracted_dim.append(hidden_dim)
+                else:
+                    while hidden_dim in extracted_dim:
+                        hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
+                    extracted_dim.append(hidden_dim)
             else:
                 hidden_dim = 64
+                extracted_dim.append(hidden_dim)
+                
             model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
             selected_keys = np.unique(keys_list)
             #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
@@ -167,6 +166,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Reconstruct Loss": reconstruct_losses.avg,
                 "Learning rate": optimizer.param_groups[0]['lr']
             })#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
+        if batch_idx % args.experiment.log_interval == 0:
             print(
                 f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
             
@@ -183,6 +183,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             optimizer.step()        
             optimizer.zero_grad()
             step = 0
+            extracted_dim = []
             
             if ema:
                 ema.update()  # Update the EMA after each training step
@@ -201,12 +202,6 @@ def main_nerf(args):
     set_seed(args.experiment.seed)
     num_workers = get_num_workers()
     train_loader, val_loader = get_cifar100(args.training.batch_size, num_workers)
-    
-    #model = create_model_cifar100_slim(args.model.type, 
-    #                     hidden_dim=args.dimensions.start,
-    #                     num_param=args.model.num_param, 
-    #                     path=args.model.pretrained_path, 
-    #                     smooth=args.model.smooth, fuse=args.model.smooth).to(device)
     
     model = create_model(args.model.type, 
                          hidden_dim=args.dimensions.start,
@@ -233,7 +228,7 @@ def main_nerf(args):
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
     
-    start_epoch = 1
+    start_epoch = 0
     best_acc = 0.0
     
     os.makedirs(args.training.save_model_path, exist_ok=True)
@@ -260,7 +255,7 @@ def main_nerf(args):
         
         dim_dict = shuffle_coordiates_all(dim_dict)
         
-        for epoch in range(start_epoch, args.experiment.num_epochs):
+        for epoch in range(start_epoch + 1, args.experiment.num_epochs):
             train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
             scheduler.step()
 
@@ -320,12 +315,7 @@ def main_nerf(args):
                                     bottom_up=args.model.bottom_up, 
                                     path=args.model.pretrained_path, 
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-            #model = create_model_cifar100_slim(args.model.type, 
-            #                        hidden_dim=hidden_dim,
-            #                        num_param=args.model.num_param, 
-            #                        path=args.model.pretrained_path, 
-            #                        smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-
+            
             # Sample the merged model for K times
             accumulated_model_best = sample_merge_model(best_hyper_model, model, args, K=100, device=device)
             accumulated_model_last = sample_merge_model(last_hyper_model, model, args, K=100, device=device)
@@ -358,12 +348,6 @@ def main_nerf(args):
                                     num_param=args.model.num_param, 
                                     bottom_up=args.model.bottom_up, 
                                     smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-            #model = create_model_cifar100_slim(args.model.type, 
-            #                     hidden_dim=hidden_dim,
-            #                     num_param=args.model.num_param, 
-            #                     path=args.model.pretrained_path, 
-            #                     smooth=args.model.smooth, fuse=args.model.smooth).to(device)
-
                 
             # Apply Exponential Moving Average (EMA) if enabled
             if ema:
@@ -437,7 +421,7 @@ def main_iterative_nerf(args):
         print("Only residual block with no projection in the skip connection are supported")
         return -1
     
-        
+            
     os.makedirs(args.training.save_model_path, exist_ok=True)
     
     hyper_model = get_hypernet(args, 4, device=device)
@@ -445,8 +429,10 @@ def main_iterative_nerf(args):
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
 
     start_block = 1
-    start_epoch = 1
+    start_epoch = 0
     best_acc = 0.0
+    end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
+    
     
     frozen_NeRF = NeRF_ResMLP_Compose(
         input_dim=args.hyper_model.input_dim,
@@ -458,20 +444,30 @@ def main_iterative_nerf(args):
         num_compose=0).to(device)
 
     # If specified, load the checkpoint
-    if args.resume_from:
+    if args.resume_from and "fineTuning" not in args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        if args.experiment.iterative:
-            hyper_model = get_hypernet(args, 4 * load_trained_blocks(args.resume_from), device=device)
-            criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
+        
+        #changed
+        hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from) ), device=device)
+        
+        if args.model.single_block:
+            hyper_model = get_hypernet(args, 4, device=device)
+            
+        criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
         
         checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema,args=args)
-        #criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
+        if optimizer is None:
+            criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
         
         start_epoch = checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         start_block = checkpoint_info['trained_blocks']
         print(f"Resuming from block: {start_block}, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
         # Note: If there are more elements to retrieve, do so here.
+        
+    elif args.resume_from and "fineTuning" in args.resume_from:
+        start_block = args.model.num_param + 1
+        start_epoch = end_epoch
     
     if args.test == False:
         if not args.experiment.debug:
@@ -480,15 +476,16 @@ def main_iterative_nerf(args):
         for block_id in range(start_block, args.model.num_param + 1):
             os.makedirs(f"{args.training.save_model_path}/block{block_id}", exist_ok=True)
             print(f"BLOCK[{block_id}/{args.model.num_param}]")
+            
             if(block_id != start_block):
                 hyper_model = get_hypernet(args, 4, device=device)
                 if(args.model.bottom_up):
-                    if args.experiment.custom_init :
+                    if args.experiment.custom_init:
                         hyper_model = copyParams(frozen_NeRF.model[-4:],hyper_model)
                     if not args.model.single_block:    
                         hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)     
                 else:
-                    if args.experiment.custom_init :
+                    if args.experiment.custom_init:
                         copyParams(frozen_NeRF.model[:4],hyper_model)
                     if args.model.single_block:
                         print("top down training with single block approach not supported")
@@ -497,19 +494,21 @@ def main_iterative_nerf(args):
 
                 ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
                 criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
-
-                start_epoch = 1
+                
+                start_epoch = 0
                 best_acc = 0.0
 
             
             dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block)
             dim_dict = shuffle_coordiates_all(dim_dict)
-
-            for epoch in range(start_epoch, args.experiment.num_epochs + 1):
-                train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs)
+            
+            epoch=None
+            
+            for epoch in range(start_epoch + 1, end_epoch):
+                train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=end_epoch)
                 scheduler.step()
 
-                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
+                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
                 if epoch % args.experiment.eval_interval == 0:
                     if ema:
@@ -529,8 +528,8 @@ def main_iterative_nerf(args):
                             "Validation Accuracy_model sampled outside training": val_acc
                         })
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
+                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
                     # Save the checkpoint
@@ -541,6 +540,15 @@ def main_iterative_nerf(args):
                         print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                         print("------------------------------------------------------------------------------------------------------------------------------")
             
+            if epoch is None:
+                epoch = end_epoch
+                
+            if args.model.single_block:
+                save_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc, block_id)
+                print("------------------------------------------------------------------------------------------------------------------------------")
+                print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at the end of block {block_id} with accuracy: {best_acc*100:.2f}%")
+                print("------------------------------------------------------------------------------------------------------------------------------")
+                
             #for param in hyper_model.parameters():
             #    param.requires_grad = False
             frozen_NeRF = hyper_model
@@ -556,21 +564,44 @@ def main_iterative_nerf(args):
                 num_freqs=args.hyper_model.num_freqs,
                 scalar=args.hyper_model.get('scalar', 0.1),
                 num_compose=0).to(device)
+            
+            last_hyper_model = NeRF_ResMLP_Compose(
+                input_dim=args.hyper_model.input_dim,
+                hidden_dim=args.hyper_model.hidden_dim,
+                num_layers=args.hyper_model.num_layers,
+                output_dim=args.hyper_model.output_dim,
+                num_freqs=args.hyper_model.num_freqs,
+                scalar=args.hyper_model.get('scalar', 0.1),
+                num_compose=4).to(device)
 
-            for block_id in range(start_block, args.model.num_param + 1):
-                checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_best.pth", frozen_NeRF, optimizer,scheduler ,ema, device=device)
-                hyper_model=extend_nerf_compose(hyper_model,best_hyper_model)
+            for block_id in range(1, args.model.num_param + 1):
+                checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_last.pth", last_hyper_model, optimizer, scheduler ,ema, device=device)
+                hyper_model=extend_nerf_compose(hyper_model,last_hyper_model)
             
             ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
             criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
-            start_epoch = 1
+            start_epoch = 0
             best_acc = 0.0
+            
+            if args.resume_from and "fineTuning" in args.resume_from:
+                print(f"Resuming from checkpoint: {args.resume_from}")
+                
+                hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from)), device=device)
+                criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
+                checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema,args=args)
+                if optimizer is None:
+                    criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
+                    
+                start_epoch = checkpoint_info['epoch']
+                best_acc = checkpoint_info['best_acc']
+                print(f"Resuming from fineTuning, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
             
             dim_dict, gt_model_dict = init_model_dict(args, args.model.num_param, single_block=False)
             dim_dict = shuffle_coordiates_all(dim_dict)
             
-            for epoch in range(start_epoch, args.experiment.num_epochs + 1):
+            for epoch in range(start_epoch + 1, args.experiment.num_epochs + 1):
                 train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=args.model.num_param, max_epochs=args.experiment.num_epochs)
+                
                 scheduler.step()
 
                 print(f"Fine-Tuning - Epoch[{epoch}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
@@ -605,9 +636,7 @@ def main_iterative_nerf(args):
                         print(f"Fine-Tuning Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                         print("------------------------------------------------------------------------------------------------------------------------------")
 
-            
-
-        sampled_model = sample_merge_model(frozen_NeRF, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
         val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
         save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc, args.model.num_param)
         print("------------------------------------------------------------------------------------------------------------------------------")
@@ -620,12 +649,14 @@ def main_iterative_nerf(args):
         print("Training finished.")
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         #testing the best model
+        best_hyper_model = get_hypernet(args, number_param, device=device)
+        last_hyper_model = get_hypernet(args, number_param, device=device)
         if not args.model.single_block:
-            checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{args.model.num_param}/cifar100_nerf_best.pth", frozen_NeRF, optimizer,scheduler ,ema, device=device)
-            checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", frozen_NeRF, optimizer,scheduler ,ema, device=device)
+            checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{args.model.num_param}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,ema, device=device)
+            checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", last_hyper_model, optimizer,scheduler ,ema, device=device)
         else:
-            checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/fineTuning/cifar100_nerf_best.pth", frozen_NeRF, optimizer,scheduler ,ema, device=device)
-            checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", frozen_NeRF, optimizer,scheduler ,ema, device=device)
+            checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/fineTuning/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,ema, device=device)
+            checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", last_hyper_model, optimizer,scheduler ,ema, device=device)
 
         best_accuracies = []
         last_accuracies = []
