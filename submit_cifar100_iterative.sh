@@ -18,5 +18,5 @@
 conda activate neumeta
 # Command to execute Python program
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
-python3 /homes/tsommariva/neumeta/neumeta/train_cifar100.py --config /homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
+python3 /homes/tsommariva/neumeta/neumeta/train_cifar100_iterative.py --config /homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
     #--resume_from "/work/tesi_tsommariva/experiments/AaITERATIVE/SingleBlock_CustomInit_BatchAccumulationSteps:4_ArchAccumulationSteps:1_lr:0.00085/fineTuning/cifar100_nerf_best.pth" \

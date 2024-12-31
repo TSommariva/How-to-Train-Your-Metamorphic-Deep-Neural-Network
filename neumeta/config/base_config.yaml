@@ -52,7 +52,8 @@ hyper_model:
 
 # Experiment dimensions configuration
 dimensions:
-  range: [32, 64]  # Dimension range for the experiment
+  range: [32, 64]  # Dimension range for training
+  test_range: [16, 64]  # Dimension range for testing
   test: 32  # Testing dimension
   norm: 64  # Normalization factor
   start: 64  # Starting dimension
