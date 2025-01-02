@@ -157,7 +157,7 @@ class CifarResNet(nn.Module):
         super(CifarResNet, self).__init__()
         self.layers = layers
         self.num_param = num_param
-        self.num_layers_inr = num_param# - 1
+        self.num_layers_inr = num_param #- 1
         self.single_block = single_block
         self.inplanes = 16
         self.bottom_up = bottom_up
@@ -284,7 +284,7 @@ class CifarResNet(nn.Module):
             if not self.single_block:
                 self.keys = [
                     k for k, _ in self.named_parameters()
-                    if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1))
+                    if any(k.startswith(f'layer3.{i}') for i in range(0, self.num_param + 1)) #and "downsample" not in k
                 ]
             else:
                 self.keys = [

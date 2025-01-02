@@ -113,6 +113,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 hidden_dim = 64
                 extracted_dim.append(hidden_dim)
                 
+            if block_idx == 0:
+                hidden_dim = 64
+                
             model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
             selected_keys = np.unique(keys_list)
             #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
@@ -142,8 +145,12 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             else:
                 reconstruct_loss = torch.tensor(0.0)
             reconstruct_losses.update(reconstruct_loss.item())
-            loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
-                reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
+            
+            ce_weight = args.hyper_model.loss_weight.ce_weight if block_idx != 0 else 0.01
+            reg_weight =  args.hyper_model.loss_weight.reg_weight if block_idx != 0 else 0
+            recon_weight = args.hyper_model.loss_weight.recon_weight if block_idx != 0 else 1000.0
+            
+            loss = ce_weight * cls_loss + reg_weight * reg_loss + recon_weight * reconstruct_loss
             losses.update(loss.item())
             
             # Zero model_cls grads
@@ -166,7 +173,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
                 
-            }, commit=False)#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
+            }, commit=False)#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (block_idx - 1) * max_epochs * len(train_loader))
             for i, paramgroup in enumerate(optimizer.param_groups):
                 if i == 0:
                     wandb.log({
@@ -208,7 +215,6 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         wandb.log({
                     "trainLoss_last model of the epoch" : tr_loss,
                     "trainAcc_last model of the epoch" : tr_acc
-
                 })
     return tr_loss
 
@@ -248,18 +254,20 @@ def main_iterative_nerf(args):
     print(f"Number of parameters to be learned: {number_param}")
     print(f"Parameters keys: {model.keys}")
     
-    if(number_param %4 != 0):
-        print("Only residual blocks with no projection in the skip connection are supported")
-        return -1
+    #if(number_param %4 != 0):
+    #    print("Only residual blocks with no projection in the skip connection are supported")
+    #    return -1
     
             
     os.makedirs(args.training.save_model_path, exist_ok=True)
     
-    hyper_model = get_hypernet(args, 4, device=device)
+    #changed here
+    hyper_model = get_hypernet(args, 6, device=device)
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
 
-    start_block = 1
+    #changed here
+    start_block = 0
     start_epoch = 0
     best_acc = 0.0
     end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
@@ -274,11 +282,11 @@ def main_iterative_nerf(args):
         scalar=args.hyper_model.get('scalar', 0.1),
         num_compose=0).to(device)
 
+    #TODO: resume from including block 0
     # If specified, load the checkpoint
     if args.resume_from and "fineTuning" not in args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
         
-        #changed
         hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from) ), device=device)
         
         if args.model.single_block:
@@ -310,10 +318,13 @@ def main_iterative_nerf(args):
         if(block_id != start_block):
             hyper_model = get_hypernet(args, 4, device=device)
             if(args.model.bottom_up):
-                if args.experiment.custom_init:
+                #changed here
+                if args.experiment.custom_init and block_id != 1:
                     hyper_model = copyParams(frozen_NeRF.model[-4:],hyper_model)
+                
                 if not args.model.single_block:    
                     hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)
+                    
                     if not args.training.get('ft_scaling', False):
                         criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)   
                     else:

@@ -3,7 +3,7 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 8 #Learnable Blocks
+  num_param: 1 #Learnable Blocks
   bottom_up: True
   smooth: False
   fuse: False
@@ -11,9 +11,9 @@ model:
   
 # Experiment settings
 experiment:
-  name: ${experiment.batch_accumulation_steps}AccumulationSteps_CustomInit:${experiment.custom_init}_singleBlock:${model.single_block}_${experiment.num_epochs}e_lr${training.learning_rate}_ftScaling:${training.ft_scaling}:${training.ft_scalinigFactor}
+  name: Block0_CentralValue_recWeight_${experiment.batch_accumulation_steps}AccumulationSteps_CustomInit:${experiment.custom_init}_singleBlock:${model.single_block}_${experiment.num_epochs}e_lr${training.learning_rate}_ftScaling:${training.ft_scaling}:${training.ft_scalinigFactor}
   debug: False
-  num_epochs: 50
+  num_epochs: 200
   log_interval: 26
   eval_interval: 10
   arch_accumulation_steps: 1

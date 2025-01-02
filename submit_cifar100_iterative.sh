@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=CustomInit
-#SBATCH --output=log/AaITERATIVE/CustomInit_%j.out
-#SBATCH  --error=log/AaITERATIVE/CustomInit_%j.err
+#SBATCH --job-name=Block0
+#SBATCH --output=log/AaITERATIVE/Block0_CentralValue_recWeight_%j.out
+#SBATCH  --error=log/AaITERATIVE/Block0_CentralValue_recWeight_%j.err
 #SBATCH --time=24:00:00                         
 #SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
 
