@@ -61,16 +61,13 @@ def main_test_nerf(args):
     
     print(f"Resuming from checkpoint: {args.resume_from}")
     
-    #changed
     hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from) ), device=device)
-    
-    if args.model.single_block:
-        hyper_model = get_hypernet(args, 4, device=device)
-        
+
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
     
     checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema,args=args)
-        
+    
+    ema = False 
     accuracies = []
     for hidden_dim in range(args.dimensions.test_range[0], args.dimensions.test_range[1] + 1):
         model = create_model(args.model.type, 
@@ -78,7 +75,7 @@ def main_test_nerf(args):
                                 path=args.model.pretrained_path,
                                 num_param=args.model.num_param, 
                                 bottom_up=args.model.bottom_up,
-                                single_block=args.model.single_block,
+                                single_block=False,
                                 smooth=args.model.smooth, fuse=args.model.fuse).to(device)
                     # Apply Exponential Moving Average (EMA) if enabled
         if ema:

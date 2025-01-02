@@ -1,5 +1,3 @@
-# Experiment settings
-# Experiment settings
 base_config: neumeta/config/base_config.yaml
 # Model configurations
 model:
@@ -9,30 +7,33 @@ model:
   bottom_up: True
   smooth: False
   fuse: False
-  single_block: True
-
+  single_block: False
+  
+# Experiment settings
 experiment:
-  name: singleBlock${model.single_block}_${model.num_param}Blocks_${experiment.batch_accumulation_steps}AccumulationSteps_CustomInit${experiment.custom_init}_lr${training.learning_rate}
+  name: ${experiment.batch_accumulation_steps}AccumulationSteps_CustomInit:${experiment.custom_init}_singleBlock:${model.single_block}_${experiment.num_epochs}e_lr${training.learning_rate}_ftScaling:${training.ft_scaling}:${training.ft_scalinigFactor}
   debug: False
-  num_epochs: 160
+  num_epochs: 50
   log_interval: 26
   eval_interval: 10
   arch_accumulation_steps: 1
-  batch_accumulation_steps: 4
+  batch_accumulation_steps: 1
   iterative: True
   custom_init: True
 
 # Training configurations
 training:
-  learning_rate: 0.00085
-  eta_min: 8e-05
-  warmup_epochs: 10
   batch_size: 128
-  coordinate_noise: 1.0
+  learning_rate: 3e-4
+  eta_min: 3e-5
   scheduler: cosine
+  warmup_epochs: 10
   T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
+  coordinate_noise: 1.0
   clip_grad: 10.0
+  ft_scaling: True
+  ft_scalinigFactor: 0.1
   save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
@@ -55,7 +56,7 @@ hyper_model:
 # Experiment dimensions configuration
 dimensions:
   range: [32, 64]  # Dimension range for the experiment
-  test_range: [16, 64]
+  test_range: [16, 64]  # Dimension range for testing
   test: 32  # Testing dimension
   norm: 64  # Normalization factor
   start: 64  # Starting dimension

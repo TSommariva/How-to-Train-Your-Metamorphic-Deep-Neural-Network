@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
 from neumeta.models import create_model_cifar100 as create_model
 from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
-                           get_hypernet, get_optimizer, load_checkpoint,
+                           get_hypernet, get_optimizer,get_optimizer_scaledFT, load_checkpoint,
                            parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
                            sample_subset,  save_checkpoint,
                            set_seed, shuffle_coordiates_all, #validate, validate_merge, 
@@ -165,11 +165,23 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Cls Loss": cls_losses.avg,
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
-                "Learning rate": optimizer.param_groups[0]['lr']
-            })#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
+                
+            }, commit=False)#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
+            for i, paramgroup in enumerate(optimizer.param_groups):
+                if i == 0:
+                    wandb.log({
+                        f"Learning rate": paramgroup['lr']
+                })
+                else:
+                    wandb.log({
+                        f"Fine-tuning Learning rate {i}": paramgroup['lr']
+                    })
         if batch_idx % args.experiment.log_interval == 0:
-            print(
-                f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
+            for i, paramgroup in enumerate(optimizer.param_groups):
+                if i == 0:
+                    print(f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {paramgroup['lr']:.4e}")
+                else:
+                    print(f"\tFine-tuning Learning rate = {paramgroup['lr']:.4e}")
             
             losses.reset()
             cls_losses.reset()
@@ -180,7 +192,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         if (batch_idx % args.experiment.batch_accumulation_steps) == 0 :
             if args.training.get('clip_grad', 0.0) > 0:
                 torch.nn.utils.clip_grad_value_(
-                    model.parameters(), args.training.clip_grad)
+                    model.parameters(), args.training.clip_grad)                
+                
             optimizer.step()        
             optimizer.zero_grad()
             step = 0
@@ -236,7 +249,7 @@ def main_iterative_nerf(args):
     print(f"Parameters keys: {model.keys}")
     
     if(number_param %4 != 0):
-        print("Only residual block with no projection in the skip connection are supported")
+        print("Only residual blocks with no projection in the skip connection are supported")
         return -1
     
             
@@ -287,7 +300,6 @@ def main_iterative_nerf(args):
         start_block = args.model.num_param + 1
         start_epoch = end_epoch
     
-    
     if not args.experiment.debug:
         initialize_wandb(args)
     
@@ -301,7 +313,14 @@ def main_iterative_nerf(args):
                 if args.experiment.custom_init:
                     hyper_model = copyParams(frozen_NeRF.model[-4:],hyper_model)
                 if not args.model.single_block:    
-                    hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)     
+                    hyper_model=extend_nerf_compose(frozen_NeRF,hyper_model)
+                    if not args.training.get('ft_scaling', False):
+                        criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)   
+                    else:
+                        train_parameters = [p for n, p in hyper_model.model[-4:].named_parameters()]
+                        ft_parameters = [p for n, p in hyper_model.model[:-4].named_parameters()]
+
+                        criterion, val_criterion, optimizer, scheduler = get_optimizer_scaledFT(args, hyper_model,train_parameters,ft_parameters)
             else:
                 if args.experiment.custom_init:
                     copyParams(frozen_NeRF.model[:4],hyper_model)
@@ -309,9 +328,14 @@ def main_iterative_nerf(args):
                     print("top down training with single block approach not supported")
                     return -1
                 hyper_model=extend_nerf_compose(hyper_model,frozen_NeRF)
+                if not args.training.get('ft_scaling', False):
+                    criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)   
+                else:      
+                    train_parameters = [p for n, p in hyper_model.model[:4].named_parameters()]
+                    ft_parameters = [p for n, p in hyper_model.model[4:].named_parameters()]
+                    criterion, val_criterion, optimizer, scheduler = get_optimizer_scaledFT(args, hyper_model,train_parameters,ft_parameters)
 
             ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
-            criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
             
             start_epoch = 0
             best_acc = 0.0
@@ -486,7 +510,7 @@ def main_iterative_nerf(args):
                                 hidden_dim=hidden_dim,
                                 num_param=args.model.num_param,
                                 bottom_up=args.model.bottom_up,
-                                single_block=args.model.single_block,
+                                single_block=False,
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse).to(device)
         
