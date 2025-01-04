@@ -3,7 +3,7 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 1 #Learnable Blocks
+  num_param: 8 #Learnable Blocks
   bottom_up: True
   smooth: False
   fuse: False
@@ -11,34 +11,35 @@ model:
   
 # Experiment settings
 experiment:
-  name: Block0_CentralValue_recWeight_${experiment.batch_accumulation_steps}AccumulationSteps_CustomInit:${experiment.custom_init}_singleBlock:${model.single_block}_${experiment.num_epochs}e_lr${training.learning_rate}_ftScaling:${training.ft_scaling}:${training.ft_scalinigFactor}
+  name: FullTrainingFrom1_4AccumulationSteps_CustomInit:True_singleBlock:False_500e_lr0.00085_ftScaling:False:0.1 #${hyper_model.type}_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e
   debug: False
-  num_epochs: 200
+  num_epochs: 500
   log_interval: 26
   eval_interval: 10
   arch_accumulation_steps: 1
-  batch_accumulation_steps: 1
+  batch_accumulation_steps: 4
   iterative: True
   custom_init: True
 
 # Training configurations
 training:
   batch_size: 128
-  learning_rate: 3e-4
-  eta_min: 3e-5
+  learning_rate: 0.00085
+  eta_min: 8e-05
   scheduler: cosine
   warmup_epochs: 10
   T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
   coordinate_noise: 1.0
   clip_grad: 10.0
-  ft_scaling: True
+  ft_scaling: False
   ft_scalinigFactor: 0.1
   save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
   type: resmlp
+  kernel_groups: 4
   input_dim: 6
   hidden_dim: 512
   num_layers: 8

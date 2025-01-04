@@ -284,7 +284,7 @@ class CifarResNet(nn.Module):
             if not self.single_block:
                 self.keys = [
                     k for k, _ in self.named_parameters()
-                    if any(k.startswith(f'layer3.{i}') for i in range(0, self.num_param + 1)) #and "downsample" not in k
+                    if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1))# and "downsample" not in k
                 ]
             else:
                 self.keys = [

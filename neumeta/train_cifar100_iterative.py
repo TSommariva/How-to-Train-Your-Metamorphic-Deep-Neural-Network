@@ -21,9 +21,9 @@ device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is
 
 def get_num_workers():
     try:
-        return int(os.environ.get("SLURM_CPUS_PER_TASK", 1))
+        return int(os.environ.get("SLURM_CPUS_PER_TASK", 2))
     except (ValueError, TypeError):
-        return 1
+        return 2
 
 def init_model_dict(args, num_blocks = 1, single_block = False):
     """
@@ -146,9 +146,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 reconstruct_loss = torch.tensor(0.0)
             reconstruct_losses.update(reconstruct_loss.item())
             
-            ce_weight = args.hyper_model.loss_weight.ce_weight if block_idx != 0 else 0.01
-            reg_weight =  args.hyper_model.loss_weight.reg_weight if block_idx != 0 else 0
-            recon_weight = args.hyper_model.loss_weight.recon_weight if block_idx != 0 else 1000.0
+            ce_weight = args.hyper_model.loss_weight.ce_weight
+            reg_weight =  args.hyper_model.loss_weight.reg_weight
+            recon_weight = args.hyper_model.loss_weight.recon_weight
             
             loss = ce_weight * cls_loss + reg_weight * reg_loss + recon_weight * reconstruct_loss
             losses.update(loss.item())
@@ -261,33 +261,23 @@ def main_iterative_nerf(args):
             
     os.makedirs(args.training.save_model_path, exist_ok=True)
     
-    #changed here
-    hyper_model = get_hypernet(args, 6, device=device)
+    hyper_model = get_hypernet(args, 4, device=device)
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
 
-    #changed here
-    start_block = 0
+    start_block = 1
     start_epoch = 0
     best_acc = 0.0
     end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
     
     
-    frozen_NeRF = NeRF_ResMLP_Compose(
-        input_dim=args.hyper_model.input_dim,
-        hidden_dim=args.hyper_model.hidden_dim,
-        num_layers=args.hyper_model.num_layers,
-        output_dim=args.hyper_model.output_dim,
-        num_freqs=args.hyper_model.num_freqs,
-        scalar=args.hyper_model.get('scalar', 0.1),
-        num_compose=0).to(device)
-
-    #TODO: resume from including block 0
+    frozen_NeRF = get_hypernet(args, 0, device=device)
+    
     # If specified, load the checkpoint
     if args.resume_from and "fineTuning" not in args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
         
-        hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from) ), device=device)
+        hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from)), device=device)
         
         if args.model.single_block:
             hyper_model = get_hypernet(args, 4, device=device)
@@ -318,8 +308,7 @@ def main_iterative_nerf(args):
         if(block_id != start_block):
             hyper_model = get_hypernet(args, 4, device=device)
             if(args.model.bottom_up):
-                #changed here
-                if args.experiment.custom_init and block_id != 1:
+                if args.experiment.custom_init:
                     hyper_model = copyParams(frozen_NeRF.model[-4:],hyper_model)
                 
                 if not args.model.single_block:    
@@ -363,7 +352,7 @@ def main_iterative_nerf(args):
 
             print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
-            if epoch % args.experiment.eval_interval == 0:
+            if epoch % args.experiment.eval_interval == 0 or epoch == 1:
                 if ema:
                     ema.apply()
 
@@ -409,23 +398,10 @@ def main_iterative_nerf(args):
                 
     if args.model.single_block:
         os.makedirs(f"{args.training.save_model_path}/fineTuning", exist_ok=True)
-        hyper_model = NeRF_ResMLP_Compose(
-            input_dim=args.hyper_model.input_dim,
-            hidden_dim=args.hyper_model.hidden_dim,
-            num_layers=args.hyper_model.num_layers,
-            output_dim=args.hyper_model.output_dim,
-            num_freqs=args.hyper_model.num_freqs,
-            scalar=args.hyper_model.get('scalar', 0.1),
-            num_compose=0).to(device)
+        hyper_model = get_hypernet(args, 0, device=device)
         
-        last_hyper_model = NeRF_ResMLP_Compose(
-            input_dim=args.hyper_model.input_dim,
-            hidden_dim=args.hyper_model.hidden_dim,
-            num_layers=args.hyper_model.num_layers,
-            output_dim=args.hyper_model.output_dim,
-            num_freqs=args.hyper_model.num_freqs,
-            scalar=args.hyper_model.get('scalar', 0.1),
-            num_compose=4).to(device)
+        last_hyper_model = get_hypernet(args, 4, device=device)
+
         for block_id in range(1, args.model.num_param + 1):
             checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_last.pth", last_hyper_model, optimizer, scheduler ,ema, device=device)
             hyper_model=extend_nerf_compose(hyper_model,last_hyper_model)

@@ -1,13 +1,14 @@
 #!/bin/bash
 
-#SBATCH --job-name=Block0
-#SBATCH --output=log/AaITERATIVE/Block0_CentralValue_recWeight_%j.out
-#SBATCH  --error=log/AaITERATIVE/Block0_CentralValue_recWeight_%j.err
+#SBATCH --job-name=NeRFAccFinish
+#SBATCH --output=log/AaITERATIVE/FullTraining_From1_4accumulationStep_Finish_%j.out
+#SBATCH  --error=log/AaITERATIVE/FullTraining_From1_4accumulationStep_Finish_%j.err
 #SBATCH --time=24:00:00                         
 #SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
 
 #SBATCH --gres=gpu:1                            
-#SBATCH --cpus-per-task=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=2
 
 #SBATCH --account=tesi_tsommariva               
 #SBATCH --partition=all_usr_prod                
@@ -19,4 +20,4 @@ conda activate neumeta
 # Command to execute Python program
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
 python3 /homes/tsommariva/neumeta/neumeta/train_cifar100_iterative.py --config /homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
-    #--resume_from "/work/tesi_tsommariva/experiments/AaITERATIVE/SingleBlock_CustomInit_BatchAccumulationSteps:4_ArchAccumulationSteps:1_lr:0.00085/fineTuning/cifar100_nerf_best.pth" \
+    --resume_from "/work/tesi_tsommariva/experiments/AaITERATIVE/FullTrainingFrom1_4AccumulationSteps_CustomInit:True_singleBlock:False_500e_lr0.00085_ftScaling:False:0.1/block2/cifar100_nerf_best.pth" \

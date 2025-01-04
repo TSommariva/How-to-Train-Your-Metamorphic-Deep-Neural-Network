@@ -4,7 +4,7 @@ import random
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
-from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
+from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_HierarcResMLP_Compose
 from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
@@ -184,6 +184,19 @@ def get_hypernet(args, number_param, device='cuda'):
             num_freqs=args.hyper_model.num_freqs,
             scalar=args.hyper_model.get('scalar', 0.1),
             num_compose=number_param
+        ).to(device)
+        
+    elif hyper_model_type == 'hierarchical_resmlp':
+        print("hierarchical residual mlp, ",args.hyper_model.get('kernel_groups', 4), "kernel groups, using scalar: ",args.hyper_model.get('scalar', 0.1))
+        hyper_model = NeRF_HierarcResMLP_Compose(
+            input_dim=args.hyper_model.input_dim,
+            hidden_dim=args.hyper_model.hidden_dim,
+            num_layers=args.hyper_model.num_layers,
+            output_dim=args.hyper_model.output_dim,
+            num_freqs=args.hyper_model.num_freqs,
+            scalar=args.hyper_model.get('scalar', 0.1),
+            num_compose=number_param,
+            num_kernel_groups=args.hyper_model.get('kernel_groups', 4)
         ).to(device)
         
     else:

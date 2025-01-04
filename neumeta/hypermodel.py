@@ -189,4 +189,56 @@ class NeRF_ResMLP_Compose(NeRF_MLP_Compose):
             self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
             
         self.apply(weights_init_uniform_relu)
+        
+class NeRF_HierarcResMLP_Compose(NeRF_MLP_Compose):
+    """
+    NeRF_ResMLP_Compose is a class that represents a compositional multi-layer perceptron (MLP) model with residual connections.
+    
+    Args:
+        input_dim (int): The dimensionality of the input features.
+        hidden_dim (int): The dimensionality of the hidden layers.
+        output_dim (int): The dimensionality of the output.
+        num_freqs (int, optional): The number of frequencies used in positional encoding. Defaults to 10.
+        num_layers (int, optional): The number of layers in the MLP. Defaults to 4.
+        num_compose (int, optional): The number of compositional MLPs to be composed. Defaults to 4.
+        normalizing_factor (float, optional): The normalizing factor for the model. Defaults to 1.0.
+        scalar (float, optional): The scalar value used in the residual connections. Defaults to 0.1.
+    """
+    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, num_kernel_groups = 4,normalizing_factor=1.0, scalar=0.1):
+        super(NeRF_HierarcResMLP_Compose, self).__init__(input_dim, hidden_dim, output_dim, num_freqs, num_layers, num_compose, normalizing_factor)
+        self.model = nn.ModuleList()
+        self.norm = normalizing_factor
+        self.num_kernel_groups = num_kernel_groups
+        for _ in range(num_compose):
+            child_model = nn.ModuleList()
+            for _ in range(num_kernel_groups):
+                child_model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
+            self.model.append(child_model)
+            
+        self.apply(weights_init_uniform_relu)
+        
+    def forward(self, x, layer_id=None, input_dim=None):
+        if layer_id is None:
+            layer_id = (x[:, 0] * self.norm).int()
+        if input_dim is None:
+            input_dim = (x[:, -1] * self.norm)
+        
+        kernel_group = (x[:, 1] * self.num_kernel_groups).floor().long().clamp(0, self.num_kernel_groups-1)
+        
+        x[:, :3] = x[:, :3] / x[:, 3:]
+        x = self.positional_encoding(x)
+        output_x = torch.zeros((x.size(0), self.output_dim), device=x.device)
+        unique_layer_ids = torch.unique(layer_id)
+        for lid in unique_layer_ids:
+            layer_mask = lid == layer_id
+            child_modules = self.model[lid]
+            unique_kgs = torch.unique(kernel_group[layer_mask])
+            # For this layer, process each kernel group
+            for kg in unique_kgs:
+                # Combined mask for both layer and kernel group
+                combined_mask = (layer_mask) & (kernel_group == kg)
+                model_output = child_modules[kg](x[combined_mask])
+                output_x[combined_mask] = model_output
+
+        return output_x / input_dim.unsqueeze(-1)
  
