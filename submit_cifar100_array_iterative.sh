@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=kernelBlocks           
-#SBATCH --output=log/AaITERATIVE/KernelBlocks_%A_%a.out
-#SBATCH  --error=log/AaITERATIVE/KernelBlocks_%A_%a.err
-#SBATCH --time=24:00:00                         
+#SBATCH --job-name=BNNeRF           
+#SBATCH --output=log/AaITERATIVE/BatchNorm_v3_%A_%a.out
+#SBATCH  --error=log/AaITERATIVE/BatchNorm_v3_%A_%a.err
+#SBATCH --time=6:00:00                         
 #SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
-#SBATCH --array=0-1
+#SBATCH --array=0-2
 #SBATCH --gres=gpu:1                            
 #SBATCH --cpus-per-task=2
 
@@ -19,18 +19,13 @@ conda activate neumeta
 
 # Define accumulation steps configurations
 case $SLURM_ARRAY_TASK_ID in
-    0) BATCH_ACCUM=4; ARCH_ACCUM=1 ; LR=0.00085 ; ETA_MIN=8e-5;;
-    1) BATCH_ACCUM=1; ARCH_ACCUM=1 ; LR=3e-4 ; ETA_MIN=3e-5;;
+    0) type='resbnmlp';;
+    1) type='reslnmlp';;
+    2) type='resbnlnmlp';;
     *) echo "Invalid array task ID"; exit 1 ;;
 esac
 
-# Define experiment name
-EXP_NAME="SingleBlock_CustomInit_BatchAccumulationSteps:${BATCH_ACCUM}_ArchAccumulationSteps:${ARCH_ACCUM}_lr:${LR}"
-
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
 python3 /homes/tsommariva/neumeta/neumeta/train_cifar100_iterative.py --config /homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
-    --experiment.batch_accumulation_steps=$BATCH_ACCUM \
-    --experiment.arch_accumulation_steps=$ARCH_ACCUM \
-    --training.learning_rate=$LR \
-    --training.eta_min=$ETA_MIN \
-    #--resume_from "experiments/AaITERATIVE/8Blocks_300e_4AccumulationSteps_bottomUp:True_Iterative:True_FINISHfromOldBlock2_150e/block2/cifar100_nerf_best.pth" \
+    --hyper_model.type=$type \
+    #--resume_from "$RESUME_FROM"

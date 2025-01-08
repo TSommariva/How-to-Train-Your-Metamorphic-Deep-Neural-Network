@@ -3,7 +3,7 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 8 #Learnable Blocks
+  num_param: 4 #Learnable Blocks
   bottom_up: True
   smooth: False
   fuse: False
@@ -11,21 +11,19 @@ model:
   
 # Experiment settings
 experiment:
-  name: FullTrainingFrom1_4AccumulationSteps_CustomInit:True_singleBlock:False_500e_lr0.00085_ftScaling:False:0.1 #${hyper_model.type}_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e
-  debug: False
-  num_epochs: 500
+  name: ${hyper_model.type}_IdShort_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e
+  num_epochs: 50
   log_interval: 26
   eval_interval: 10
-  arch_accumulation_steps: 1
   batch_accumulation_steps: 4
   iterative: True
-  custom_init: True
+  custom_init: False
 
 # Training configurations
 training:
   batch_size: 128
   learning_rate: 0.00085
-  eta_min: 8e-05
+  eta_min: 8e-5
   scheduler: cosine
   warmup_epochs: 10
   T_max: ${experiment.num_epochs}
@@ -45,6 +43,9 @@ hyper_model:
   num_layers: 8
   num_freqs: 32
   output_dim: 9
+  scalar: 0.1
+  use_ema: True
+  extend_ema: True
   ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:

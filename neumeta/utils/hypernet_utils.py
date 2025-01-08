@@ -4,7 +4,7 @@ import random
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
-from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_HierarcResMLP_Compose
+from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_HierarcResMLP_Compose, NeRF_ResBNMLP_Compose,NeRF_ResLNMLP_Compose, NeRF_ResBNLNMLP_Compose
 from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
@@ -171,7 +171,8 @@ def get_hypernet(args, number_param, device='cuda'):
             num_layers=args.hyper_model.num_layers,
             output_dim=args.hyper_model.output_dim,
             num_freqs=args.hyper_model.num_freqs,
-            num_compose=number_param
+            num_compose=number_param,
+            normalizing_factor=args.dimensions.norm
         ).to(device)
         
     elif hyper_model_type == 'resmlp':
@@ -183,7 +184,8 @@ def get_hypernet(args, number_param, device='cuda'):
             output_dim=args.hyper_model.output_dim,
             num_freqs=args.hyper_model.num_freqs,
             scalar=args.hyper_model.get('scalar', 0.1),
-            num_compose=number_param
+            num_compose=number_param,
+            normalizing_factor=args.dimensions.norm
         ).to(device)
         
     elif hyper_model_type == 'hierarchical_resmlp':
@@ -196,9 +198,46 @@ def get_hypernet(args, number_param, device='cuda'):
             num_freqs=args.hyper_model.num_freqs,
             scalar=args.hyper_model.get('scalar', 0.1),
             num_compose=number_param,
-            num_kernel_groups=args.hyper_model.get('kernel_groups', 4)
+            num_kernel_groups=args.hyper_model.get('kernel_groups', 4),
+            normalizing_factor=args.dimensions.norm
         ).to(device)
-        
+    
+    elif hyper_model_type == 'resbnmlp':
+        print("Using scalar", args.hyper_model.get('scalar', 0.1))
+        hyper_model = NeRF_ResBNMLP_Compose(
+            input_dim=args.hyper_model.input_dim,
+            hidden_dim=args.hyper_model.hidden_dim,
+            num_layers=args.hyper_model.num_layers,
+            output_dim=args.hyper_model.output_dim,
+            num_freqs=args.hyper_model.num_freqs,
+            scalar=args.hyper_model.get('scalar', 0.1),
+            num_compose=number_param,
+            normalizing_factor=args.dimensions.norm
+        ).to(device)
+    elif hyper_model_type == 'reslnmlp':
+        print("Using scalar", args.hyper_model.get('scalar', 0.1))
+        hyper_model = NeRF_ResLNMLP_Compose(
+            input_dim=args.hyper_model.input_dim,
+            hidden_dim=args.hyper_model.hidden_dim,
+            num_layers=args.hyper_model.num_layers,
+            output_dim=args.hyper_model.output_dim,
+            num_freqs=args.hyper_model.num_freqs,
+            scalar=args.hyper_model.get('scalar', 0.1),
+            num_compose=number_param,
+            normalizing_factor=args.dimensions.norm
+        ).to(device)
+    elif hyper_model_type == 'resbnlnmlp':
+        print("Using scalar", args.hyper_model.get('scalar', 0.1))
+        hyper_model = NeRF_ResBNLNMLP_Compose(
+            input_dim=args.hyper_model.input_dim,
+            hidden_dim=args.hyper_model.hidden_dim,
+            num_layers=args.hyper_model.num_layers,
+            output_dim=args.hyper_model.output_dim,
+            num_freqs=args.hyper_model.num_freqs,
+            scalar=args.hyper_model.get('scalar', 0.1),
+            num_compose=number_param,
+            normalizing_factor=args.dimensions.norm
+        ).to(device)
     else:
         raise ValueError(f"Unsupported hyper_model_type: {hyper_model_type}")
         
@@ -379,17 +418,16 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     Returns:
         tuple: A tuple containing the updated model_cls and the list of predicted weights.
     """
-    if isinstance(model, torch.nn.parallel.DistributedDataParallel):
-        model = model.module
-    if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
-        model_cls = model_cls.module
+    #if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+    #    model = model.module
+    #if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
+    #    model_cls = model_cls.module
     
-    if selected_keys is None:
-        predicted_checkpoint = model_cls.learnable_parameter
-    else:
+    if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
+    else:
+        predicted_checkpoint = model_cls.learnable_parameter
     
-
     # Sample a batch of coordinates
     coords_tensor = coords_tensor.to(device)
     layer_id = coords_tensor[:, 0].int()
@@ -398,14 +436,14 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     predicted_weights = model(input_tensor, layer_id=layer_id, input_dim=input_dim)
     
     selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
+    
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
-        # print(key)
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
 
         # Check the size information for the current mask and proceed accordingly.
-        if size_list[boolean_mask][0] == 4:  # Condition for a specific size.
+        if size_list[boolean_mask][0] == 4:  # Condition for conv weights.
             # Extract height and width from the indices list.
             height, width = indices_list[boolean_mask][0, 2:]
             
@@ -421,17 +459,15 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
             
             # Reshape and assign the adjusted weights to the appropriate position in the checkpoint dictionary.
             predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = current_weights.view(-1, height, width)
-
+        
+        elif size_list[boolean_mask][0] == 1:  # Condition for conv biases.
+            # Assign the weights to the specified indices.
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights[boolean_mask][:, 0]
+        
         elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
             # Directly assign the weights without reshaping.
             predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
-
-        elif size_list[boolean_mask][0] == 1:  # Condition for yet another size.
-            # Assign the weights to the specified indices.
-            # print(predicted_weights[boolean_mask][:, 0].shape, predicted_checkpoint[key].shape)
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights[boolean_mask][:, 0]
-
-        
+         
     for name, param in model_cls.learnable_parameter.items():
         if name in predicted_checkpoint:
             param.data = predicted_checkpoint[name].data

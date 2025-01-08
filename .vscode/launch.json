@@ -8,6 +8,7 @@
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
         "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml",
+        "--resume_from","experiments/TEST/block1/cifar100_nerf_best.pth"
     ], 
       "console": "integratedTerminal"
     },

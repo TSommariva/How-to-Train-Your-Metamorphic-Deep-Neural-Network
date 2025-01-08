@@ -32,6 +32,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 import sys
+import math 
 import torch
 import torch.nn as nn
 try:
@@ -124,6 +125,32 @@ class BasicBlock_Resize(BasicBlock):
         out = self.relu(out)
 
         return out
+    
+class BasicBlock_Resize_IdShort(BasicBlock):
+    expansion = 1
+    def __init__(self, inplanes, planes, stride=1, downsample=None):
+        super().__init__(inplanes, planes, stride, downsample)
+        self.conv2 = conv3x3(planes, inplanes)
+        self.bn2 = nn.BatchNorm2d(inplanes)
+        self.c = math.sqrt(0.5)
+    
+    def forward(self, x):
+        identity = x
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out *= self.c
+        out = self.relu(out)
+
+        return out
 
 class First_BasicBlock_Resize(BasicBlock):
     expansion = 1
@@ -153,7 +180,7 @@ class First_BasicBlock_Resize(BasicBlock):
 
 class CifarResNet(nn.Module):
 
-    def __init__(self, block, hidden_dim, num_param ,layers,single_block = False, bottom_up=False ,num_classes=10, num_layers_inr=1):
+    def __init__(self, block, hidden_dim, num_param ,layers,single_block = False, bottom_up=False ,num_classes=10, num_layers_inr=1, prior=True):
         super(CifarResNet, self).__init__()
         self.layers = layers
         self.num_param = num_param
@@ -161,6 +188,7 @@ class CifarResNet(nn.Module):
         self.single_block = single_block
         self.inplanes = 16
         self.bottom_up = bottom_up
+        self.prior = prior
         self.conv1 = conv3x3(3, 16)
         self.bn1 = nn.BatchNorm2d(16)
         self.relu = nn.ReLU(inplace=True)
@@ -242,10 +270,12 @@ class CifarResNet(nn.Module):
                         #
                         #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
                         #layers.append(first_Block)
-                        
-                        for i in range(self.num_layers_inr):
-                            layers.append(BasicBlock_Resize(64, bottleneck, stride))
-
+                        if self.prior:
+                            for i in range(self.num_layers_inr):
+                                layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                        else:
+                            for i in range(self.num_layers_inr):
+                                layers.append(BasicBlock_Resize_IdShort(64, bottleneck, stride))
                         layers.extend(list(child.children())[self.num_layers_inr+1:])
                         self._modules[name] = nn.Sequential(*layers)
                     else:
@@ -437,9 +467,10 @@ def _resnet(
     single_block: bool = False,
     progress: bool = True,
     pretrained: bool = True,
+    prior: bool = True,
     **kwargs: Any
 ) -> CifarResNet:
-    model = CifarResNet(BasicBlock, hidden_dim, num_param, layers,single_block ,bottom_up,**kwargs)
+    model = CifarResNet(BasicBlock, hidden_dim, num_param, layers, single_block, bottom_up, prior=prior,**kwargs)
     if pretrained:
         print("Loading pretrained weights for {}".format(arch))
         state_dict = load_state_dict_from_url(model_urls[arch],
@@ -511,7 +542,7 @@ def cifar10_resnet56(hidden_dim, num_classes=10, pretrained=True, *args, **kwarg
                    **kwargs)
 
 # Functions for CIFAR-100
-def cifar100_resnet20(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,*args, **kwargs):
+def cifar100_resnet20(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,prior=True,*args, **kwargs):
     return _resnet(arch="resnet20", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -521,10 +552,11 @@ def cifar100_resnet20(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   prior=prior,
                    *args, 
                    **kwargs)
 
-def cifar100_resnet32(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,*args, **kwargs):
+def cifar100_resnet32(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,prior=True,*args, **kwargs):
     return _resnet(arch="resnet32", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -534,10 +566,11 @@ def cifar100_resnet32(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   prior=prior,
                    *args, 
                    **kwargs)
 
-def cifar100_resnet44(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,*args, **kwargs):
+def cifar100_resnet44(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,prior=True,*args, **kwargs):
     return _resnet(arch="resnet44", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -547,10 +580,11 @@ def cifar100_resnet44(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   prior=prior,
                    *args, 
                    **kwargs)
 
-def cifar100_resnet56(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,*args, **kwargs):
+def cifar100_resnet56(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=100, pretrained=True,*args, **kwargs):
     return _resnet(arch="resnet56", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -560,6 +594,7 @@ def cifar100_resnet56(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   prior=prior,
                    *args, 
                    **kwargs)
 

@@ -158,8 +158,13 @@ class EMA:
         # Update the shadow weights
         for name, param in self.model.named_parameters():
             if param.requires_grad:
-                self.shadow[name] = self.decay * \
-                    self.shadow[name] + (1.0 - self.decay) * param.data
+                self.shadow[name] = self.decay * self.shadow[name] + (1.0 - self.decay) * param.data
+                
+    def extend(self, model):
+        self.model = model
+        for name, param in model.named_parameters():
+            if param.requires_grad and name not in self.shadow:
+                self.shadow[name] = param.data.clone()
 
 class EMA_ddp:
     def __init__(self, model, decay, rank):
@@ -235,8 +240,6 @@ class EMA_ddp:
                 if param.requires_grad:
                     torch.distributed.broadcast(self.shadow[name], src=0)
 
-
-
 def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
@@ -259,7 +262,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
         'best_acc': best_acc,
         'trained_blocks': trained_blocks,
     }
-    if ema is not None:
+    if ema:
         checkpoint['ema_shadow']=ema.shadow
     torch.save(checkpoint, filepath)
     
@@ -324,15 +327,18 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
             print(f"{e}")
             print("it's not possible to load the saved optimizer, a new one will be created instead")
             optimizer = None
+            
     if 'scheduler_state_dict' in checkpoint and scheduler is not None and optimizer is not None:
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         
-    if ema is not None:
+    if ema and 'ema_shadow' in checkpoint:
         ema.shadow = {k: checkpoint['ema_shadow'][k].to(
             device) for k in checkpoint['ema_shadow']}
-    # ema.shadow = {k:checkpoint['ema_shadow'][k].to(device) for k in checkpoint['ema_shadow'] }  # specifically loading shadow weights
+    else:
+        ema = None
 
-    return checkpoint, model  # Contains other information like epoch, best_acc
+    return checkpoint, model, optimizer, scheduler, ema  # Contains other information like epoch, best_acc
+
 def load_non_ddp_checkpoint_to_ddp(filepath, ddp_model, optimizer, scheduler, ema, device='cuda'):
     """Load non-DDP checkpoint into DDP model"""
     checkpoint = torch.load(filepath, map_location='cpu')
@@ -466,7 +472,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-def extend_nerf_compose(base_model, extension_model):
+def extend_nerf_compose(base_model, extension_model, return_model):
     """
     Extends existing NeRF_ResMLP_Compose model with a new one, handling DDP models.
 
@@ -481,7 +487,15 @@ def extend_nerf_compose(base_model, extension_model):
     base = base_model.module if isinstance(base_model, torch.nn.parallel.DistributedDataParallel) else base_model
     extension = extension_model.module if isinstance(extension_model, torch.nn.parallel.DistributedDataParallel) else extension_model
     
-
+    with torch.no_grad():
+        base_params = list(base.parameters())
+        extension_params = list(extension.parameters())
+        return_params = list(return_model.parameters())
+        for i in range(len(base_params)):
+            return_params[i].copy_(base_params[i])
+        for j in range(len(extension_params)):
+            return_params[len(base_params) + j].copy_(extension_params[j])
+    
     # Extend the internal ModuleList
     base.model.extend(extension.model)
     
@@ -496,4 +510,4 @@ def extend_nerf_compose(base_model, extension_model):
             device_ids=[torch.distributed.get_rank()],
             output_device=torch.distributed.get_rank()
         )
-    return base
+    return return_model

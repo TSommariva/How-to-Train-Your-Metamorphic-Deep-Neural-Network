@@ -40,13 +40,16 @@ training:
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: hierarchical_resmlp
+  type: resmlp
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512
   num_layers: 8
   num_freqs: 32
   output_dim: 9
+  scalar: 0.1
+  use_ema: True
+  extend_ema: True
   ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:
