@@ -152,6 +152,33 @@ class BasicBlock_Resize_IdShort(BasicBlock):
 
         return out
 
+class BasicBlock_Resize_LearnScalar(BasicBlock):
+    expansion = 1
+    def __init__(self, inplanes, planes, stride=1, downsample=None):
+        super().__init__(inplanes, planes, stride, downsample)
+        self.conv2 = conv3x3(planes, inplanes)
+        self.bn2 = nn.BatchNorm2d(inplanes)
+        self.scale = nn.Parameter(torch.tensor(1.0), requires_grad=True)
+        self.c = math.sqrt(0.5)
+    
+    def forward(self, x):
+        shortcut = x * self.scale
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += shortcut
+        out *= self.c
+        out = self.relu(out)
+
+        return out
+
 class First_BasicBlock_Resize(BasicBlock):
     expansion = 1
     def __init__(self, inplanes, hidden_dim ,outplanes, stride=1, downsample=None):
@@ -176,7 +203,7 @@ class First_BasicBlock_Resize(BasicBlock):
 
         return out
 
-
+    
 
 class CifarResNet(nn.Module):
 
@@ -270,12 +297,15 @@ class CifarResNet(nn.Module):
                         #
                         #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
                         #layers.append(first_Block)
-                        if self.prior:
-                            for i in range(self.num_layers_inr):
-                                layers.append(BasicBlock_Resize(64, bottleneck, stride))
-                        else:
-                            for i in range(self.num_layers_inr):
-                                layers.append(BasicBlock_Resize_IdShort(64, bottleneck, stride))
+                        
+                        #if self.prior:
+                        for i in range(self.num_layers_inr):
+                            layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                        #else:
+                        #    for i in range(self.num_layers_inr):
+                        #        #downsample = conv1x1(64,64,stride)
+                        #        downsample = None
+                        #        layers.append(BasicBlock_Resize(64, bottleneck, stride, downsample))
                         layers.extend(list(child.children())[self.num_layers_inr+1:])
                         self._modules[name] = nn.Sequential(*layers)
                     else:

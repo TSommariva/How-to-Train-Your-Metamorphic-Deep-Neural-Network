@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --job-name=IdShort
-#SBATCH --output=log/AaITERATIVE/IdShort_%j.out
-#SBATCH  --error=log/AaITERATIVE/IdShort_%j.err
-#SBATCH --time=2:00:00                         
-#SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
+#SBATCH --job-name=NeRF
+#SBATCH --output=log/AaITERATIVE/NeRF_%j.out
+#SBATCH  --error=log/AaITERATIVE/NeRF_%j.err
+#SBATCH --time=6:00:00                         
+##SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
 
 #SBATCH --gres=gpu:1                            
 #SBATCH --ntasks=1

@@ -76,9 +76,11 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
             gt_model_dict[f"{dim}"] = model_trained
     return dim_dict, gt_model_dict
 
-def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx ,ema=None, args=None, block_idx=1, max_epochs=200):
-    model.train()
-    optimizer.zero_grad()
+def train_one_epoch(weights_hypernet, biases_hypernet, train_loader, w_optimizer, b_optimizer, criterion, dim_dict, gt_model_dict, epoch_idx ,ema=None, args=None, block_idx=1, max_epochs=200):
+    weights_hypernet.train()
+    biases_hypernet.train()
+    w_optimizer.zero_grad() 
+    b_optimizer.zero_grad()
     
     no_accumulation = (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps) == 1
     step = 0
@@ -116,11 +118,20 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
         
         #add coordinate noise
-        coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
+        coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5).clamp(-0.49,0.49) * args.training.coordinate_noise
         
-        model_cls, reconstructed_weights = sample_weights(model, model_cls,
+        weights_key = [k for k in selected_keys if "weight" in k]
+        bias_key = [k for k in selected_keys if "bias" in k]
+        
+        model_cls, reconstructed_weights_b = sample_weights(biases_hypernet, model_cls,
+                                                  coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                  device=device, NORM=args.dimensions.norm, subset_key=bias_key )
+
+        
+        model_cls, reconstructed_weights_w = sample_weights(weights_hypernet, model_cls,
                                                           coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                                                          device=device, NORM=args.dimensions.norm)
+                                                          device=device, NORM=args.dimensions.norm,subset_key=weights_key )
+        
         # Forward pass
         predict = model_cls(x)
         
@@ -133,16 +144,26 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         # Compute regularization loss
         reg_loss = sum([torch.norm(w, p=2)
-                                for w in reconstructed_weights])
+                                for w in reconstructed_weights_w])
+        reg_loss += sum([torch.norm(w, p=2)
+                                for w in reconstructed_weights_b])
         reg_losses.update(reg_loss.item())
         
         # Compute MSE loss
         if f"{hidden_dim}" in gt_model_dict:
             gt_model = gt_model_dict[f"{hidden_dim}"]
-            gt_selected_weights = [
-                w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
-            reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
-                w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
+            gt_selected_weights_w = [
+                w for k, w in gt_model.learnable_parameter.items() if k in weights_key]
+            
+            gt_selected_weights_b = [
+                w for k, w in gt_model.learnable_parameter.items() if k in bias_key]
+            
+            reconstruct_loss_w = torch.stack([F.mse_loss(
+                w, w_gt) for w, w_gt in zip(reconstructed_weights_w, gt_selected_weights_w)])
+            
+            reconstruct_loss_b = torch.stack([F.mse_loss(
+                w, w_gt) for w, w_gt in zip(reconstructed_weights_b, gt_selected_weights_b)])
+            reconstruct_loss = torch.mean(torch.stack([reconstruct_loss_w, reconstruct_loss_b]))
         else:
             reconstruct_loss = torch.tensor(0.0)
         reconstruct_losses.update(reconstruct_loss.item())
@@ -151,7 +172,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         reg_weight =  args.hyper_model.loss_weight.reg_weight
         recon_weight = args.hyper_model.loss_weight.recon_weight
         
-        loss = ce_weight * cls_loss + reg_weight * reg_loss + recon_weight * reconstruct_loss
+        loss = ce_weight * cls_loss + recon_weight * reconstruct_loss #+ reg_weight * reg_loss
         losses.update(loss.item())
         
         # Zero model_cls grads
@@ -161,8 +182,10 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         # Scale loss and do backward pass
         scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
         scaled_loss.backward(retain_graph=True)
-        torch.autograd.backward(reconstructed_weights, [
-                        w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+        torch.autograd.backward(reconstructed_weights_w, [
+                        w.grad for k, w in model_cls.named_parameters() if k in weights_key])
+        torch.autograd.backward(reconstructed_weights_b, [
+                        w.grad for k, w in model_cls.named_parameters() if k in bias_key])
                 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             wandb.log({
@@ -171,11 +194,11 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Cls Loss": cls_losses.avg,
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
-                "Learning rate": optimizer.param_groups[0]['lr']
+                "Learning rate": w_optimizer.param_groups[0]['lr']
                 })#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (block_idx - 1) * max_epochs * len(train_loader))
         
         if batch_idx % args.experiment.log_interval == 0:
-            print(f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
+            print(f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {w_optimizer.param_groups[0]['lr']:.4e}")
             
             losses.reset()
             cls_losses.reset()
@@ -185,10 +208,15 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         if (batch_idx % args.experiment.batch_accumulation_steps) == 0 :
             if args.training.get('clip_grad', 0.0) > 0:
                 torch.nn.utils.clip_grad_value_(
-                    model.parameters(), args.training.clip_grad)                
+                    weights_hypernet.parameters(), args.training.clip_grad)
                 
-            optimizer.step()        
-            optimizer.zero_grad()
+                torch.nn.utils.clip_grad_value_(
+                    biases_hypernet.parameters(), args.training.clip_grad)                 
+                
+            w_optimizer.step()
+            w_optimizer.zero_grad()
+            b_optimizer.step()        
+            b_optimizer.zero_grad()
             step = 0
             #extracted_dim = []
             
@@ -340,11 +368,20 @@ def main_iterative_nerf(args):
         dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block)
         dim_dict = shuffle_coordiates_all(dim_dict)
         
+        model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"64"]
+        selected_keys = np.unique(keys_list)
+        weights_hypernet =  get_hypernet(args, sum('weight' in k for k in selected_keys),args.hyper_model.output_dim, "cuda")
+        biases_hypernet =  get_hypernet(args, sum('bias' in k for k in selected_keys),1 , "cuda")
+        
+        criterion, val_criterion, w_optimizer, w_scheduler = get_optimizer(args, weights_hypernet)
+        criterion, val_criterion, b_optimizer, b_scheduler = get_optimizer(args, biases_hypernet)
+        
         epoch=None
         
         for epoch in range(start_epoch + 1, end_epoch):
-            train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=end_epoch)
-            scheduler.step()
+            train_loss = train_one_epoch(weights_hypernet, biases_hypernet, train_loader, w_optimizer, b_optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=end_epoch)
+            w_scheduler.step()
+            b_scheduler.step()
 
             print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
@@ -352,7 +389,7 @@ def main_iterative_nerf(args):
                 if ema:
                     ema.apply()
 
-                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+                sampled_model = sample_merge_model(weights_hypernet, biases_hypernet, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
 
@@ -440,7 +477,7 @@ def main_iterative_nerf(args):
                 if ema:
                     ema.apply()
                 
-                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+                sampled_model = sample_merge_model(weights_hypernet, biases_hypernet, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
                 
@@ -471,7 +508,7 @@ def main_iterative_nerf(args):
     if ema:
         ema.apply()
         
-    sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
+    sampled_model = sample_merge_model(weights_hypernet, biases_hypernet, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
     val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
     
     if ema:
@@ -487,6 +524,7 @@ def main_iterative_nerf(args):
     
     print("Training finished.")
     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    return
     #testing the best model
     best_hyper_model = get_hypernet(args, number_param, device=device)
     last_hyper_model = get_hypernet(args, number_param, device=device)

@@ -306,12 +306,13 @@ def average_models(models):
     
     return averaged_model
 
-def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
+def sample_merge_model(weights_hypernet, biases_hypernet, model, args, K=50, device='cuda'):
     # Initialize a model to accumulate the weights over K samples
-    if isinstance(hyper_model, torch.nn.parallel.DistributedDataParallel):
-        hyper_model = hyper_model.module
+    #if isinstance(hyper_model, torch.nn.parallel.DistributedDataParallel):
+    #    hyper_model = hyper_model.module
         
-    hyper_model.eval()
+    weights_hypernet.eval()
+    biases_hypernet.eval()
     models = []
     for k in range(K):
         model_cls_temp = copy.deepcopy(model)
@@ -320,9 +321,23 @@ def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
         # Sampling and merging weights
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
         key_mask = create_key_masks(keys_list=keys_list)
-        if k > 0:
-            coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
-        model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
+        
+        coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5).clamp(-0.49,0.49) * args.training.coordinate_noise
+        
+        selected_keys = np.unique(keys_list)
+        weights_key = [k for k in selected_keys if "weight" in k]
+        weights_mask = sum([key_mask[k] for k in weights_key]).bool()
+        bias_key = [k for k in selected_keys if "bias" in k]
+        bias_mask = sum([key_mask[k] for k in bias_key]).bool()
+        
+        model_cls_temp, _ = sample_weights(biases_hypernet, model_cls_temp,
+                                                  coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                  device=device, NORM=args.dimensions.norm, subset_key=bias_key )
+      
+        
+        model_cls_temp, _ = sample_weights(weights_hypernet, model_cls_temp,
+                                                          coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                          device=device, NORM=args.dimensions.norm,subset_key=weights_key )
         
         models.append(model_cls_temp)
     
@@ -386,6 +401,7 @@ def sample_coordinates(model_cls):
                 keys_list.append(k)
                 indices_list.append((in_channel, 0, 0, 0))
                 size_list.append(1)
+        
                 
     # Convert list of coordinates to tensor
     coords_tensor = torch.tensor(coords_list, dtype=torch.float32)
@@ -403,7 +419,7 @@ def sample_single_model(hyper_model, model, device='cuda', cfg=None):
     model.eval()
     return model
 
-def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
+def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, subset_key=None):
     """
     Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
 
@@ -425,24 +441,33 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     #if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
     #    model_cls = model_cls.module
     
-    if selected_keys is not None:
+    if subset_key is not None:
+        predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in subset_key}
+    elif selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
     else:
         predicted_checkpoint = model_cls.learnable_parameter
     
+    selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
+    if subset_key is not None:
+        subset_mask = sum([key_mask[k] for k in subset_key]).bool()
+        subset_mask = selected_mask & subset_mask
+        selected_keys = subset_key
+
+    
     # Sample a batch of coordinates
-    coords_tensor = coords_tensor.to(device)
-    layer_id = coords_tensor[:, 0].int()
+    coords_tensor = coords_tensor[subset_mask].to(device)
+    layer_id = coords_tensor[:, 0].round()
     input_dim = coords_tensor[:, -1]
     input_tensor = (coords_tensor/NORM) 
     predicted_weights = model(input_tensor, layer_id=layer_id, input_dim=input_dim)
     
-    selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
     
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
+        weight_boolean_mask = key_mask[key][subset_mask].bool()
 
         # Check the size information for the current mask and proceed accordingly.
         if size_list[boolean_mask][0] == 4:  # Condition for conv weights.
@@ -450,7 +475,7 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
             height, width = indices_list[boolean_mask][0, 2:]
             
             # Extract the relevant weights based on the mask.
-            current_weights = predicted_weights[boolean_mask]
+            current_weights = predicted_weights[weight_boolean_mask]
             total_weights = current_weights.size(-1)
             
             # Adjust weights if they don't match the expected size (h*w).
@@ -464,11 +489,11 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
         
         elif size_list[boolean_mask][0] == 1:  # Condition for conv biases.
             # Assign the weights to the specified indices.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights[boolean_mask][:, 0]
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights[weight_boolean_mask][:, 0]
         
         elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
             # Directly assign the weights without reshaping.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[weight_boolean_mask][:, 0]
          
     for name, param in model_cls.learnable_parameter.items():
         if name in predicted_checkpoint:
