@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --job-name=NeRF
-#SBATCH --output=log/AaITERATIVE/NeRF_%j.out
-#SBATCH  --error=log/AaITERATIVE/NeRF_%j.err
-#SBATCH --time=6:00:00                         
-##SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G"
+#SBATCH --job-name=DictNeRF
+#SBATCH --output=log/Debug/DictNeRF_%j.out
+#SBATCH  --error=log/Debug/DictNeRF_%j.err
+#SBATCH --time=0:30:00                         
+#SBATCH --constraint="gpu_A40_48G|gpu_RTX6000_24G|gpu_RTXA5000_24G|gpu_RTX5000_16G|gpu_2080Ti_11G"
 
 #SBATCH --gres=gpu:1                            
 #SBATCH --ntasks=1
@@ -12,7 +12,7 @@
 
 #SBATCH --account=tesi_tsommariva               
 #SBATCH --partition=all_usr_prod                
-#SBATCH --mail-type=END,FAIL                    
+#SBATCH --mail-type=INVALID_DEPEND,BEGIN,END,FAIL,REQUEUE,STAGE_OUT                    
 #SBATCH --mail-user=ts.slurm@gmail.com          
 
 . /usr/local/anaconda3/etc/profile.d/conda.sh

@@ -472,7 +472,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-def extend_nerf_compose(base_model, extension_model, return_model):
+def extend_nerf_compose(base_model, extension_model, custom_init):
     """
     Extends existing NeRF_ResMLP_Compose model with a new one, handling DDP models.
 
@@ -487,22 +487,32 @@ def extend_nerf_compose(base_model, extension_model, return_model):
     base = base_model.module if isinstance(base_model, torch.nn.parallel.DistributedDataParallel) else base_model
     extension = extension_model.module if isinstance(extension_model, torch.nn.parallel.DistributedDataParallel) else extension_model
     
+    base_checkpoint = {k:v for k, v in base_model.named_parameters()}
+    last = None
+    i=0
+    
     with torch.no_grad():
-        base_params = list(base.parameters())
-        extension_params = list(extension.parameters())
-        return_params = list(return_model.parameters())
-        for i in range(len(base_params)):
-            return_params[i].copy_(base_params[i])
-        for j in range(len(extension_params)):
-            return_params[len(base_params) + j].copy_(extension_params[j])
-    
-    # Extend the internal ModuleList
-    base.model.extend(extension.model)
-    
-    # Update num_compose if it exists
-    if hasattr(base, 'num_compose') and hasattr(extension, 'num_compose'):
-        base.num_compose += extension.num_compose
-    
+        if custom_init:
+            if isinstance(base_model.model, nn.ModuleList):
+                last = base_model.model[-4:]
+            elif isinstance(base_model.model, nn.ModuleDict):
+                last = nn.ModuleList([v for _, v in list(base_model.model.items())[-4:]])
+
+        last_params = []
+        for name, param in last.named_parameters():
+            last_params.append(param)
+            
+        for name, param in extension_model.named_parameters():
+            if name in base_checkpoint:
+                param.data = base_checkpoint[name].data
+            elif last is not None:
+                if param.shape == last_params[i].shape:
+                    param.data = last_params[i]
+                else:
+                    print(f"src:{name} and previous param have different shapes")
+                i+=1
+                
+            
     # Re-wrap with DDP if input was DDP
     if isinstance(base_model, torch.nn.parallel.DistributedDataParallel):
         return torch.nn.parallel.DistributedDataParallel(
@@ -510,4 +520,4 @@ def extend_nerf_compose(base_model, extension_model, return_model):
             device_ids=[torch.distributed.get_rank()],
             output_device=torch.distributed.get_rank()
         )
-    return return_model
+    return extension_model

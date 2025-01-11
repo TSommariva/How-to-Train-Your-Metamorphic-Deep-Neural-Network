@@ -5,7 +5,7 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 8
+  num_param: 3
   smooth: False
   fuse: False
   bottom_up: True
@@ -15,7 +15,7 @@ experiment:
   name: TEST
   debug: True
   num_epochs: 1
-  log_interval: 25
+  log_interval: 12
   eval_interval: 1
   arch_accumulation_steps: 1
   batch_accumulation_steps: 1
@@ -29,7 +29,7 @@ training:
   eta_min: 3e-5
   ft_scaling: False
   ft_scalinigFactor: 0.1
-  batch_size: 128
+  batch_size: 1024
   coordinate_noise: 1.0
   scheduler: cosine
   T_max: ${experiment.num_epochs}
@@ -40,7 +40,7 @@ training:
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: resmlp
+  type: resmlpDict
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512

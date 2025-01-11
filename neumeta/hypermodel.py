@@ -105,77 +105,6 @@ class NeRF_MLP_Residual_Scaled(nn.Module):
         # Final transformation
         x = self.output_layer(x)
         return x
-    
-
-class NeRF_MLP_Residual_Scaled_BN(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=None, num_layers=4, scalar=0.0):
-        super(NeRF_MLP_Residual_Scaled_BN, self).__init__()
-        self.initial_layer = nn.Linear(input_dim, hidden_dim)
-        #self.initial_bn = nn.BatchNorm1d(hidden_dim)
-        self.residual_blocks = nn.ModuleList()
-        self.bns = nn.ModuleList()
-        self.scalars = nn.ParameterList()
-        for _ in range(num_layers - 1):
-            self.residual_blocks.append(nn.Linear(hidden_dim, hidden_dim))
-            self.bns.append(nn.BatchNorm1d(hidden_dim))
-            self.scalars.append(nn.Parameter(torch.tensor(scalar), requires_grad=True))
-        self.act = nn.ELU(inplace=True)
-        self.output_layer = nn.Linear(hidden_dim, output_dim)
-
-    def forward(self, x):
-        x = self.act(self.initial_layer(x))
-        for block, bn, scale in zip(self.residual_blocks, self.bns, self.scalars):
-            residual = x
-            out = self.act(bn(block(x)))
-            x = scale * out + residual
-        return self.output_layer(x)
-
-class NeRF_MLP_Residual_Scaled_LN(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=None, num_layers=4, scalar=0.0):
-        super(NeRF_MLP_Residual_Scaled_LN, self).__init__()
-        self.initial_layer = nn.Linear(input_dim, hidden_dim)
-        self.residual_blocks = nn.ModuleList()
-        self.lns = nn.ModuleList()
-        self.scalars = nn.ParameterList()
-        for _ in range(num_layers - 1):
-            self.residual_blocks.append(nn.Linear(hidden_dim, hidden_dim))
-            self.lns.append(nn.LayerNorm(hidden_dim))
-            self.scalars.append(nn.Parameter(torch.tensor(scalar), requires_grad=True))
-        self.act = nn.ELU(inplace=True)
-        self.output_layer = nn.Linear(hidden_dim, output_dim)
-
-    def forward(self, x):
-        x = self.act(self.initial_layer(x))
-        for block, ln, scale in zip(self.residual_blocks, self.lns, self.scalars):
-            residual = x
-            out = self.act(ln(block(x)))
-            x = scale * out + residual
-        return self.output_layer(x)
-
-class NeRF_MLP_Residual_Scaled_BN_LN(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=None, num_layers=4, scalar=0.0):
-        super(NeRF_MLP_Residual_Scaled_BN_LN, self).__init__()
-        self.initial_layer = nn.Linear(input_dim, hidden_dim)
-        self.residual_blocks = nn.ModuleList()
-        self.bns = nn.ModuleList()
-        self.lns = nn.ModuleList()
-        self.scalars = nn.ParameterList()
-        for _ in range(num_layers - 1):
-            self.residual_blocks.append(nn.Linear(hidden_dim, hidden_dim))
-            self.bns.append(nn.BatchNorm1d(hidden_dim))
-            self.lns.append(nn.LayerNorm(hidden_dim))
-            self.scalars.append(nn.Parameter(torch.tensor(scalar), requires_grad=True))
-        self.act = nn.ELU(inplace=True)
-        self.output_layer = nn.Linear(hidden_dim, output_dim)
-
-    def forward(self, x):
-        x = self.act(self.initial_layer(x))
-        for block, bn, ln, scale in zip(self.residual_blocks, self.bns, self.lns, self.scalars):
-            residual = x
-            out = self.act(ln(bn(block(x))))
-            x = scale * out + residual
-        return self.output_layer(x)
-
 
 class NeRF_MLP_Compose(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0):
@@ -265,75 +194,65 @@ class NeRF_ResMLP_Compose(NeRF_MLP_Compose):
             #    self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, 1, num_freqs, num_layers, scalar=scalar))
         self.apply(weights_init_uniform_relu)
         
-class NeRF_ResBNMLP_Compose(NeRF_MLP_Compose):
-    """
-    NeRF_ResMLP_Compose is a class that represents a compositional multi-layer perceptron (MLP) model with residual connections.
-    
-    Args:
-        input_dim (int): The dimensionality of the input features.
-        hidden_dim (int): The dimensionality of the hidden layers.
-        output_dim (int): The dimensionality of the output.
-        num_freqs (int, optional): The number of frequencies used in positional encoding. Defaults to 10.
-        num_layers (int, optional): The number of layers in the MLP. Defaults to 4.
-        num_compose (int, optional): The number of compositional MLPs to be composed. Defaults to 4.
-        normalizing_factor (float, optional): The normalizing factor for the model. Defaults to 1.0.
-        scalar (float, optional): The scalar value used in the residual connections. Defaults to 0.1.
-    """
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0, scalar=0.1):
-        super(NeRF_ResBNMLP_Compose, self).__init__(input_dim, hidden_dim, output_dim, num_freqs, num_layers, num_compose, normalizing_factor)
-        self.model = nn.ModuleList()
-        self.norm = normalizing_factor
-        for _ in range(num_compose):
-            self.model.append(NeRF_MLP_Residual_Scaled_BN(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
-            
-        self.apply(weights_init_uniform_relu)
-        
-class NeRF_ResLNMLP_Compose(NeRF_MLP_Compose):
-    """
-    NeRF_ResMLP_Compose is a class that represents a compositional multi-layer perceptron (MLP) model with residual connections.
-    
-    Args:
-        input_dim (int): The dimensionality of the input features.
-        hidden_dim (int): The dimensionality of the hidden layers.
-        output_dim (int): The dimensionality of the output.
-        num_freqs (int, optional): The number of frequencies used in positional encoding. Defaults to 10.
-        num_layers (int, optional): The number of layers in the MLP. Defaults to 4.
-        num_compose (int, optional): The number of compositional MLPs to be composed. Defaults to 4.
-        normalizing_factor (float, optional): The normalizing factor for the model. Defaults to 1.0.
-        scalar (float, optional): The scalar value used in the residual connections. Defaults to 0.1.
-    """
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0, scalar=0.1):
-        super(NeRF_ResLNMLP_Compose, self).__init__(input_dim, hidden_dim, output_dim, num_freqs, num_layers, num_compose, normalizing_factor)
-        self.model = nn.ModuleList()
-        self.norm = normalizing_factor
-        for _ in range(num_compose):
-            self.model.append(NeRF_MLP_Residual_Scaled_LN(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
-            
-        self.apply(weights_init_uniform_relu)
+class NeRF_ResMLP_ComposeDict(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, key_list ,num_freqs=10, num_layers=4, normalizing_factor=1.0, scalar=0.1):
+        """
+        NeRF_MLP_Compose is a class that represents a composition of NeRF_MLP_Residual_Scaled models.
 
-class NeRF_ResBNLNMLP_Compose(NeRF_MLP_Compose):
-    """
-    NeRF_ResMLP_Compose is a class that represents a compositional multi-layer perceptron (MLP) model with residual connections.
-    
-    Args:
-        input_dim (int): The dimensionality of the input features.
-        hidden_dim (int): The dimensionality of the hidden layers.
-        output_dim (int): The dimensionality of the output.
-        num_freqs (int, optional): The number of frequencies used in positional encoding. Defaults to 10.
-        num_layers (int, optional): The number of layers in the MLP. Defaults to 4.
-        num_compose (int, optional): The number of compositional MLPs to be composed. Defaults to 4.
-        normalizing_factor (float, optional): The normalizing factor for the model. Defaults to 1.0.
-        scalar (float, optional): The scalar value used in the residual connections. Defaults to 0.1.
-    """
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0, scalar=0.1):
-        super(NeRF_ResBNLNMLP_Compose, self).__init__(input_dim, hidden_dim, output_dim, num_freqs, num_layers, num_compose, normalizing_factor)
-        self.model = nn.ModuleList()
+        Args:
+            input_dim (int): The input dimension of the model.
+            hidden_dim (int): The hidden dimension of the model.
+            output_dim (int): The output dimension of the model.
+            num_freqs (int or list of length 2, optional): The number of frequencies used for positional encoding. Defaults to 10.
+            num_layers (int, optional): The number of layers in each NeRF_MLP_Residual_Scaled model. Defaults to 4.
+            num_compose (int, optional): The number of NeRF_MLP_Residual_Scaled models to compose. Defaults to 4.
+            normalizing_factor (float, optional): The normalizing factor for layer_id and input_dim. Defaults to 1.0.
+        """
+        super(NeRF_ResMLP_ComposeDict, self).__init__()
+
+        self.positional_encoding = PositionalEncoding(num_freqs, input_dim=input_dim)
+        self.output_dim = output_dim
+        self.model = nn.ModuleDict()
         self.norm = normalizing_factor
-        for _ in range(num_compose):
-            self.model.append(NeRF_MLP_Residual_Scaled_BN_LN(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
+
+        if isinstance(num_freqs, int):
+            num_freqs = num_freqs
+        elif len(num_freqs) == 2:
+            num_freqs = num_freqs[1] - num_freqs[0]
+        else:
+            raise ValueError("num_freqs should be either an integer or a list of length 2.")
+        if key_list is not None:    
+            for key in key_list:
+                key = key.replace('.', '_')
+                if 'weight' in key:
+                    self.model[key] = NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar)
+                elif 'bias' in key:
+                    self.model[key] = NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, 1, num_freqs, num_layers, scalar=scalar)
+                else:
+                    print("key:",key,"not supported")
+                
+            self.apply(weights_init_uniform_relu)
             
-        self.apply(weights_init_uniform_relu)
-        
+    def forward(self, x, key):
+        """
+        Forward pass of the NeRF_MLP_Compose model.
+
+        Args:
+            x (torch.Tensor): The input tensor.
+            key (String): the key of the dict for the forward
+
+        Returns:
+            torch.Tensor: The output tensor.
+        """
+        key = key.replace('.', '_')
+        input_dim = (x[:, -1] * self.norm)
+        x[:, :3] = x[:, :3] / x[:, 3:]
+        x = self.positional_encoding(x)
+        out = torch.zeros((x.size(0), self.output_dim)).to(x.device)
+        out = self.model[key](x)
+        return out / (input_dim.unsqueeze(-1))
+
+
 class NeRF_HierarcResMLP_Compose(NeRF_MLP_Compose):
     """
     NeRF_ResMLP_Compose is a class that represents a compositional multi-layer perceptron (MLP) model with residual connections.
