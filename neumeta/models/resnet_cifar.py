@@ -270,12 +270,16 @@ class CifarResNet(nn.Module):
                         #
                         #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
                         #layers.append(first_Block)
-                        if self.prior:
-                            for i in range(self.num_layers_inr):
-                                layers.append(BasicBlock_Resize(64, bottleneck, stride))
-                        else:
-                            for i in range(self.num_layers_inr):
-                                layers.append(BasicBlock_Resize_IdShort(64, bottleneck, stride))
+                        
+                        for i in range(self.num_layers_inr):
+                            layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                        
+                        #if self.prior:
+                        #    for i in range(self.num_layers_inr):
+                        #        layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                        #else:
+                        #    for i in range(self.num_layers_inr):
+                        #        layers.append(BasicBlock_Resize_IdShort(64, bottleneck, stride))
                         layers.extend(list(child.children())[self.num_layers_inr+1:])
                         self._modules[name] = nn.Sequential(*layers)
                     else:

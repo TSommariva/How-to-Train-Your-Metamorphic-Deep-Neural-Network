@@ -4,7 +4,7 @@ import random
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
-from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_HierarcResMLP_Compose, NeRF_ResBNMLP_Compose,NeRF_ResLNMLP_Compose, NeRF_ResBNLNMLP_Compose
+from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_Compose, NeRF_ResBNMLP_Compose,NeRF_ResLNMLP_Compose, NeRF_ResBNLNMLP_Compose
 from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
@@ -104,7 +104,7 @@ def get_optimizer_scaledFT(args, hyper_model, train_parameters, ft_parameters) :
     return criterion, val_criterion, optimizer, scheduler
 
 
-def get_optimizer(args, hyper_model):
+def get_optimizer(args, hyper_model, first_block = False):
     criterion = torch.nn.CrossEntropyLoss()
     # criterion = LabelSmoothingCrossEntropy()
     val_criterion = torch.nn.CrossEntropyLoss()
@@ -142,16 +142,19 @@ def get_optimizer(args, hyper_model):
         scheduler = MultiStepLR(optimizer,
                                 milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 
                                 gamma=0.1)
-    elif scheduler_name == 'warmup_cosine':
-        warmup_epochs = args.training.get('warmup_epochs', 5)
+    elif scheduler_name == 'warmup_cosine' and first_block:
+        warmup_epochs = args.training.get('warmup_epochs', 20)
         
         warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-5, end_factor=1.0, total_iters=warmup_epochs)
         cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(args.training.T_max - warmup_epochs),eta_min=args.training.eta_min)
         
         scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[warmup_epochs])
+    #elif scheduler_name == 'warmup_cosine' and not first_block:
+    #    print("Using cosine scheduler, T_max:", args.training.T_max)
+    #    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=args.training.eta_min)
     return criterion, val_criterion, optimizer, scheduler
 
-def get_hypernet(args, number_param, device='cuda'):
+def get_hypernet(args, number_param, key_list = None,device='cuda'):
     """
     Returns a hypernetwork model based on the specified hyper_model_type in the arguments.
 
@@ -187,7 +190,21 @@ def get_hypernet(args, number_param, device='cuda'):
             num_compose=number_param,
             normalizing_factor=args.dimensions.norm
         ).to(device)
-        
+    elif hyper_model_type == 'resmlpDict':
+        if key_list is None and number_param > 0:
+            print("You need to specify a key_list in order to use:",hyper_model_type)
+            return None
+        print("Using scalar", args.hyper_model.get('scalar', 0.1))
+        hyper_model = NeRF_ResMLP_ComposeDict(
+            key_list=key_list,
+            input_dim=args.hyper_model.input_dim,
+            hidden_dim=args.hyper_model.hidden_dim,
+            num_layers=args.hyper_model.num_layers,
+            output_dim=args.hyper_model.output_dim,
+            num_freqs=args.hyper_model.num_freqs,
+            scalar=args.hyper_model.get('scalar', 0.1),
+            normalizing_factor=args.dimensions.norm
+        ).to(device)
     elif hyper_model_type == 'hierarchical_resmlp':
         print("hierarchical residual mlp, ",args.hyper_model.get('kernel_groups', 4), "kernel groups, using scalar: ",args.hyper_model.get('scalar', 0.1))
         hyper_model = NeRF_HierarcResMLP_Compose(
@@ -401,6 +418,59 @@ def sample_single_model(hyper_model, model, device='cuda', cfg=None):
     model.eval()
     return model
 
+def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
+    if selected_keys is not None:
+        predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
+    else:
+        predicted_checkpoint = model_cls.learnable_parameter
+    
+    # Sample a batch of coordinates
+    coords_tensor = coords_tensor.to(device)
+    layer_id = coords_tensor[:, 0].int()
+    input_dim = coords_tensor[:, -1]
+    input_tensor = (coords_tensor/NORM) 
+    
+    selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
+    
+    # Iterate over the keys that have been selected for processing.
+    for key in selected_keys:
+        # Create a boolean mask based on the selected mask from the key_mask dictionary.
+        boolean_mask = key_mask[key][selected_mask].bool()
+        
+        predicted_weights = model(input_tensor[boolean_mask], key)
+
+        # Check the size information for the current mask and proceed accordingly.
+        if size_list[boolean_mask][0] == 4:  # Condition for conv weights.
+            # Extract height and width from the indices list.
+            height, width = indices_list[boolean_mask][0, 2:]
+            
+            # Extract the relevant weights based on the mask.
+            total_weights = predicted_weights.size(-1)
+            
+            # Adjust weights if they don't match the expected size (h*w).
+            if height * width < total_weights:
+                start_index = torch.div(total_weights, 2, rounding_mode='trunc') - torch.div(height * width, 2, rounding_mode='trunc')
+                end_index = start_index + height * width
+                predicted_weights = predicted_weights[:, start_index:end_index]
+            
+            # Reshape and assign the adjusted weights to the appropriate position in the checkpoint dictionary.
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights.view(-1 ,height, width)
+        
+        elif size_list[boolean_mask][0] == 1:  # Condition for conv biases.
+            # Assign the weights to the specified indices.
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights.view(-1)
+        
+        elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
+            # Directly assign the weights without reshaping.
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
+         
+    for name, param in model_cls.learnable_parameter.items():
+        if name in predicted_checkpoint:
+            param.data = predicted_checkpoint[name].data
+
+    return model_cls, list(predicted_checkpoint.values())
+
+
 def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
     """
     Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
@@ -422,6 +492,9 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     #    model = model.module
     #if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
     #    model_cls = model_cls.module
+    
+    if isinstance (model.model, torch.nn.ModuleDict):
+        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler)
     
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
