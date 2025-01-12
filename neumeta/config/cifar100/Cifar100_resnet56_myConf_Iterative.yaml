@@ -11,7 +11,7 @@ model:
   
 # Experiment settings
 experiment:
-  name: base_NoRound_testNoise #${hyper_model.type}_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e
+  name: ${hyper_model.type}_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}
   num_epochs: 50
   log_interval: 26
   eval_interval: 1
@@ -24,8 +24,8 @@ training:
   batch_size: 128
   learning_rate: 0.00085
   eta_min: 8e-5
-  scheduler: cosine
-  warmup_epochs: 10
+  scheduler: warmup_cosine
+  warmup_epochs: 20
   T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
   coordinate_noise: 0.1
@@ -36,7 +36,7 @@ training:
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: resmlp
+  type: resmlp #Dict
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512
