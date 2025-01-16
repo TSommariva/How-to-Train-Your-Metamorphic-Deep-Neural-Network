@@ -18,15 +18,15 @@ experiment:
   log_interval: 25
   eval_interval: 1
   arch_accumulation_steps: 1
-  batch_accumulation_steps: 1
+  batch_accumulation_steps: 4
   iterative: True
   custom_init: True
 
 
 # Training configurations
 training:
-  learning_rate: 3e-4
-  eta_min: 3e-5
+  learning_rate: 0.00085
+  eta_min: 0.00085
   ft_scaling: False
   ft_scalinigFactor: 0.1
   batch_size: 128
@@ -40,7 +40,7 @@ training:
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: resmlp
+  type: hierarchical_resmlpDict
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512

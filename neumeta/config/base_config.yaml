@@ -1,6 +1,6 @@
 # Experiment settings
 experiment:
-  name: ninr_resnet20_cifar10_32-64-4layer-5
+  name: ${hyper_model.type}_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}
   recononly: 0
   num_epochs: 30
   debug: False
@@ -29,11 +29,13 @@ training:
   learning_rate: 1e-3
   eta_min: 5e-4
   batch_size: 64
-  coordinate_noise: 0.0
+  coordinate_noise: 1.0
   #lr_steps: [100, 150]
-  weight_decay: 1e-2
+  weight_decay: 1e-4
   clip_grad: 10.0
   save_model_path: neumeta/experiments/resnet20_cifar10_32-64-4layer-5 # Directory to save the trained model
+  ft_scaling: False
+  ft_scalinigFactor: 0.1
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
@@ -42,7 +44,8 @@ hyper_model:
   num_layers: 4
   num_freqs: 16
   output_dim: 9
-  #ema_decay: 0.995  # Exponential moving average decay
+  extend_ema: True
+  ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:
     ce_weight: 1.0

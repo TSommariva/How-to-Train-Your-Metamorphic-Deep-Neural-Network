@@ -51,8 +51,6 @@ def main_test_nerf(args):
             
     os.makedirs(args.training.save_model_path, exist_ok=True)
     
-    hyper_model = get_hypernet(args, number_param, device=device)
-    ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
     
     
     if not args.resume_from :
@@ -61,14 +59,21 @@ def main_test_nerf(args):
     
     print(f"Resuming from checkpoint: {args.resume_from}")
     
-    hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from) ), device=device)
+    hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from) ),key_list=model.keys ,device=device)
+    ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
 
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
     
-    checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema,args=args)
+    checkpoint_info, hyper_model, optimizer, scheduler, ema = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema,args=args)
     
-    ema = False 
+    filename = f"cifar100_results_{args.experiment.name}.txt"
+    filepath = os.path.join(args.training.save_model_path, filename)
+    
+    #ema = False 
     accuracies = []
+    if ema:
+            print("Applying EMA")
+            ema.apply()
     for hidden_dim in range(args.dimensions.test_range[0], args.dimensions.test_range[1] + 1):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
@@ -78,22 +83,14 @@ def main_test_nerf(args):
                                 single_block=False,
                                 smooth=args.model.smooth, fuse=args.model.fuse).to(device)
                     # Apply Exponential Moving Average (EMA) if enabled
-        if ema:
-            print("Applying EMA")
-            ema.apply()
+        
             
         accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
         val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
         
-        if ema: 
-            ema.restore()  # Restore the original weights after applying EMA
-        
         accuracies.append(acc)
         print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
         
-        # Define the directory and filename structure
-        filename = f"cifar100_results_{args.experiment.name}.txt"
-        filepath = os.path.join(args.training.save_model_path, filename)
         
         # Write the results. 'a' is used to append the results; a new file will be created if it doesn't exist.
         with open(filepath, "a") as file:

@@ -4,7 +4,7 @@ import random
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
-from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_Compose, NeRF_ResBNMLP_Compose,NeRF_ResLNMLP_Compose, NeRF_ResBNLNMLP_Compose
+from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_ComposeDict, NeRF_HierarcResMLP_Compose
 from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
@@ -135,7 +135,7 @@ def get_optimizer(args, hyper_model, first_block = False):
         raise ValueError(f"Unknown optimizer: {optimizer_name}")
     scheduler_name = args.training.get('scheduler', 'multistep')
     # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
-    if scheduler_name == 'cosine':
+    if scheduler_name == 'cosine' or (scheduler_name == 'warmup_cosine' and not first_block):
         print("Using cosine scheduler, T_max:", args.training.T_max)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=args.training.eta_min)
     elif scheduler_name == 'multistep':
@@ -167,8 +167,7 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
     """
     hyper_model_type = args.hyper_model.get('type', 'mlp')
     print("Hyper model type: " + hyper_model_type)
-    if output_dim is None:
-        output_dim = args.hyper_model.output_dim
+    output_dim = args.hyper_model.output_dim
     if hyper_model_type == 'mlp':
         hyper_model = NeRF_MLP_Compose(
             input_dim=args.hyper_model.input_dim,
@@ -177,7 +176,8 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             output_dim=output_dim,
             num_freqs=args.hyper_model.num_freqs,
             num_compose=number_param,
-            normalizing_factor=args.dimensions.norm
+            normalizing_factor=args.dimensions.norm,
+            coordinate_noise = args.training.coordinate_noise
         ).to(device)
         
     elif hyper_model_type == 'resmlp':
@@ -190,7 +190,8 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             num_freqs=args.hyper_model.num_freqs,
             scalar=args.hyper_model.get('scalar', 0.1),
             num_compose=number_param,
-            normalizing_factor=args.dimensions.norm
+            normalizing_factor=args.dimensions.norm,
+            coordinate_noise = args.training.coordinate_noise
         ).to(device)
     elif hyper_model_type == 'resmlpDict':
         if key_list is None and number_param > 0:
@@ -205,8 +206,25 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             output_dim=args.hyper_model.output_dim,
             num_freqs=args.hyper_model.num_freqs,
             scalar=args.hyper_model.get('scalar', 0.1),
-            normalizing_factor=args.dimensions.norm
+            normalizing_factor=args.dimensions.norm,
+            coordinate_noise = args.training.coordinate_noise
         ).to(device)
+    elif hyper_model_type == 'hierarchical_resmlpDict':
+        if key_list is None and number_param > 0:
+            print("You need to specify a key_list in order to use:",hyper_model_type)
+            return None
+        hyper_model = NeRF_HierarcResMLP_ComposeDict(
+            key_list=key_list,
+            num_kernel_groups=args.hyper_model.get('kernel_groups', 4),
+            input_dim=args.hyper_model.input_dim,
+            hidden_dim=args.hyper_model.hidden_dim,
+            num_layers=args.hyper_model.num_layers,
+            output_dim=args.hyper_model.output_dim,
+            num_freqs=args.hyper_model.num_freqs,
+            scalar=args.hyper_model.get('scalar', 0.1),
+            normalizing_factor=args.dimensions.norm,
+            coordinate_noise = args.training.coordinate_noise
+            ).to(device)
     elif hyper_model_type == 'hierarchical_resmlp':
         print("hierarchical residual mlp, ",args.hyper_model.get('kernel_groups', 4), "kernel groups, using scalar: ",args.hyper_model.get('scalar', 0.1))
         hyper_model = NeRF_HierarcResMLP_Compose(
@@ -218,44 +236,8 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             scalar=args.hyper_model.get('scalar', 0.1),
             num_compose=number_param,
             num_kernel_groups=args.hyper_model.get('kernel_groups', 4),
-            normalizing_factor=args.dimensions.norm
-        ).to(device)
-    
-    elif hyper_model_type == 'resbnmlp':
-        print("Using scalar", args.hyper_model.get('scalar', 0.1))
-        hyper_model = NeRF_ResBNMLP_Compose(
-            input_dim=args.hyper_model.input_dim,
-            hidden_dim=args.hyper_model.hidden_dim,
-            num_layers=args.hyper_model.num_layers,
-            output_dim=output_dim,
-            num_freqs=args.hyper_model.num_freqs,
-            scalar=args.hyper_model.get('scalar', 0.1),
-            num_compose=number_param,
-            normalizing_factor=args.dimensions.norm
-        ).to(device)
-    elif hyper_model_type == 'reslnmlp':
-        print("Using scalar", args.hyper_model.get('scalar', 0.1))
-        hyper_model = NeRF_ResLNMLP_Compose(
-            input_dim=args.hyper_model.input_dim,
-            hidden_dim=args.hyper_model.hidden_dim,
-            num_layers=args.hyper_model.num_layers,
-            output_dim=output_dim,
-            num_freqs=args.hyper_model.num_freqs,
-            scalar=args.hyper_model.get('scalar', 0.1),
-            num_compose=number_param,
-            normalizing_factor=args.dimensions.norm
-        ).to(device)
-    elif hyper_model_type == 'resbnlnmlp':
-        print("Using scalar", args.hyper_model.get('scalar', 0.1))
-        hyper_model = NeRF_ResBNLNMLP_Compose(
-            input_dim=args.hyper_model.input_dim,
-            hidden_dim=args.hyper_model.hidden_dim,
-            num_layers=args.hyper_model.num_layers,
-            output_dim=output_dim,
-            num_freqs=args.hyper_model.num_freqs,
-            scalar=args.hyper_model.get('scalar', 0.1),
-            num_compose=number_param,
-            normalizing_factor=args.dimensions.norm
+            normalizing_factor=args.dimensions.norm,
+            coordinate_noise = args.training.coordinate_noise
         ).to(device)
     else:
         raise ValueError(f"Unsupported hyper_model_type: {hyper_model_type}")
@@ -337,8 +319,8 @@ def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
         # Sampling and merging weights
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
         key_mask = create_key_masks(keys_list=keys_list)
-        if k > 0:
-            coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
+        #if k > 0:
+        #    coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
         model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
         
         models.append(model_cls_temp)
@@ -430,7 +412,7 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     coords_tensor = coords_tensor.to(device)
     layer_id = coords_tensor[:, 0].int()
     input_dim = coords_tensor[:, -1]
-    input_tensor = (coords_tensor/NORM) 
+    input_tensor = (coords_tensor)#/NORM) 
     
     selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
     
@@ -507,7 +489,7 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     coords_tensor = coords_tensor.to(device)
     layer_id = coords_tensor[:, 0].int()
     input_dim = coords_tensor[:, -1]
-    input_tensor = (coords_tensor/NORM) 
+    input_tensor = (coords_tensor)#/NORM) 
     predicted_weights = model(input_tensor, layer_id=layer_id, input_dim=input_dim)
     
     selected_mask = sum([key_mask[k] for k in selected_keys]).bool()

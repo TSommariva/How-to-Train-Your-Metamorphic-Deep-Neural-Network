@@ -4,17 +4,15 @@ model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
   num_param: 8 #Learnable Blocks
-  bottom_up: True
   smooth: False
   fuse: False
-  single_block: False
   
 # Experiment settings
 experiment:
-  name: ${hyper_model.type}_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}
+  name: ${hyper_model.type}_${hyper_model.kernel_groups}kernelGroups_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}
   num_epochs: 50
   log_interval: 26
-  eval_interval: 1
+  eval_interval: 10
   batch_accumulation_steps: 4
   iterative: True
   custom_init: True
@@ -23,20 +21,18 @@ experiment:
 training:
   batch_size: 128
   learning_rate: 0.00085
-  eta_min: 8e-5
+  eta_min: ${training.learning_rate}
   scheduler: warmup_cosine
   warmup_epochs: 20
   T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
-  coordinate_noise: 0.1
+  coordinate_noise: 1.0
   clip_grad: 10.0
-  ft_scaling: False
-  ft_scalinigFactor: 0.1
   save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: resmlp #Dict
+  type: hierarchical_resmlpDict
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512
@@ -45,7 +41,6 @@ hyper_model:
   output_dim: 9
   scalar: 0.1
   use_ema: True
-  extend_ema: True
   ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:

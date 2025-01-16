@@ -203,7 +203,6 @@ class First_BasicBlock_Resize(BasicBlock):
 
         return out
 
-    
 
 class CifarResNet(nn.Module):
 
@@ -273,220 +272,40 @@ class CifarResNet(nn.Module):
         for name, child in self.named_children():
         # Change the last block of layer3
             if name == 'layer3':
-                if not self.bottom_up:
-                    print(f'Replace last {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
-                    # Get all the layers except the last block
-                    layers = list(child.children())[:-self.num_layers_inr]
-                    #if not layers:
-                    #    #TODO: handle first block of the layer, build a custom block, inplanes:32, bottleneck, outplanes: 64
-                    for i in range(self.num_layers_inr):
-                        layers.append(BasicBlock_Resize(64, bottleneck, stride))
-                    # layers.append(BasicBlock_Resize(64, planes, stride))
-                    self._modules[name] = nn.Sequential(*layers)
-                else:
-                    if not self.single_block:
-                        print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
-                        # Get all the layers except the last block
-                        layers = []
-                        layers.append(list(child.children())[0])
-                        
-                        #downsample = nn.Sequential(
-                        #    conv1x1(child[0].conv1.in_channels, child[0].conv2.out_channels * block.expansion, child[0].downsample[0].stride),
-                        #    nn.BatchNorm2d(child[0].conv2.out_channels * block.expansion),
-                        #)
-                        #
-                        #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
-                        #layers.append(first_Block)
-                        
-                        for i in range(self.num_layers_inr):
-                            layers.append(BasicBlock_Resize(64, bottleneck, stride))
-                        
-                        #if self.prior:
-                        #    for i in range(self.num_layers_inr):
-                        #        layers.append(BasicBlock_Resize(64, bottleneck, stride))
-                        #else:
-                        #    for i in range(self.num_layers_inr):
-                        #        layers.append(BasicBlock_Resize_IdShort(64, bottleneck, stride))
-                        layers.extend(list(child.children())[self.num_layers_inr+1:])
-                        self._modules[name] = nn.Sequential(*layers)
-                    else:
-                        print(f'Replace block number {self.num_layers_inr} of layer3 with new blocks of hidden dim {bottleneck}')
-                        
-                        if self.num_layers_inr == 0:
-                            layers = []
-                            layers.append(list(child.children())[0])
-                            #downsample = nn.Sequential(
-                            #    conv1x1(child[0].conv1.in_channels, child[0].conv2.out_channels * block.expansion, child[0].downsample[0].stride),
-                            #    nn.BatchNorm2d(child[0].conv2.out_channels * block.expansion),
-                            #)
-                            #
-                            #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
-                            #layers.append(first_Block)
-                            layers.extend(list(child.children())[1:])
-                            
-                        else:
-                            # Get all the blocks up to num_layers_inr
-                            layers = list(child.children())[:self.num_layers_inr]
-                            # one block with bottleneck
-                            layers.append(BasicBlock_Resize(64, bottleneck, stride))
-                            # tail of the layer
-                            layers.extend(list(child.children())[self.num_layers_inr+1:])
-                        self._modules[name] = nn.Sequential(*layers)
-    
-    @property
-    def learnable_parameter(self):
-        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
-        if not self.bottom_up:
-            self.keys = [
-                k for k, _ in self.named_parameters()
-                if any(k.startswith(f'layer3.{self.layers[-1]-i}') for i in range(1, self.num_param + 1))
-            ]
-        else:
-            if not self.single_block:
-                self.keys = [
-                    k for k, _ in self.named_parameters()
-                    if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1))# and "downsample" not in k
-                ]
-            else:
-                self.keys = [
-                    k for k, _ in self.named_parameters()
-                    if k.startswith(f'layer3.{self.num_param}')
-                ]
-        return {k: v for k, v in self.state_dict().items() if k in self.keys}
-
-
-class CifarResNet_slim(nn.Module):
-
-    def __init__(self, block, hidden_dim, layers, num_param ,num_classes=10, num_layers_inr=0):
-        super(CifarResNet_slim, self).__init__()
-        self.layers = layers
-        self.num_param = num_param
-        self.num_layers_inr = num_param-1
-        self.inplanes = 16
-        self.conv1 = conv3x3(3, 16)
-        self.bn1 = nn.BatchNorm2d(16)
-        self.relu = nn.ReLU(inplace=True)
-
-        self.layer1 = self._make_layer(block, 16, layers[0])
-        self.layer2 = self._make_layer(block, 32, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 64, layers[2], stride=2)
-
-        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(64 * block.expansion, num_classes)
-        
-        self.set_changeable_slim(block, hidden_dim, stride=1, num_classes=num_classes)
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
-                
-        for m in self.modules():
-            if hasattr(m, '_skip_init'):
-                with torch.no_grad():
-                    # Force identity initialization
-                    conv = m[0]
-                    bn = m[1]
-                    
-                    conv.weight.data.zero_()
-                    conv.weight.data.add_(torch.eye(64).view(64, 64, 1, 1))
-                    if conv.bias is not None:
-                        conv.bias.data.zero_()
-                        
-                    bn.weight.data.fill_(1.0)
-                    bn.bias.data.zero_()
-                    bn.running_mean.zero_()
-                    bn.running_var.fill_(1.0)
-
-    def _make_layer(self, block, planes, blocks, stride=1):
-        downsample = None
-        if stride != 1 or self.inplanes != planes * block.expansion:
-            downsample = nn.Sequential(
-                conv1x1(self.inplanes, planes * block.expansion, stride),
-                nn.BatchNorm2d(planes * block.expansion),
-            )
-
-        layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes * block.expansion
-        for _ in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
-
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        #x = torch.flatten(x, 1)
-        x = self.fc(x)
-
-        return x
-    
-    def set_changeable_slim(self, block, planes, stride, num_classes=10):
-        for name, child in self.named_children():
-        # Change the last block of layer3
-            if name == 'layer3':
-                print(f'Replace last {self.num_layers_inr} block of layer3 with new blocks with bottleneck {planes}')
+                print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
                 # Get all the layers except the last block
-                layers = list(child.children())[:-self.num_layers_inr]
+                layers = []
+                layers.append(list(child.children())[0])
                 
-                if self.num_layers_inr != 0:
-                    #If there is an acutal bottleneck create the projection matrix for the residual
-                    if planes!=64:
-                        downsample = nn.Sequential(
-                            conv1x1(64, planes * block.expansion, stride),
-                            nn.BatchNorm2d(planes * block.expansion),
-                            )
-                    else:
-                        #Otherwise initialize conv1x1 and BatchNorm2d to perform identity mapping 
-                        downsample = nn.Sequential(
-                            conv1x1(64, 64, stride),
-                            nn.BatchNorm2d(64))
-                        downsample._skip_init = True
-                    
-                    #shrinking block   
-                    layers.append(BasicBlock(64, planes, stride,downsample=downsample))
-                    
-                    #bottleneck blocks
-                    for i in range(self.num_layers_inr - 2):
-                        layers.append(BasicBlock(planes, planes, stride))
-                    
-                    #Last block of the layer, back to original shape
-                    if planes!=64:    
-                        upsample = nn.Sequential(
-                            conv1x1(planes * block.expansion, 64, stride),
-                            nn.BatchNorm2d(64),
-                            )
-                    else:
-                        upsample = nn.Sequential(
-                            conv1x1(64, 64, stride),
-                            nn.BatchNorm2d(64))
-                        upsample._skip_init = True
-                        
-                    layers.append(BasicBlock(planes,64 ,stride,downsample=upsample))    
-                else:
-                    layers = list(child.children())
+                #downsample = nn.Sequential(
+                #    conv1x1(child[0].conv1.in_channels, child[0].conv2.out_channels * block.expansion, child[0].downsample[0].stride),
+                #    nn.BatchNorm2d(child[0].conv2.out_channels * block.expansion),
+                #)
+                #
+                #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
+                #layers.append(first_Block)
+                
+                for _ in range(self.num_layers_inr):
+                    layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                
+                #if self.prior:
+                #    for _ in range(self.num_layers_inr):
+                #        layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                #else:
+                #    for _ in range(self.num_layers_inr):
+                #        downsample = conv1x1(64,64,stride)
+                #        layers.append(BasicBlock_Resize_IdShort(64, bottleneck, stride=stride, downsample=downsample))
+                
+                layers.extend(list(child.children())[self.num_layers_inr+1:])
                 self._modules[name] = nn.Sequential(*layers)
     
     @property
     def learnable_parameter(self):
-        self.keys = [
-            k for k, _ in self.named_parameters()
-            if any(k.startswith(f'layer3.{self.layers[-1]-i}') for i in range(1, self.num_param + 1))
-            #or k.startswith('fc')
-        ]
+        #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
+        self.keys = [k for k, _ in self.named_parameters()
+                    if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1))# and "downsample" not in k
+                    ]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
-
 
 def _resnet(
     arch: str,
@@ -502,26 +321,6 @@ def _resnet(
     **kwargs: Any
 ) -> CifarResNet:
     model = CifarResNet(BasicBlock, hidden_dim, num_param, layers, single_block, bottom_up, prior=prior,**kwargs)
-    if pretrained:
-        print("Loading pretrained weights for {}".format(arch))
-        state_dict = load_state_dict_from_url(model_urls[arch],
-                                              progress=progress)
-        # model.load_state_dict(state_dict)
-        load_checkpoint(model, state_dict)
-        
-    return model
-
-def _resnet_slim(
-    arch: str,
-    hidden_dim: int,
-    layers: List[int],
-    model_urls: Dict[str, str],
-    progress: bool = True,
-    pretrained: bool = True,
-    num_param : int = 1,
-    **kwargs: Any
-) -> CifarResNet_slim:
-    model = CifarResNet_slim(BasicBlock, hidden_dim,layers,num_param, **kwargs)
     if pretrained:
         print("Loading pretrained weights for {}".format(arch))
         state_dict = load_state_dict_from_url(model_urls[arch],
@@ -626,17 +425,6 @@ def cifar100_resnet56(hidden_dim,num_param,bottom_up,prior=True, single_block=Fa
                    num_classes=num_classes, 
                    pretrained=pretrained,
                    prior=prior,
-                   *args, 
-                   **kwargs)
-
-def cifar100_resnet56_slim(hidden_dim,num_param ,num_classes=100, pretrained=True,*args, **kwargs):
-    return _resnet_slim(arch="resnet56", 
-                   hidden_dim=hidden_dim,
-                   layers=[9]*3, 
-                   model_urls=cifar100_pretrained_weight_urls, 
-                   num_classes=num_classes, 
-                   pretrained=pretrained,
-                   num_param=num_param,
                    *args, 
                    **kwargs)
 
