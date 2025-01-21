@@ -107,7 +107,7 @@ class NeRF_MLP_Residual_Scaled(nn.Module):
         return x
 
 class NeRF_MLP_Compose(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0, coordinate_noise = 1.0):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0,total_param = 32 ,coordinate_noise = 1.0):
         """
         NeRF_MLP_Compose is a class that represents a composition of NeRF_MLP_Residual_Scaled models.
 
@@ -127,6 +127,7 @@ class NeRF_MLP_Compose(nn.Module):
         self.model = nn.ModuleList()
         self.norm = normalizing_factor
         self.coordinate_noise = coordinate_noise
+        self.total_param = total_param
 
         if isinstance(num_freqs, int):
             num_freqs = num_freqs
@@ -186,10 +187,11 @@ class NeRF_ResMLP_Compose(NeRF_MLP_Compose):
         normalizing_factor (float, optional): The normalizing factor for the model. Defaults to 1.0.
         scalar (float, optional): The scalar value used in the residual connections. Defaults to 0.1.
     """
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0, scalar=0.1, coordinate_noise = 1.0):
-        super(NeRF_ResMLP_Compose, self).__init__(input_dim, hidden_dim, output_dim, num_freqs, num_layers, num_compose, normalizing_factor, coordinate_noise)
+    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, normalizing_factor=1.0, scalar=0.1,total_param = 32, coordinate_noise = 1.0):
+        super(NeRF_ResMLP_Compose, self).__init__(input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, num_freqs=num_freqs, num_layers=num_layers, num_compose=num_compose, normalizing_factor=normalizing_factor, coordinate_noise=coordinate_noise)
         self.model = nn.ModuleList()
         self.norm = normalizing_factor
+        self.total_param = total_param
         for i in range(num_compose):
             self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
             #if i%2 == 0:
@@ -199,7 +201,7 @@ class NeRF_ResMLP_Compose(NeRF_MLP_Compose):
         self.apply(weights_init_uniform_relu)
         
 class NeRF_ResMLP_ComposeDict(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, key_list ,num_freqs=10, num_layers=4, normalizing_factor=1.0, scalar=0.1, coordinate_noise = 1.0):
+    def __init__(self, input_dim, hidden_dim, output_dim, key_list ,num_freqs=10, num_layers=4, normalizing_factor=1.0, scalar=0.1,total_param = 32, coordinate_noise = 1.0):
         """
         NeRF_MLP_Compose is a class that represents a composition of NeRF_MLP_Residual_Scaled models.
 
@@ -218,7 +220,9 @@ class NeRF_ResMLP_ComposeDict(nn.Module):
         self.output_dim = output_dim
         self.model = nn.ModuleDict()
         self.norm = normalizing_factor
+        self.num_layers = num_layers
         self.coordinate_noise = coordinate_noise
+        self.total_param = total_param
 
         if isinstance(num_freqs, int):
             num_freqs = num_freqs
@@ -256,9 +260,11 @@ class NeRF_ResMLP_ComposeDict(nn.Module):
         elif 'weight' in key:
             output_dim = self.output_dim
         input_dim = (x[:, -1])
-        x += ((torch.rand_like(x) - 0.5) * self.coordinate_noise)
-        x /= self.norm
+        x = x + ((torch.rand_like(x) - 0.5) * self.coordinate_noise).clamp(-0.49, 0.49)
+        #x /= self.norm
         x[:, :3] = x[:, :3] / x[:, 3:]
+        #x[:, 3] = x[:, 3] / self.total_param
+        x[:, 3:] = x[:, 3:] / self.norm
         x = self.positional_encoding(x)
         out = torch.zeros((x.size(0), output_dim)).to(x.device)
         out = self.model[key](x)
@@ -279,8 +285,8 @@ class NeRF_HierarcResMLP_Compose(NeRF_MLP_Compose):
         normalizing_factor (float, optional): The normalizing factor for the model. Defaults to 1.0.
         scalar (float, optional): The scalar value used in the residual connections. Defaults to 0.1.
     """
-    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, num_kernel_groups = 4,normalizing_factor=1.0, scalar=0.1, coordinate_noise = 1.0):
-        super(NeRF_HierarcResMLP_Compose, self).__init__(input_dim, hidden_dim, output_dim, num_freqs, num_layers, num_compose, normalizing_factor, coordinate_noise)
+    def __init__(self, input_dim, hidden_dim, output_dim, num_freqs=10, num_layers=4, num_compose=4, num_kernel_groups = 4,normalizing_factor=1.0, scalar=0.1,total_param = 32 , coordinate_noise = 1.0):
+        super(NeRF_HierarcResMLP_Compose, self).__init__(input_dim=input_dim, hidden_dim=hidden_dim, output_dim=output_dim, num_freqs=num_freqs, num_layers=num_layers, num_compose=num_compose, normalizing_factor=normalizing_factor,total_param=total_param ,coordinate_noise=coordinate_noise)
         self.model = nn.ModuleList()
         self.norm = normalizing_factor
         self.num_kernel_groups = num_kernel_groups
@@ -308,9 +314,11 @@ class NeRF_HierarcResMLP_Compose(NeRF_MLP_Compose):
         # absolute division
         # kernel_group = (kernel_index / self.norm * self.num_kernel_groups).floor().long().clamp(0,self.num_kernel_groups - 1)
         
-        x += ((torch.rand_like(x) - 0.5) * self.coordinate_noise)
-        x /= self.norm
+        x = x + ((torch.rand_like(x) - 0.5) * self.coordinate_noise).clamp(-0.49, 0.49)
+        #x /= self.norm
         x[:, :3] = x[:, :3] / x[:, 3:]
+        #x[:, 3] = x[:, 3] / self.total_param
+        x[:, 3:] = x[:, 3:] / self.norm
         x = self.positional_encoding(x)
         output_x = torch.zeros((x.size(0), self.output_dim), device=x.device)
         
@@ -330,7 +338,7 @@ class NeRF_HierarcResMLP_Compose(NeRF_MLP_Compose):
 
 
 class NeRF_HierarcResMLP_ComposeDict(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, key_list ,num_freqs=10, num_layers=4, num_kernel_groups = 4,normalizing_factor=1.0, scalar=0.1, coordinate_noise = 1.0):
+    def __init__(self, input_dim, hidden_dim, output_dim, key_list ,num_freqs=10, num_layers=4, num_kernel_groups = 4,normalizing_factor=1.0, scalar=0.1,total_param = 32, coordinate_noise = 1.0):
         """
         NeRF_MLP_Compose is a class that represents a composition of NeRF_MLP_Residual_Scaled models.
 
@@ -351,6 +359,7 @@ class NeRF_HierarcResMLP_ComposeDict(nn.Module):
         self.model = nn.ModuleDict()
         self.norm = normalizing_factor
         self.coordinate_noise = coordinate_noise
+        self.total_param = total_param
 
         if isinstance(num_freqs, int):
             num_freqs = num_freqs
@@ -403,9 +412,11 @@ class NeRF_HierarcResMLP_ComposeDict(nn.Module):
         
         unique_kgs = torch.unique(kernel_group)
         
-        x += ((torch.rand_like(x) - 0.5) * self.coordinate_noise)
-        x /= self.norm
+        x = x + ((torch.rand_like(x) - 0.5) * self.coordinate_noise).clamp(-0.49, 0.49)
+        #x /= self.norm
         x[:, :3] = x[:, :3] / x[:, 3:]
+        #x[:, 3] = x[:, 3] / self.total_param
+        x[:, 3:] = x[:, 3:] / self.norm
         x = self.positional_encoding(x)
         out = torch.zeros((x.size(0), output_dim)).to(x.device)
         

@@ -9,6 +9,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from neumeta.models import BasicBlock, BasicBlock_Resize
 import wandb
+from torch.optim import Adam, AdamW
+from torch.optim.lr_scheduler import  MultiStepLR
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -240,7 +243,7 @@ class EMA_ddp:
                 if param.requires_grad:
                     torch.distributed.broadcast(self.shadow[name], src=0)
 
-def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, trained_blocks=1):
+def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, alphas ,trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -261,6 +264,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
         'scheduler_state_dict' : scheduler.state_dict(),
         'best_acc': best_acc,
         'trained_blocks': trained_blocks,
+        'alphas': alphas
     }
     if ema:
         checkpoint['ema_shadow']=ema.shadow
@@ -521,3 +525,34 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
             output_device=torch.distributed.get_rank()
         )
     return extension_model
+
+def get_cifar_optimizer(args, model):
+    alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
+    optimizer_name = args.training.get('cls_optimizer', 'adamw')
+    if optimizer_name == 'adamw':
+        optimizer = AdamW(alpha_params, 
+                          lr=args.training.cls_learning_rate, 
+                          weight_decay=args.training.cls_weight_decay)
+    elif optimizer_name == 'adam':
+        optimizer = Adam(alpha_params, 
+                         lr=args.training.cls_learning_rate, 
+                         weight_decay=args.training.cls_weight_decay)
+    elif optimizer_name == 'sgd':
+        optimizer = torch.optim.SGD(alpha_params, 
+                                    lr=args.training.cls_learning_rate, 
+                                    momentum=args.training.get('cls_momentum', 0.9),
+                                    weight_decay=args.training.cls_weight_decay)
+    elif optimizer_name == 'rmsprop':
+        optimizer = torch.optim.RMSprop(alpha_params, 
+                                        lr=args.training.cls_learning_rate, 
+                                        momentum=args.training.cls_get('momentum', 0.9),
+                                        weight_decay=args.training.cls_weight_decay)
+    elif optimizer_name == 'adagrad':
+        optimizer = torch.optim.Adagrad(alpha_params, 
+                                        lr=args.training.cls_learning_rate, 
+                                        weight_decay=args.training.cls_weight_decay)
+    else:
+        raise ValueError(f"Unknown optimizer: {optimizer_name}")
+    return optimizer
+
+

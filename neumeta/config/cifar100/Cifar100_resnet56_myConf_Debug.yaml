@@ -31,7 +31,7 @@ training:
   ft_scalinigFactor: 0.1
   batch_size: 128
   coordinate_noise: 1.0
-  scheduler: cosine
+  scheduler: warmup_cosine
   T_max: ${experiment.num_epochs}
   # strong_aug: v1
   weight_decay: 1e-4
@@ -40,7 +40,7 @@ training:
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: hierarchical_resmlpDict
+  type: resmlpDict
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512

@@ -9,7 +9,7 @@ model:
   
 # Experiment settings
 experiment:
-  name: ${hyper_model.type}_${hyper_model.kernel_groups}kernelGroups_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}
+  name: skipInitAeB_clsLr${training.cls_learning_rate}_clsweightdecay${training.cls_weight_decay}_${hyper_model.type}_Scalar0_${hyper_model.kernel_groups}kernelGroups_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}${training.warmup_epochs}
   num_epochs: 50
   log_interval: 26
   eval_interval: 10
@@ -29,10 +29,13 @@ training:
   coordinate_noise: 1.0
   clip_grad: 10.0
   save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
+  cls_optimizer: adamw
+  cls_learning_rate: 1e-3
+  cls_weight_decay: 1e-2
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: hierarchical_resmlpDict
+  type: resmlpDict
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512

@@ -7,10 +7,10 @@ import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
 from neumeta.models import create_model_cifar100 as create_model
 from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
-                           get_hypernet, get_optimizer, load_checkpoint,
+                           get_hypernet, get_optimizer,get_optimizer_scaledFT, load_checkpoint,
                            parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
                            sample_subset,  save_checkpoint,
-                           set_seed, shuffle_coordiates_all, #validate, validate_merge, 
+                           set_seed, shuffle_coordiates_all,
                            validate_single, 
                            initialize_wandb,find_max_dim, register_hooks_and_print_shapes, extend_nerf_compose, load_trained_blocks)
 
@@ -21,9 +21,9 @@ device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is
 
 def get_num_workers():
     try:
-        return int(os.environ.get("SLURM_CPUS_PER_TASK", 1))
+        return int(os.environ.get("SLURM_CPUS_PER_TASK", 2))
     except (ValueError, TypeError):
-        return 1
+        return 2
 
 def init_model_dict(args, num_blocks = 1, single_block = False):
     """
@@ -42,9 +42,8 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
         num_blocks=args.model.num_param
     for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1):
         model_cls = create_model(args.model.type, 
-                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=single_block ,
-                                 path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
-        #model_cls = create_model_cifar100_slim (args.model.type, hidden_dim=dim, num_blocks, path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+                                    hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=single_block ,
+                                    path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False)
          
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model_cls = model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
@@ -64,9 +63,9 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
         if dim == args.dimensions.start:
             print(f"Loading model for dim {dim}")
             model_trained = create_model(args.model.type, 
-                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, single_block=single_block,
-                                 path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
-            #model_trained = create_model_cifar100_slim(args.model.type, hidden_dim=dim,num_param=num_blocks ,path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+                                    hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, single_block=single_block,
+                                    path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
+            
             if device=="cuda" and torch.backends.cudnn.version() >= 7603:
                 model_trained = model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
             else:
@@ -87,6 +86,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     cls_losses = AverageMeter()
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
+    accuracies = AverageMeter()
     extracted_dim = []
     
     for batch_idx, (x, target) in enumerate(train_loader):
@@ -95,91 +95,90 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         else:
             x, target = x.to(device), target.to(device)
         
-        #gradient aggregation
-        for arch_step in range(args.experiment.arch_accumulation_steps):
-            step +=1
+        step +=1
+        if (step != 1) or no_accumulation:
+            hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
+            #if hidden dim has already been extracted for this accumulation step, extract another one
+            #if not hidden_dim in extracted_dim:
+            #    extracted_dim.append(hidden_dim)
+            #else:
+            #    while hidden_dim in extracted_dim:
+            #        hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
+            #    extracted_dim.append(hidden_dim)
+        else:
+            hidden_dim = 64
+        #    extracted_dim.append(hidden_dim)
             
-            if (step != 1) or no_accumulation:
-                hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
-                #if hidden dim has already been extracted for this accumulation step, extract another one
-                if not hidden_dim in extracted_dim:
-                    extracted_dim.append(hidden_dim)
-                else:
-                    while hidden_dim in extracted_dim:
-                        hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
-                    extracted_dim.append(hidden_dim)
-            else:
-                hidden_dim = 64
-                extracted_dim.append(hidden_dim)
-                
-            model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
-            selected_keys = np.unique(keys_list)
-            #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
-            if args.training.coordinate_noise > 0.0:
-                coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
-            model_cls, reconstructed_weights = sample_weights(model, model_cls,
-                                                              coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                                                              device=device, NORM=args.dimensions.norm)
-            # Forward pass
-            predict = model_cls(x)
-            results=torch.argmax(predict,dim=1)
-            train_acc=accuracy_score(results.cpu(), target.cpu())
-            # Compute loss
-            cls_loss = criterion(predict, target)
-            cls_losses.update(cls_loss.item())
-            # Compute regularization loss
-            reg_loss = sum([torch.norm(w, p=2)
-                                    for w in reconstructed_weights])
-            reg_losses.update(reg_loss.item())
-            # Compute MSE loss
-            if f"{hidden_dim}" in gt_model_dict:
-                gt_model = gt_model_dict[f"{hidden_dim}"]
-                gt_selected_weights = [
-                    w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
-                reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
-                    w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
-            else:
-                reconstruct_loss = torch.tensor(0.0)
-            reconstruct_losses.update(reconstruct_loss.item())
-            loss = args.hyper_model.loss_weight.ce_weight * cls_loss + args.hyper_model.loss_weight.reg_weight * \
-                reg_loss + args.hyper_model.loss_weight.recon_weight * reconstruct_loss
-            losses.update(loss.item())
-            
-            # Zero model_cls grads
-            for updated_weight in model_cls.parameters():
-                updated_weight.grad = None
-
-            # Scale loss and do backward pass
-            scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
-            
-            scaled_loss.backward(retain_graph=True)
-            torch.autograd.backward(reconstructed_weights, [
-                            w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
-                
-                
+        model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
+        selected_keys = np.unique(keys_list)
+        #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
+        
+        #add coordinate noise
+        #coords_tensor = coords_tensor + ((torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise)#.clamp(-0.49, 0.49)
+        
+        model_cls, reconstructed_weights = sample_weights(model, model_cls,
+                                                          coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                          device=device, NORM=args.dimensions.norm)
+        # Forward pass
+        predict = model_cls(x)
+        results=torch.argmax(predict,dim=1)
+        train_acc=accuracy_score(results.cpu(), target.cpu())
+        accuracies.update(train_acc)
+        
+        # Compute loss
+        cls_loss = criterion(predict, target)
+        cls_losses.update(cls_loss.item())
+        
+        # Compute regularization loss
+        reg_loss = sum([torch.norm(w, p=2) for w in reconstructed_weights])
+        reg_losses.update(reg_loss.item())
+        
+        # Compute MSE loss
+        if f"{hidden_dim}" in gt_model_dict:
+            gt_model = gt_model_dict[f"{hidden_dim}"]
+            gt_selected_weights = [
+                w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
+            reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
+                w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
+        else:
+            reconstruct_loss = torch.tensor(0.0)
+        reconstruct_losses.update(reconstruct_loss.item())
+        
+        ce_weight = args.hyper_model.loss_weight.ce_weight
+        reg_weight =  args.hyper_model.loss_weight.reg_weight
+        recon_weight = args.hyper_model.loss_weight.recon_weight
+        
+        loss = ce_weight * cls_loss + reg_weight * reg_loss + recon_weight * reconstruct_loss
+        losses.update(loss.item())
+        
+        # Zero model_cls grads
+        for updated_weight in model_cls.parameters():
+            updated_weight.grad = None
+        
+        # Scale loss and do backward pass
+        scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
+        scaled_loss.backward(retain_graph=True)
+        torch.autograd.backward(reconstructed_weights, [
+                        w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+                    
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             wandb.log({
-                "Running training accuracy argmax" : train_acc,
+                "Running training accuracy argmax" : accuracies.avg,
                 "Running average training loss": losses.avg,
                 "Cls Loss": cls_losses.avg,
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
                 "Learning rate": optimizer.param_groups[0]['lr']
-            })#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (batch_idx - 1) * max_epochs * len(train_loader))
+                })#, step=batch_idx + (epoch_idx - 1) * len(train_loader) + (block_idx - 1) * max_epochs * len(train_loader))
+        
         if batch_idx % args.experiment.log_interval == 0:
-            print(
-                f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
-            
-            losses.reset()
-            cls_losses.reset()
-            reg_losses.reset()
-            reconstruct_losses.reset()
-            
+            print(f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Accuracy = {accuracies.avg*100:.2f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
             
         if (batch_idx % args.experiment.batch_accumulation_steps) == 0 :
             if args.training.get('clip_grad', 0.0) > 0:
                 torch.nn.utils.clip_grad_value_(
                     model.parameters(), args.training.clip_grad)
+                
             optimizer.step()        
             optimizer.zero_grad()
             step = 0
@@ -188,15 +187,17 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             if ema:
                 ema.update()  # Update the EMA after each training step
     
-    tr_loss, tr_acc = validate_single(model_cls, train_loader, nn.CrossEntropyLoss(), args=args, device=device)
-    
+    #if step > 0:
+    #    optimizer.step()        
+    #    if ema:
+    #        ema.update()    
+    #tr_loss, tr_acc = validate_single(model_cls, train_loader, nn.CrossEntropyLoss(), args=args, device=device)
     if not args.experiment.debug:
         wandb.log({
-                    "trainLoss_last model of the epoch" : tr_loss,
-                    "trainAcc_last model of the epoch" : tr_acc
-
+                    "trainLoss_last model of the epoch" : losses.avg,
+                    "trainAcc_last model of the epoch" : accuracies.avg
                 })
-    return tr_loss
+    return losses.avg, accuracies.avg
 
 def main_nerf(args):
     set_seed(args.experiment.seed)
@@ -204,11 +205,11 @@ def main_nerf(args):
     train_loader, val_loader = get_cifar100(args.training.batch_size, num_workers)
     
     model = create_model(args.model.type, 
-                         hidden_dim=args.dimensions.start,
-                         num_param=args.model.num_param, 
-                         bottom_up=args.model.bottom_up, 
-                         path=args.model.pretrained_path, 
-                         smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+                            hidden_dim=args.dimensions.start,
+                            num_param=args.model.num_param, 
+                            bottom_up=args.model.bottom_up, 
+                            path=args.model.pretrained_path, 
+                            smooth=args.model.smooth, fuse=args.model.smooth).to(device)
     
     print("Maximum DIM: ",find_max_dim(model))
 
@@ -220,178 +221,155 @@ def main_nerf(args):
     print(f"Number of parameters to be learned: {number_param}")
     print(f"Parameters keys: {model.keys}")
     
-    if(number_param %4 != 0):
-        print("Only residual block with no projection in the skip connection are supported")
-        return -1
+    os.makedirs(args.training.save_model_path, exist_ok=True)
     
-    hyper_model = get_hypernet(args, number_param, device=device)
-    ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
-    criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model)
+    #hyper_model = get_hypernet(args, 4, key_list=model.keys[0:4] ,device=device)
+    #
+    #if args.hyper_model.get('use_ema', True):
+    #    ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
+    #else:
+    #    ema = None
+    #    
+    #criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=True) 
     
     start_epoch = 0
     best_acc = 0.0
+    end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
     
     os.makedirs(args.training.save_model_path, exist_ok=True)
 
     # If specified, load the checkpoint
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        checkpoint_info, hyper_model = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema)
-        for param in hyper_model.parameters():
-            if not param.requires_grad:
-                param.requires_grad = True
-            if torch.isnan(param).any() or torch.isinf(param).any():
-                raise ValueError("Model parameters contain NaN or Inf values after loading")
+        
+        dim_dict, gt_model_dict = init_model_dict(args, args.model.num_param, args.model.single_block)
+        dim_dict = shuffle_coordiates_all(dim_dict)
+        _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
+        selected_keys = np.unique(keys_list)
+        hyper_model = get_hypernet(args, number_param=number_param, total_param=number_param ,key_list=selected_keys,device=device)
+        
+        if args.hyper_model.get('use_ema', True):
+            ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
+        else:
+            ema = None
+    
+        criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=True) 
+        
+        checkpoint_info, hyper_model, optimizer, scheduler, ema = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema, args=args)
+        
+        if optimizer is None:
+            criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=True)
         
         start_epoch = checkpoint_info['epoch']
         best_acc = checkpoint_info['best_acc']
         print(f"Resuming from epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
         # Note: If there are more elements to retrieve, do so here.
     
-    if args.test == False:
-        if not args.experiment.debug:
-            initialize_wandb(args)
-        dim_dict, gt_model_dict = init_model_dict(args)
+    if not args.experiment.debug:
+        initialize_wandb(args)
         
+    if not args.resume_from:
+        dim_dict, gt_model_dict = init_model_dict(args, num_blocks=args.model.num_param, single_block=args.model.single_block)
         dim_dict = shuffle_coordiates_all(dim_dict)
-        
-        for epoch in range(start_epoch + 1, args.experiment.num_epochs):
-            train_loss = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
-            scheduler.step()
-
-            print(f"Epoch [{epoch}/{args.experiment.num_epochs}], Training Loss: {train_loss:.4f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
-
-            if (epoch % args.experiment.eval_interval) == 0 and epoch != 0:
-                if ema:
-                    ema.apply()
-
-                sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
-                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
-                val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-                
-                if ema:
-                    ema.restore()
-                if not args.experiment.debug:    
-                    wandb.log({
-                        "Train Loss_model sampled outside training": train_loss,
-                        "Train Accuracy_model sampled outside training": train_acc,
-                        "Validation Loss_model sampled outside training": val_loss,
-                        "Validation Accuracy_model sampled outside training": val_acc
-                    })
-                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                print(f"Epoch [{epoch}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                print(f"Epoch [{epoch}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
-                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                
-                # Save the checkpoint
-                if val_acc > best_acc:# and epoch > 20:
-                    best_acc = val_acc
-                    save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc)
-                    print("------------------------------------------------------------------------------------------------------------------------------")
-                    print(f"Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
-                    print("------------------------------------------------------------------------------------------------------------------------------")
-        
-        sampled_model = sample_merge_model(hyper_model, gt_model_dict[f"{args.dimensions.start}"], args, device=device)
-        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-        save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc)
-        print("------------------------------------------------------------------------------------------------------------------------------")
-        print(f"Checkpoint saved at the end of training with accuracy: {val_acc*100:.2f}%")
-        print("------------------------------------------------------------------------------------------------------------------------------")
-        if not args.experiment.debug:
-            wandb.finish()
-        
-        print("Training finished.")
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        #testing the best model
-        checkpoint_info, best_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", hyper_model, optimizer,scheduler ,ema, device=device)
-        checkpoint_info, last_hyper_model = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", hyper_model, optimizer,scheduler ,ema, device=device)
-        best_accuracies = []
-        last_accuracies = []
-        for hidden_dim in range(16, 65):
-            # Create a model for the given hidden dimension
-            model = create_model(args.model.type, 
-                                    hidden_dim=hidden_dim,
-                                    num_param=args.model.num_param,
-                                    bottom_up=args.model.bottom_up, 
-                                    path=args.model.pretrained_path, 
-                                    smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-            
-            # Sample the merged model for K times
-            accumulated_model_best = sample_merge_model(best_hyper_model, model, args, K=100, device=device)
-            accumulated_model_last = sample_merge_model(last_hyper_model, model, args, K=100, device=device)
-
-            # Validate the merged model
-            best_val_loss, best_val_acc = validate_single(accumulated_model_best, val_loader, val_criterion, args=args, device=device)
-            last_val_loss, last_val_acc = validate_single(accumulated_model_last, val_loader, val_criterion, args=args, device=device)
-            best_accuracies.append(best_val_acc)
-            last_accuracies.append(last_val_acc)
-
-            # Print the results
-            print(f"Test using model {args.model}: hidden_dim {hidden_dim}")
-            print(f"\tValidation Loss best NeRF: {best_val_loss:.4f}, Validation Accuracy: {best_val_acc*100:.2f}%")
-            print(f"\tValidation Loss last NeRF: {last_val_loss:.4f}, Validation Accuracy: {last_val_acc*100:.2f}%")
-        
-        best_mean_accuracy = np.mean(best_accuracies)
-        best_std_accuracy = np.std(best_accuracies)
-        last_mean_accuracy = np.mean(last_accuracies)
-        lasy_std_accuracy = np.std(last_accuracies)
-
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        print(f"Best NeRF Mean Validation Accuracy: {best_mean_accuracy * 100:.2f}% ± {best_std_accuracy * 100:.2f}%")
-        print(f"Last NeRF Mean Validation Accuracy: {last_mean_accuracy * 100:.2f}% ± {lasy_std_accuracy * 100:.2f}%")
-    else:
-        accuracies = []
-        for hidden_dim in range(32, 65):
-            model = create_model(args.model.type, 
-                                    hidden_dim=hidden_dim,
-                                    path=args.model.pretrained_path,
-                                    num_param=args.model.num_param, 
-                                    bottom_up=args.model.bottom_up, 
-                                    smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-                
-            # Apply Exponential Moving Average (EMA) if enabled
+        _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
+        selected_keys = np.unique(keys_list)
+        hyper_model = get_hypernet(args, number_param=number_param,total_param=number_param ,key_list=selected_keys ,device=device)
+        criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=True)  
+        if args.hyper_model.get('use_ema', True):
+            ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
+        else:
+            ema = None
+    
+    for epoch in range(start_epoch + 1, args.experiment.num_epochs):
+        train_loss, train_acc = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args)
+        scheduler.step()
+        print(f"Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
+        if (epoch % args.experiment.eval_interval) == 0 and epoch != 0:
             if ema:
-                print("Applying EMA")
                 ema.apply()
-                accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
-                val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
-                ema.restore()  # Restore the original weights after applying EMA
-            else:
-                accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
-                val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
-                
-            accuracies.append(acc)
-            print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
             
-            # Define the directory and filename structure
-            filename = f"cifar100_results_{args.experiment.name}.txt"
-            filepath = os.path.join(args.training.save_model_path, filename)
-            # Write the results. 'a' is used to append the results; a new file will be created if it doesn't exist.
-            with open(filepath, "a") as file:
-                file.write(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%\n")
+            sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, device=device)
+            train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+            val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
             
-        mean_accuracy = np.mean(accuracies)
-        std_accuracy = np.std(accuracies)
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
+            if ema:
+                ema.restore()
+            if not args.experiment.debug:    
+                wandb.log({
+                    "Train Loss_model sampled outside training": train_loss,
+                    "Train Accuracy_model sampled outside training": train_acc,
+                    "Validation Loss_model sampled outside training": val_loss,
+                    "Validation Accuracy_model sampled outside training": val_acc
+                })
+            print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            print(f"Epoch [{epoch}/{args.experiment.num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
+            print(f"Epoch [{epoch}/{args.experiment.num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+            print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            
+            # Save the checkpoint
+            if val_acc > best_acc:
+                best_acc = val_acc
+                save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc)
+                print("------------------------------------------------------------------------------------------------------------------------------")
+                print(f"Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
+                print("------------------------------------------------------------------------------------------------------------------------------")
+        
+    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, device=device)
+    val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+    
+    save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc)
+    print("------------------------------------------------------------------------------------------------------------------------------")
+    print(f"Checkpoint saved at the end of training with accuracy: {val_acc*100:.2f}%")
+    print("------------------------------------------------------------------------------------------------------------------------------")
+    
+    if not args.experiment.debug:
+        wandb.finish()
+    
+    print("Training finished.")
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    #testing the best model
+    best_hyper_model = get_hypernet(args, number_param,total_param = number_param ,key_list = model.keys, device=device)
+    last_hyper_model = get_hypernet(args, number_param,total_param = number_param ,key_list = model.keys, device=device)
+    checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,ema, device=device)
+    checkpoint_info, last_hyper_model, _, _, last_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", last_hyper_model, optimizer,scheduler ,ema, device=device)
+    best_accuracies = []
+    last_accuracies = []
+    
+    if best_ema:
+            best_ema.apply()
+    if last_ema:
+            last_ema.apply()
 
-def copyParams(NerF_src, Nerf_dest):
-    print("initialize MLPs of the current block with the weights of the previous one")
-    with torch.no_grad():
-        for i in range(4):
-            for name, param in NerF_src[i].named_parameters():
-                dest_param = dict(Nerf_dest.model[i].named_parameters())[name]
-                if dest_param.shape == param.shape:
-                    dest_param.copy_(param)
-                else:
-                    print(f"src:{name} and dest params have different shapes")
-    return Nerf_dest
-
-def load_prev_model(source, dest):
-    with torch.no_grad():
-       for i in range(4):
-           dest.model[i].load_state_dict(source[i].state_dict())
-    return dest
+    for hidden_dim in range(args.dimensions.test_range[0], args.dimensions.test_range[1] + 1):
+        print(f"--------------------------------------------------------HIDDEN DIM {hidden_dim}--------------------------------------------------------")
+        # Create a model for the given hidden dimension
+        model = create_model(args.model.type, 
+                                hidden_dim=hidden_dim,
+                                num_param=args.model.num_param,
+                                bottom_up=args.model.bottom_up, 
+                                single_block=False,
+                                path=args.model.pretrained_path, 
+                                smooth=args.model.smooth, fuse=args.model.fuse,
+                                prior=False).to(device)
+            
+        accumulated_model_best = sample_merge_model(best_hyper_model, model, args, K=100, device=device)
+        best_val_loss, best_val_acc = validate_single(accumulated_model_best, val_loader, val_criterion, args=args, device=device)
+        best_accuracies.append(best_val_acc)
+        print(f"\tValidation Loss best NeRF: {best_val_loss:.4f}, Validation Accuracy: {best_val_acc*100:.2f}%")
+        
+        accumulated_model_last = sample_merge_model(last_hyper_model, model, args, K=100, device=device)
+        last_val_loss, last_val_acc = validate_single(accumulated_model_last, val_loader, val_criterion, args=args, device=device)
+        last_accuracies.append(last_val_acc)
+        print(f"\tValidation Loss last NeRF: {last_val_loss:.4f}, Validation Accuracy: {last_val_acc*100:.2f}%")
+        
+    best_mean_accuracy = np.mean(best_accuracies)
+    best_std_accuracy = np.std(best_accuracies)
+    last_mean_accuracy = np.mean(last_accuracies)
+    lasy_std_accuracy = np.std(last_accuracies)
+    
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print(f"Best NeRF Mean Validation Accuracy: {best_mean_accuracy * 100:.2f}% ± {best_std_accuracy * 100:.2f}%")
+    print(f"Last NeRF Mean Validation Accuracy: {last_mean_accuracy * 100:.2f}% ± {lasy_std_accuracy * 100:.2f}%")
     
     
 if __name__ == "__main__":

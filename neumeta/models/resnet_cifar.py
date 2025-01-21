@@ -126,6 +126,33 @@ class BasicBlock_Resize(BasicBlock):
 
         return out
     
+class BasicBlock_Resize_skipInit(BasicBlock):
+    expansion = 1
+    def __init__(self, inplanes, planes, stride=1, downsample=None, alpha=0.0):
+        super().__init__(inplanes, planes, stride, downsample)
+        self.conv2 = conv3x3(planes, inplanes)
+        self.bn2 = nn.BatchNorm2d(inplanes)
+        self.alpha = nn.Parameter(torch.tensor(alpha), requires_grad=True)
+    
+    def forward(self, x):
+        identity = x
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+        
+        out *= self.alpha
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
+    
 class BasicBlock_Resize_IdShort(BasicBlock):
     expansion = 1
     def __init__(self, inplanes, planes, stride=1, downsample=None):
@@ -285,16 +312,16 @@ class CifarResNet(nn.Module):
                 #first_Block = First_BasicBlock_Resize(child[0].conv1.in_channels, bottleneck, child[0].conv2.out_channels, child[0].conv1.stride, downsample)
                 #layers.append(first_Block)
                 
-                for _ in range(self.num_layers_inr):
-                    layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                #for _ in range(self.num_layers_inr):
+                #    layers.append(BasicBlock_Resize(64, bottleneck, stride))
                 
-                #if self.prior:
-                #    for _ in range(self.num_layers_inr):
-                #        layers.append(BasicBlock_Resize(64, bottleneck, stride))
-                #else:
-                #    for _ in range(self.num_layers_inr):
-                #        downsample = conv1x1(64,64,stride)
-                #        layers.append(BasicBlock_Resize_IdShort(64, bottleneck, stride=stride, downsample=downsample))
+                if self.prior:
+                    for _ in range(self.num_layers_inr):
+                        layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                else:
+                    for _ in range(self.num_layers_inr):
+                        #downsample = conv1x1(64,64,stride)
+                        layers.append(BasicBlock_Resize_skipInit(64, bottleneck, stride=stride, downsample=None))
                 
                 layers.extend(list(child.children())[self.num_layers_inr+1:])
                 self._modules[name] = nn.Sequential(*layers)
@@ -303,8 +330,7 @@ class CifarResNet(nn.Module):
     def learnable_parameter(self):
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
         self.keys = [k for k, _ in self.named_parameters()
-                    if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1))# and "downsample" not in k
-                    ]
+                    if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1)) and 'alpha' not in k]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
 
 def _resnet(

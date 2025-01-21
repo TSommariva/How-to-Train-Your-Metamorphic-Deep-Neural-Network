@@ -154,7 +154,7 @@ def get_optimizer(args, hyper_model, first_block = False):
     #    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=args.training.eta_min)
     return criterion, val_criterion, optimizer, scheduler
 
-def get_hypernet(args, number_param, key_list = None,device='cuda'):
+def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='cuda'):
     """
     Returns a hypernetwork model based on the specified hyper_model_type in the arguments.
 
@@ -177,6 +177,7 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             num_freqs=args.hyper_model.num_freqs,
             num_compose=number_param,
             normalizing_factor=args.dimensions.norm,
+            total_param = total_param,
             coordinate_noise = args.training.coordinate_noise
         ).to(device)
         
@@ -191,6 +192,7 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             scalar=args.hyper_model.get('scalar', 0.1),
             num_compose=number_param,
             normalizing_factor=args.dimensions.norm,
+            total_param = total_param,
             coordinate_noise = args.training.coordinate_noise
         ).to(device)
     elif hyper_model_type == 'resmlpDict':
@@ -207,6 +209,7 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             num_freqs=args.hyper_model.num_freqs,
             scalar=args.hyper_model.get('scalar', 0.1),
             normalizing_factor=args.dimensions.norm,
+            total_param = total_param,
             coordinate_noise = args.training.coordinate_noise
         ).to(device)
     elif hyper_model_type == 'hierarchical_resmlpDict':
@@ -223,6 +226,7 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             num_freqs=args.hyper_model.num_freqs,
             scalar=args.hyper_model.get('scalar', 0.1),
             normalizing_factor=args.dimensions.norm,
+            total_param = total_param,
             coordinate_noise = args.training.coordinate_noise
             ).to(device)
     elif hyper_model_type == 'hierarchical_resmlp':
@@ -237,6 +241,7 @@ def get_hypernet(args, number_param, key_list = None,device='cuda'):
             num_compose=number_param,
             num_kernel_groups=args.hyper_model.get('kernel_groups', 4),
             normalizing_factor=args.dimensions.norm,
+            total_param = total_param,
             coordinate_noise = args.training.coordinate_noise
         ).to(device)
     else:
@@ -305,7 +310,7 @@ def average_models(models):
     
     return averaged_model
 
-def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
+def sample_merge_model(hyper_model, model, args, alphas ,K=50, device='cuda'):
     # Initialize a model to accumulate the weights over K samples
     if isinstance(hyper_model, torch.nn.parallel.DistributedDataParallel):
         hyper_model = hyper_model.module
@@ -315,14 +320,20 @@ def sample_merge_model(hyper_model, model, args, K=50, device='cuda'):
     for k in range(K):
         model_cls_temp = copy.deepcopy(model)
         model_cls_temp.to(device)
+        model_cls_temp.eval()
         
         # Sampling and merging weights
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
         key_mask = create_key_masks(keys_list=keys_list)
         #if k > 0:
-        #    coords_tensor = coords_tensor + (torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise
+        #    coords_tensor = coords_tensor + ((torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise) #.clamp(-0.49, 0.49)
         model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
-        
+        for name, param in model_cls_temp.named_parameters():
+            if 'alpha' in name:
+                if name in alphas:
+                    param = alphas[name]
+                else:
+                    print("Error, alpha not found in alphas")
         models.append(model_cls_temp)
     
     accumulated_model = average_models(models)
@@ -410,9 +421,7 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     
     # Sample a batch of coordinates
     coords_tensor = coords_tensor.to(device)
-    layer_id = coords_tensor[:, 0].int()
-    input_dim = coords_tensor[:, -1]
-    input_tensor = (coords_tensor)#/NORM) 
+    input_tensor = (coords_tensor) # / NORM) 
     
     selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
     
@@ -489,7 +498,7 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     coords_tensor = coords_tensor.to(device)
     layer_id = coords_tensor[:, 0].int()
     input_dim = coords_tensor[:, -1]
-    input_tensor = (coords_tensor)#/NORM) 
+    input_tensor = (coords_tensor) #/NORM) 
     predicted_weights = model(input_tensor, layer_id=layer_id, input_dim=input_dim)
     
     selected_mask = sum([key_mask[k] for k in selected_keys]).bool()
@@ -576,10 +585,10 @@ def shuffle_coordiates_all(dim_dict):
         dict: The updated dictionary with shuffled coordinates, keys, and indices for the specified dimensions.
     """
     for dim in dim_dict:
-        (model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask) = dim_dict[dim]
+        (model_cls, cls_optimizer , coords_tensor, keys_list, indices_list, size_list, key_mask) = dim_dict[dim]
         # coords_tensor, keys_list, indices_list, size_list = shuffle_coordiates(coords_tensor, keys_list, indices_list, size_list)
         key_mask = create_key_masks(keys_list)
-        dim_dict[dim] = (model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask)
+        dim_dict[dim] = (model_cls, cls_optimizer ,coords_tensor, keys_list, indices_list, size_list, key_mask)
         
     return dim_dict
 

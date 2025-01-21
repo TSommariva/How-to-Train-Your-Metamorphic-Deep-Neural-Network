@@ -1,45 +1,46 @@
-# Experiment settings
-# Experiment settings
 base_config: neumeta/config/base_config.yaml
 # Model configurations
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 4 #Learnable Blocks
-  bottom_up: False
+  num_param: 8 #Learnable Blocks
   smooth: False
   fuse: False
-
+  
+# Experiment settings
 experiment:
-  name: ${model.num_param}Blocks_${experiment.num_epochs}e_lr${training.learning_rate}_${experiment.arch_accumulation_steps}AccumulationSteps_bottomUp:${model.bottom_up}_Iterative:${experiment.iterative}
-  debug: False
-  num_epochs: 200
+  name: PaperNorm_${hyper_model.type}_${hyper_model.kernel_groups}kernelGroups_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}
+  num_epochs: 400
   log_interval: 26
   eval_interval: 10
-  arch_accumulation_steps: 1
-  batch_accumulation_steps: 1
+  batch_accumulation_steps: 4
   iterative: False
-
+  custom_init: True
 
 # Training configurations
 training:
-  learning_rate: 5e-4
   batch_size: 128
-  coordinate_noise: 1.0
-  scheduler: cosine
-  T_max: 100
+  learning_rate: 0.00085
+  eta_min: ${training.learning_rate}
+  scheduler: warmup_cosine
+  warmup_epochs: 20
+  T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
+  coordinate_noise: 1.0
   clip_grad: 10.0
-  save_model_path: experiments/AACIFAR100/${experiment.name} # Directory to save the trained model
+  save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: resmlp
+  type: resmlpDict
+  kernel_groups: 4
   input_dim: 6
   hidden_dim: 512
   num_layers: 8
   num_freqs: 32
   output_dim: 9
+  scalar: 0.1
+  use_ema: True
   ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:
@@ -52,6 +53,7 @@ hyper_model:
 # Experiment dimensions configuration
 dimensions:
   range: [32, 64]  # Dimension range for the experiment
+  test_range: [16, 64]  # Dimension range for testing
   test: 32  # Testing dimension
   norm: 64  # Normalization factor
   start: 64  # Starting dimension
