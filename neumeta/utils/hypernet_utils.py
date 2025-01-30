@@ -152,6 +152,34 @@ def get_optimizer(args, hyper_model, first_block = False):
     #elif scheduler_name == 'warmup_cosine' and not first_block:
     #    print("Using cosine scheduler, T_max:", args.training.T_max)
     #    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=args.training.eta_min)
+    elif scheduler_name == 'warmup_const_cosine':
+        warmup_epochs = args.training.get('warmup_epochs', 20)
+        start_decay = args.training.get('start_decay', 50)
+        total_epochs = args.experiment.num_epochs
+        eta_min = args.training.learning_rate * 0.1
+        
+        # Linear warmup from ~0 to lr
+        warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer,start_factor=1e-5,end_factor=1.0,total_iters=warmup_epochs)
+        
+        # Keep constant from warmup_epochs to start_decay
+        if first_block:
+            constant_scheduler = torch.optim.lr_scheduler.ConstantLR(optimizer, factor=1.0, total_iters=(start_decay - warmup_epochs))
+        else:
+            constant_scheduler = torch.optim.lr_scheduler.ConstantLR(optimizer, factor=1.0, total_iters=start_decay)
+            
+        # Cosine decay from start_decay to final epoch
+        cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR( optimizer, T_max=(total_epochs - start_decay), eta_min=eta_min)
+        
+        # Combine the schedulers
+        if first_block:
+            scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer,
+                schedulers=[warmup_scheduler, constant_scheduler, cosine_scheduler],
+                milestones=[warmup_epochs, start_decay])
+        else:
+            scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer,
+                schedulers=[constant_scheduler, cosine_scheduler],
+                milestones=[start_decay])
+            
     return criterion, val_criterion, optimizer, scheduler
 
 def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='cuda'):
@@ -259,7 +287,11 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     with torch.no_grad():
         with tqdm(val_loader, miniters=23) as t_loader:
             for x, target in t_loader:
-                x, target = x.to(device), target.to(device)
+                if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+                    x, target = x.to(device, memory_format=torch.channels_last), target.to(device)
+                else:
+                    x, target = x.to(device), target.to(device)
+                
                 predict = model_cls(x)
     
                 pred = torch.argmax(predict, dim=-1)
@@ -291,35 +323,44 @@ def average_models(models):
     # Initialize a dict to hold the sum of all model parameters
     param_sum = dict()
     
-    for model in models:
-        for name, param in model.named_parameters():
-            if name not in param_sum:
-                # Initialize the sum for this parameter as a tensor filled with zeros with the same shape as the parameter
-                param_sum[name] = torch.zeros_like(param.data)
-            
-            # Add the parameters
-            param_sum[name] += param.data
-    
-    # Average the sum of parameters by the number of models
-    for name in param_sum:
-        param_sum[name] = param_sum[name] / len(models)
-    
-    # Update the averaged model with the new averaged weights
-    for name, param in averaged_model.named_parameters():
-        param.data = param_sum[name]
+    with torch.no_grad():
+        for model in models:
+            for name, param in model.named_parameters():
+                if name not in param_sum:
+                    # Initialize the sum for this parameter as a tensor filled with zeros with the same shape as the parameter
+                    param_sum[name] = torch.zeros_like(param)
+
+                # Add the parameters
+                param_sum[name] += param
+
+        # Average the sum of parameters by the number of models
+        for name in param_sum:
+            param_sum[name] = param_sum[name] / len(models)
+
+        # Update the averaged model with the new averaged weights
+        for name, param in averaged_model.named_parameters():
+            param.copy_(param_sum[name].clone())
     
     return averaged_model
 
-def sample_merge_model(hyper_model, model, args, alphas ,K=50, device='cuda'):
+def sample_merge_model(hyper_model, model, args, backbone_parameters ,K=50, device='cuda'):
     # Initialize a model to accumulate the weights over K samples
     if isinstance(hyper_model, torch.nn.parallel.DistributedDataParallel):
         hyper_model = hyper_model.module
-        
+    
+    with torch.no_grad():
+        for name, param in model.named_parameters():
+            if name in backbone_parameters: 
+                param.copy_(backbone_parameters[name].clone())
+                    
     hyper_model.eval()
     models = []
     for k in range(K):
         model_cls_temp = copy.deepcopy(model)
-        model_cls_temp.to(device)
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            model_cls_temp = model_cls_temp.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+        else:
+            model_cls_temp = model_cls_temp.to(device)
         model_cls_temp.eval()
         
         # Sampling and merging weights
@@ -328,19 +369,13 @@ def sample_merge_model(hyper_model, model, args, alphas ,K=50, device='cuda'):
         #if k > 0:
         #    coords_tensor = coords_tensor + ((torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise) #.clamp(-0.49, 0.49)
         model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
-        for name, param in model_cls_temp.named_parameters():
-            if 'alpha' in name:
-                if name in alphas:
-                    param = alphas[name]
-                else:
-                    print("Error, alpha not found in alphas")
+
         models.append(model_cls_temp)
     
     accumulated_model = average_models(models)
 
     accumulated_model.eval()
     return accumulated_model
-
 
 def sample_coordinates(model_cls):
     """
@@ -457,9 +492,10 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
             # Directly assign the weights without reshaping.
             predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
          
-    for name, param in model_cls.learnable_parameter.items():
-        if name in predicted_checkpoint:
-            param.data = predicted_checkpoint[name].data
+    with torch.no_grad():     
+        for name, param in model_cls.learnable_parameter.items():
+            if name in predicted_checkpoint:
+                param.copy_(predicted_checkpoint[name].clone())
 
     return model_cls, list(predicted_checkpoint.values())
 
@@ -533,10 +569,11 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
         elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
             # Directly assign the weights without reshaping.
             predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
-         
-    for name, param in model_cls.learnable_parameter.items():
-        if name in predicted_checkpoint:
-            param.data = predicted_checkpoint[name].data
+    
+    with torch.no_grad():     
+        for name, param in model_cls.learnable_parameter.items():
+            if name in predicted_checkpoint:
+                param.copy_(predicted_checkpoint[name].clone())
 
     return model_cls, list(predicted_checkpoint.values())
 

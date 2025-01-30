@@ -91,7 +91,7 @@ def create_model_cifar100(model_name, hidden_dim,num_param, prior=True ,single_b
             #model = torch.load(path,weights_only=False)
             fuse_module(model)
             print("Loading model from", path)
-            state_dict = torch.load(path, map_location=torch.device('cpu'),weights_only=True)
+            state_dict = torch.load(path, map_location=torch.device('cpu'),weights_only=False)
             load_checkpoint(model, state_dict)
             return model
         

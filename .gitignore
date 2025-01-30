@@ -4,6 +4,7 @@ data/
 log/
 wandb/
 **/experiments/
+**/results/
 
 #files to ignore
 core.*

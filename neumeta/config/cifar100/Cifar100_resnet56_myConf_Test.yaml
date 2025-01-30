@@ -9,16 +9,13 @@ model:
   
 # Experiment settings
 experiment:
-  name: TEST
-  debug: True
-  num_epochs: 1
-  log_interval: 25
-  eval_interval: 1
-  arch_accumulation_steps: 1
+  name: skipInit_clsLr0.001_resmlpDict_Scalar0_4kernelGroups_4AccumulationSteps_50e_lr0.00085_bs128_warmup_cosine20_block8_cifar100_nerf_last_2
+  num_epochs: 50
+  log_interval: 26
+  eval_interval: 10
   batch_accumulation_steps: 4
   iterative: True
   custom_init: True
-
 
 # Training configurations
 training:
@@ -31,10 +28,10 @@ training:
   weight_decay: 1e-4
   coordinate_noise: 1.0
   clip_grad: 10.0
-  save_model_path: experiments/${experiment.name} # Directory to save the trained model
+  save_model_path: results
   cls_optimizer: adamw
   cls_learning_rate: 1e-3
-  alpha_learning_rate: 1e-4
+  alpha_learning_rate: 1e-3
   backbone_learning_rate: 6e-6
   cls_weight_decay: 1e-2
 

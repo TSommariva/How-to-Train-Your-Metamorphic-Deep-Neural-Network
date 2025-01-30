@@ -32,12 +32,10 @@ def main_test_nerf(args):
     num_workers = get_num_workers()
     train_loader, val_loader = get_cifar100(args.training.batch_size, num_workers)
     
-    model = create_model(args.model.type, 
-                         hidden_dim=args.dimensions.start,
-                         num_param=args.model.num_param,
-                         bottom_up=args.model.bottom_up,
-                         path=args.model.pretrained_path, 
-                         smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+    model = create_model(args.model.type,hidden_dim=args.dimensions.start, num_param=args.model.num_param, 
+                 bottom_up=args.model.bottom_up,single_block=False ,
+                 path=args.model.pretrained_path, smooth=args.model.smooth, 
+                 fuse=args.model.smooth, prior=True).to(device)
     
     print("Maximum DIM: ",find_max_dim(model))
 
@@ -54,38 +52,42 @@ def main_test_nerf(args):
     
     
     if not args.resume_from :
-        print("test requirest resume_from argument")
+        print("test requires resume_from argument")
         return -1
     
     print(f"Resuming from checkpoint: {args.resume_from}")
     
-    hyper_model = get_hypernet(args, 4 * (load_trained_blocks(args.resume_from) ),key_list=model.keys ,device=device)
+    hyper_model = get_hypernet(args,4 * load_trained_blocks(args.resume_from),key_list=model.keys ,device=device)
     ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
 
     criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model) 
-    
     checkpoint_info, hyper_model, optimizer, scheduler, ema = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, ema,args=args)
     
-    filename = f"cifar100_results_{args.experiment.name}.txt"
+    try:
+        backbone_parameters = checkpoint_info['backbone_parameters']
+    except KeyError:
+        backbone_parameters = checkpoint_info.get('alphas', None)
+    
+    filename = f"{args.experiment.name}.txt"
     filepath = os.path.join(args.training.save_model_path, filename)
     
-    #ema = False 
     accuracies = []
     if ema:
             print("Applying EMA")
             ema.apply()
     for hidden_dim in range(args.dimensions.test_range[0], args.dimensions.test_range[1] + 1):
-        model = create_model(args.model.type, 
-                                hidden_dim=hidden_dim,
-                                path=args.model.pretrained_path,
-                                num_param=args.model.num_param, 
-                                bottom_up=args.model.bottom_up,
-                                single_block=False,
-                                smooth=args.model.smooth, fuse=args.model.fuse).to(device)
-                    # Apply Exponential Moving Average (EMA) if enabled
+        model = create_model(args.model.type,hidden_dim=hidden_dim, num_param=args.model.num_param, 
+                 bottom_up=args.model.bottom_up,single_block=False ,
+                 path=args.model.pretrained_path, smooth=args.model.smooth, 
+                 fuse=args.model.smooth, prior=False)
+        
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+        else:
+            model = model.to(device)
         
             
-        accumulated_model = sample_merge_model(hyper_model, model, args, K=100, device=device)
+        accumulated_model = sample_merge_model(hyper_model, model, args, K=10, device=device, backbone_parameters=backbone_parameters)
         val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args, device=device)
         
         accuracies.append(acc)
@@ -98,8 +100,9 @@ def main_test_nerf(args):
         
     mean_accuracy = np.mean(accuracies)
     std_accuracy = np.std(accuracies)
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    print(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
+    with open(filepath, "a") as file:
+        file.write("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        file.write(f"Mean Validation Accuracy: {mean_accuracy * 100:.2f}% ± {std_accuracy * 100:.2f}%")
     
 if __name__ == "__main__":
     args = parse_args()

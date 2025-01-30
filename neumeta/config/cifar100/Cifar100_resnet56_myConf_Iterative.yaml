@@ -9,8 +9,8 @@ model:
   
 # Experiment settings
 experiment:
-  name: skipInitAeB_clsLr${training.cls_learning_rate}_clsweightdecay${training.cls_weight_decay}_${hyper_model.type}_Scalar0_${hyper_model.kernel_groups}kernelGroups_${experiment.batch_accumulation_steps}AccumulationSteps_${experiment.num_epochs}e_lr${training.learning_rate}_bs${training.batch_size}_${training.scheduler}${training.warmup_epochs}
-  num_epochs: 50
+  name: HybridTraining_NoBackbone_${hyper_model.type}_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
+  num_epochs: 150
   log_interval: 26
   eval_interval: 10
   batch_accumulation_steps: 4
@@ -24,13 +24,16 @@ training:
   eta_min: ${training.learning_rate}
   scheduler: warmup_cosine
   warmup_epochs: 20
+  start_decay: 100
   T_max: ${experiment.num_epochs}
   weight_decay: 1e-4
   coordinate_noise: 1.0
   clip_grad: 10.0
   save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
   cls_optimizer: adamw
-  cls_learning_rate: 1e-3
+  cls_learning_rate: 7e-5
+  alpha_learning_rate: 1e-4
+  backbone_learning_rate: 1e-5
   cls_weight_decay: 1e-2
 
 # Hyper-model specifications (specific to NeRF)

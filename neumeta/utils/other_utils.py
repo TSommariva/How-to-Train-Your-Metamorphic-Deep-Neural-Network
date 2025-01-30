@@ -11,6 +11,7 @@ from neumeta.models import BasicBlock, BasicBlock_Resize
 import wandb
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
+import copy
 
 
 def parse_args():
@@ -140,34 +141,39 @@ class EMA:
 
     def set_shadow(self, model):
         # Initialize the shadow weights with the model's weights
-        for name, param in model.named_parameters():
-            if param.requires_grad:
-                self.shadow[name] = param.data.clone()
+        with torch.no_grad():
+            for name, param in model.named_parameters():
+                if param.requires_grad:
+                    self.shadow[name] = param.clone()
 
     def apply(self):
         # Backup the current model weights and set the model's weights to the shadow weights
-        for name, param in self.model.named_parameters():
-            if param.requires_grad:
-                self.backup[name] = param.data.clone()
-                param.data = self.shadow[name]
+        with torch.no_grad():
+            for name, param in self.model.named_parameters():
+                if param.requires_grad:
+                    self.backup[name] = param.clone()
+                    param.copy_(self.shadow[name].clone())
 
     def restore(self):
         # Restore the original model weights
-        for name, param in self.model.named_parameters():
-            if param.requires_grad:
-                param.data = self.backup[name]
+        with torch.no_grad():
+            for name, param in self.model.named_parameters():
+                if param.requires_grad:
+                    param.copy_(self.backup[name].clone())
 
     def update(self):
         # Update the shadow weights
-        for name, param in self.model.named_parameters():
-            if param.requires_grad:
-                self.shadow[name] = self.decay * self.shadow[name] + (1.0 - self.decay) * param.data
+        with torch.no_grad():
+            for name, param in self.model.named_parameters():
+                if param.requires_grad:
+                    self.shadow[name] = self.decay * self.shadow[name] + (1.0 - self.decay) * param
                 
     def extend(self, model):
         self.model = model
-        for name, param in model.named_parameters():
-            if param.requires_grad and name not in self.shadow:
-                self.shadow[name] = param.data.clone()
+        with torch.no_grad():
+            for name, param in model.named_parameters():
+                if param.requires_grad and name not in self.shadow:
+                    self.shadow[name] = param.clone()
 
 class EMA_ddp:
     def __init__(self, model, decay, rank):
@@ -243,7 +249,7 @@ class EMA_ddp:
                 if param.requires_grad:
                     torch.distributed.broadcast(self.shadow[name], src=0)
 
-def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, alphas ,trained_blocks=1):
+def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, backbone_parameters ,trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -256,7 +262,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
     best_acc (float): The best accuracy observed during training.
     """
     # Save the model, optimizer, EMA shadow weights, and other elements
-    
+    model.eval()
     checkpoint = {
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
@@ -264,7 +270,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
         'scheduler_state_dict' : scheduler.state_dict(),
         'best_acc': best_acc,
         'trained_blocks': trained_blocks,
-        'alphas': alphas
+        'backbone_parameters': backbone_parameters
     }
     if ema:
         checkpoint['ema_shadow']=ema.shadow
@@ -298,11 +304,10 @@ def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_a
         torch.save(checkpoint, filepath)
 
 def load_trained_blocks(filepath):
-    checkpoint = torch.load(filepath, map_location='cpu')
+    checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
     
     return checkpoint['trained_blocks']
-
-
+    
 def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', args=None):
     """
     Loads the state from a checkpoint into the model, optimizer, and EMA object.
@@ -313,7 +318,7 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     optimizer (torch.optim.Optimizer): The optimizer.
     ema (EMA): The EMA object.
     """
-    checkpoint = torch.load(filepath, map_location='cpu')
+    checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
     
     # After loading the checkpoint
     #saved_keys = set(checkpoint['model_state_dict'].keys())
@@ -498,9 +503,9 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
     with torch.no_grad():
         if custom_init:
             if isinstance(base_model.model, nn.ModuleList):
-                last = base_model.model[-4:]
+                last = nn.ModuleList([copy.deepcopy(m) for m in base_model.model[-4:]])
             elif isinstance(base_model.model, nn.ModuleDict):
-                last = nn.ModuleList([v for _, v in list(base_model.model.items())[-4:]])
+                last = nn.ModuleList([copy.deepcopy(v) for _, v in list(base_model.model.items())[-4:]])
 
         last_params = []
         for name, param in last.named_parameters():
@@ -508,10 +513,10 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
             
         for name, param in extension_model.named_parameters():
             if name in base_checkpoint:
-                param.data = base_checkpoint[name].data
+                param.copy_(base_checkpoint[name].clone())
             elif last is not None:
                 if param.shape == last_params[i].shape:
-                    param.data = last_params[i]
+                    param.copy_(last_params[i].clone())
                 else:
                     print(f"src:{name} and previous param have different shapes")
                 i+=1
@@ -528,29 +533,33 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
 
 def get_cifar_optimizer(args, model):
     alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
+    classifier_params = [p for n, p in model.named_parameters() if 'fc' in n]
+    
+    excluded_substrings = ("alpha", "fc")
+    excluded_keys = set(model.learnable_parameter.keys())
+    backbone_params = [
+        p for n, p in model.named_parameters()
+        if n not in excluded_keys and not any(s in n for s in excluded_substrings)
+    ]
     optimizer_name = args.training.get('cls_optimizer', 'adamw')
     if optimizer_name == 'adamw':
-        optimizer = AdamW(alpha_params, 
-                          lr=args.training.cls_learning_rate, 
-                          weight_decay=args.training.cls_weight_decay)
+        optimizer = AdamW([{'params': alpha_params},
+                            #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
+                            {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
+                             lr=args.training.alpha_learning_rate, 
+                             weight_decay=args.training.cls_weight_decay)
     elif optimizer_name == 'adam':
-        optimizer = Adam(alpha_params, 
-                         lr=args.training.cls_learning_rate, 
-                         weight_decay=args.training.cls_weight_decay)
+        optimizer = Adam([{'params': alpha_params},
+                           #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
+                           {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
+                            lr=args.training.alpha_learning_rate, 
+                            weight_decay=args.training.cls_weight_decay)
     elif optimizer_name == 'sgd':
-        optimizer = torch.optim.SGD(alpha_params, 
-                                    lr=args.training.cls_learning_rate, 
-                                    momentum=args.training.get('cls_momentum', 0.9),
-                                    weight_decay=args.training.cls_weight_decay)
-    elif optimizer_name == 'rmsprop':
-        optimizer = torch.optim.RMSprop(alpha_params, 
-                                        lr=args.training.cls_learning_rate, 
-                                        momentum=args.training.cls_get('momentum', 0.9),
-                                        weight_decay=args.training.cls_weight_decay)
-    elif optimizer_name == 'adagrad':
-        optimizer = torch.optim.Adagrad(alpha_params, 
-                                        lr=args.training.cls_learning_rate, 
-                                        weight_decay=args.training.cls_weight_decay)
+        optimizer = torch.optim.SGD([{'params': alpha_params},
+                                      #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
+                                      {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
+                                       lr=args.training.alpha_learning_rate, 
+                                       weight_decay=args.training.cls_weight_decay)
     else:
         raise ValueError(f"Unknown optimizer: {optimizer_name}")
     return optimizer
