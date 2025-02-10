@@ -19,7 +19,7 @@ if "cifar10_" in args.model.pretrained_path:
 elif "cifar100_" in args.model.pretrained_path:
         create_model= create_model_cifar100
         get_cifar = get_cifar100
-        save_path = f"neumeta/pretrained_models/cifar100_{args.model.type}-smoothed.pt"
+        save_path = f"neumeta/pretrained_models/cifar100_{args.model.type}XL-smoothed.pt"
 
 
 # Create the model for CIFAR10
@@ -40,7 +40,7 @@ print(f"Pretrained model Validation Loss: {val_loss:.4f}, Validation Accuracy: {
 
 print("Smooth the parameters of the model")
 print("TV original model: ", compute_tv_loss_for_network(model, lambda_tv=1.0).item())
-input_tensor = torch.randn(1, 3, 32, 32)
+input_tensor = torch.randn(1, 3, 32, 32).to(device)
 permute_func = PermutationManager(model, input_tensor)
 permute_dict = permute_func.compute_permute_dict()
 model = permute_func.apply_permutations(permute_dict, ignored_keys=[('conv1.weight', 'in_channels'), ('fc.weight', 'out_channels'), ('fc.bias', 'out_channels')])

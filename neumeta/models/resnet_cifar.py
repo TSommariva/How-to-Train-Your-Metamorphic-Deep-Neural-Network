@@ -298,8 +298,8 @@ class CifarResNet(nn.Module):
     def set_changeable(self, block, bottleneck, stride, num_classes=10):
         for name, child in self.named_children():
         # Change the last block of layer3
-            if name == 'layer3':
-                print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
+            if name == 'layer2':
+                print(f'Replace first {self.num_layers_inr} blocks of layer2 with new blocks of hidden dim {bottleneck}')
                 # Get all the layers except the last block
                 layers = []
                 layers.append(list(child.children())[0])
@@ -317,11 +317,11 @@ class CifarResNet(nn.Module):
                 
                 if self.prior:
                     for _ in range(self.num_layers_inr):
-                        layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                        layers.append(BasicBlock_Resize(32, bottleneck, stride))
                 else:
                     for _ in range(self.num_layers_inr):
                         #downsample = conv1x1(64,64,stride)
-                        layers.append(BasicBlock_Resize_skipInit(64, bottleneck, stride=stride, downsample=None))
+                        layers.append(BasicBlock_Resize_skipInit(32, bottleneck, stride=stride, downsample=None))
                 
                 layers.extend(list(child.children())[self.num_layers_inr+1:])
                 self._modules[name] = nn.Sequential(*layers)
@@ -330,7 +330,7 @@ class CifarResNet(nn.Module):
     def learnable_parameter(self):
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
         self.keys = [k for k, _ in self.named_parameters()
-                    if any(k.startswith(f'layer3.{i}') for i in range(1, self.num_param + 1)) and 'alpha' not in k]
+                    if any(k.startswith(f'layer2.{i}') for i in range(1, self.num_param + 1)) and 'alpha' not in k]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
 
 def _resnet(

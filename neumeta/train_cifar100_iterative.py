@@ -90,7 +90,6 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
     accuracies = AverageMeter()
-    extracted_dim = []
     
     for batch_idx, (x, target) in enumerate(train_loader):
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
@@ -101,16 +100,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         step +=1
         if (step != 1) or no_accumulation:
             hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
-            #if hidden dim has already been extracted for this accumulation step, extract another one
-        #    if not hidden_dim in extracted_dim:
-        #        extracted_dim.append(hidden_dim)
-        #    else:
-        #        while hidden_dim in extracted_dim:
-        #            hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
-        #        extracted_dim.append(hidden_dim)
         else:
-            hidden_dim = 64
-        #    extracted_dim.append(hidden_dim)
+            hidden_dim = 32
                         
         model_cls, cls_optimizer ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
         selected_keys = np.unique(keys_list)
@@ -213,7 +204,6 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             optimizer.step()        
             optimizer.zero_grad()
             step = 0
-            extracted_dim = []
             
             if ema:
                 ema.update()  # Update the EMA after each training step
@@ -270,7 +260,7 @@ def main_iterative_nerf(args):
         trained_blocks = load_trained_blocks(args.resume_from)
         dim_dict, gt_model_dict = init_model_dict(args, trained_blocks, args.model.single_block)
         dim_dict = shuffle_coordiates_all(dim_dict)
-        _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
+        _, _, _, keys_list, _, _, _ = dim_dict[f"{32}"]
         selected_keys = np.unique(keys_list)
         hyper_model = get_hypernet(args, 4 * trained_blocks, total_param=number_param ,key_list=selected_keys,device=device)
         
@@ -303,7 +293,7 @@ def main_iterative_nerf(args):
         if not (args.resume_from and block_id == start_block):
             dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block)
             dim_dict = shuffle_coordiates_all(dim_dict)
-            _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
+            _, _, _, keys_list, _, _, _ = dim_dict[f"{32}"]
             selected_keys = np.unique(keys_list)
             hyper_model = get_hypernet(args, 4 * block_id,total_param=number_param ,key_list=selected_keys ,device=device)
 

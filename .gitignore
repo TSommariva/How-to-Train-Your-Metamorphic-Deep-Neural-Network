@@ -7,4 +7,5 @@ wandb/
 **/results/
 
 #files to ignore
-core.*
+neumeta/pretrained_models/cifar100_ResNet56XL-smoothed.pt
+neumeta/pretrained_models/cifar100_Resnet56XL.pth
