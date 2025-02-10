@@ -2,12 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Train ResnetXL",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "neumeta/trainResnet56XL.py",
+      "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56.yaml",
+               "--experiment.debug=True"],
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Debug Cifar100 - Resnet56",
       "type": "debugpy",
       "request": "launch",
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
         "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml",
+        "--resume_from", "experiments/TEST/cifar100_nerf_best.pth",
       ], 
       "console": "integratedTerminal"
     },
@@ -17,6 +27,7 @@
       "request": "launch",
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
+        "--experiment.debug=True",
         "--config", "/homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
       ], 
       "console": "integratedTerminal"
@@ -26,9 +37,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "neumeta/train_cifar100.py",
-      "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf.yaml", 
-        "--experiment.debug=True",
-        "--resume_from", "/work/tesi_tsommariva/experiments/AaITERATIVE/HybridTraining_BackboneLR1e-05resmlpDict_4AccumulationSteps_warmup_cosine_20e/cifar100_nerf_best.pth"],
+      "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf.yaml",], 
       "console": "integratedTerminal"
     },
     {
@@ -83,7 +92,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "neumeta/smoothing.py",
-      "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Smooth.yaml"], 
+      "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56XL_myConf_Iterative.yaml"], 
       "console": "integratedTerminal"
     }
   ]

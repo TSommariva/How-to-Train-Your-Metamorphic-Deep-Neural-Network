@@ -1,0 +1,65 @@
+base_config: neumeta/config/base_config.yaml
+# Model configurations
+model:
+  type: ResNet56
+  pretrained_path: neumeta/pretrained_models/cifar100_ResNet56XL-smoothed.pt
+  num_param: 8 #Learnable Blocks
+  smooth: False
+  fuse: False
+  
+# Experiment settings
+experiment:
+  name: HybridTraining_${hyper_model.type}XL_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
+  num_epochs: 50
+  log_interval: 26
+  eval_interval: 10
+  batch_accumulation_steps: 4
+  iterative: True
+  custom_init: True
+
+# Training configurations
+training:
+  batch_size: 128
+  learning_rate: 0.00085
+  eta_min: ${training.learning_rate}
+  scheduler: warmup_cosine
+  warmup_epochs: 20
+  start_decay: 100
+  T_max: ${experiment.num_epochs}
+  weight_decay: 1e-4
+  coordinate_noise: 1.0
+  clip_grad: 10.0
+  save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
+  cls_optimizer: adamw
+  cls_learning_rate: 7e-5
+  alpha_learning_rate: 1e-4
+  backbone_learning_rate: 1e-5
+  cls_weight_decay: 1e-2
+
+# Hyper-model specifications (specific to NeRF)
+hyper_model:
+  type: resmlpDict
+  kernel_groups: 4
+  input_dim: 6
+  hidden_dim: 512
+  num_layers: 8
+  num_freqs: 32
+  output_dim: 9
+  scalar: 0.1
+  use_ema: True
+  ema_decay: 0.995  # Exponential moving average decay
+
+  loss_weight:
+    ce_weight: 100.0
+    reg_weight: 0.001
+    recon_weight: 1.0
+    kd_weight: 0.1
+
+
+# Experiment dimensions configuration
+dimensions:
+  range: [128, 256]  # Dimension range for the experiment
+  test_range: [64, 256]  # Dimension range for testing
+  test: 32  # Testing dimension
+  norm: 256  # Normalization factor
+  start: 256  # Starting dimension
