@@ -280,8 +280,8 @@ def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='c
 
 def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     val_loss = 0.0
-    preds = []
-    gt = []
+    correct = 0
+    total = 0
     model_cls = model_cls.to(device)
     model_cls.eval()
     
