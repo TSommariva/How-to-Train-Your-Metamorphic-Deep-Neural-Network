@@ -132,8 +132,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                     else:
                         backbone_parameters[name] = param.clone()
         
-            model_cls, reconstructed_weights = sample_weights(model, model_cls,
-                                                          coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+        model_cls, reconstructed_weights = sample_weights(model, model_cls,
+                                                      coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
                                                           device=device, NORM=args.dimensions.norm, block_flags=block_flags)
         
         model_cls.train()
