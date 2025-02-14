@@ -239,19 +239,19 @@ class CifarResNet(nn.Module):
         self.num_param = num_param
         self.num_layers_inr = num_param #- 1
         self.single_block = single_block
-        self.inplanes = 16
+        self.inplanes = 64
         self.bottom_up = bottom_up
         self.prior = prior
-        self.conv1 = conv3x3(3, 16)
-        self.bn1 = nn.BatchNorm2d(16)
+        self.conv1 = conv3x3(3, 64)
+        self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
 
-        self.layer1 = self._make_layer(block, 16, layers[0])
-        self.layer2 = self._make_layer(block, 32, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 64, layers[2], stride=2)
+        self.layer1 = self._make_layer(block, 64, layers[0])
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(64 * block.expansion, num_classes)
+        self.fc = nn.Linear(256 * block.expansion, num_classes)
         
         self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
 
@@ -317,11 +317,11 @@ class CifarResNet(nn.Module):
                 
                 if self.prior:
                     for _ in range(self.num_layers_inr):
-                        layers.append(BasicBlock_Resize(64, bottleneck, stride))
+                        layers.append(BasicBlock_Resize(256, bottleneck, stride))
                 else:
                     for _ in range(self.num_layers_inr):
                         #downsample = conv1x1(64,64,stride)
-                        layers.append(BasicBlock_Resize_skipInit(64, bottleneck, stride=stride, downsample=None))
+                        layers.append(BasicBlock_Resize_skipInit(256, bottleneck, stride=stride, downsample=None))
                 
                 layers.extend(list(child.children())[self.num_layers_inr+1:])
                 self._modules[name] = nn.Sequential(*layers)

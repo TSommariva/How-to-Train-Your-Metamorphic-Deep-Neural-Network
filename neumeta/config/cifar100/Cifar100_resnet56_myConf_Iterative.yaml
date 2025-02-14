@@ -58,8 +58,8 @@ hyper_model:
 
 # Experiment dimensions configuration
 dimensions:
-  range: [32, 64]  # Dimension range for the experiment
-  test_range: [16, 64]  # Dimension range for testing
-  test: 32  # Testing dimension
-  norm: 64  # Normalization factor
-  start: 64  # Starting dimension
+  range: [128, 256]  # Dimension range for the experiment
+  test_range: [64, 320]  # Dimension range for testing
+  test: 256  # Testing dimension
+  norm: 256  # Normalization factor
+  start: 256  # Starting dimension

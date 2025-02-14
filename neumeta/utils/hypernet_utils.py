@@ -6,7 +6,6 @@ from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_ComposeDict, NeRF_HierarcResMLP_Compose
-from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
 from neumeta.utils.other_utils import AverageMeter
@@ -281,6 +280,8 @@ def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='c
 
 def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     val_loss = 0.0
+    correct = 0
+    total = 0
     preds = []
     gt = []
     model_cls = model_cls.to(device)
@@ -297,13 +298,14 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
                 predict = model_cls(x)
     
                 pred = torch.argmax(predict, dim=-1)
-                preds.extend(pred.cpu().numpy())
-                gt.extend(target.cpu().numpy())
+                correct += (pred == target).sum().item()
+                total += target.size(0)
     
                 loss = criterion(predict, target)
                 val_loss += loss.item()
     
-    return val_loss / len(val_loader), accuracy_score(gt,preds)
+    accuracy = correct / total if total > 0 else 0
+    return val_loss / len(val_loader), accuracy
 
 def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args, device='cuda'):
     losses = AverageMeter()
@@ -533,7 +535,7 @@ def sample_single_model(hyper_model, model, device='cuda', cfg=None):
     model.eval()
     return model
 
-def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
+def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None):
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
     else:
@@ -547,10 +549,17 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
+        split_key = key.split('.')
+        i_value = split_key[1]
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
         
-        predicted_weights = model(input_tensor[boolean_mask], key)
+        if block_flags is not None:
+            if block_flags[i_value -1]:
+                predicted_weights = model(input_tensor[boolean_mask], key)
+            else:
+                with torch.no_grad():
+                    predicted_weights = model(input_tensor[boolean_mask], key)
 
         # Check the size information for the current mask and proceed accordingly.
         if size_list[boolean_mask][0] == 4:  # Condition for conv weights.
@@ -585,7 +594,7 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     return model_cls, list(predicted_checkpoint.values())
 
 
-def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
+def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None):
     """
     Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
 
@@ -608,7 +617,7 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     #    model_cls = model_cls.module
     
     if isinstance (model.model, torch.nn.ModuleDict):
-        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler)
+        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler, block_flags)
     
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}

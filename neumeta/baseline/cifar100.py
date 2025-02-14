@@ -11,8 +11,6 @@ from neumeta.models import create_model_cifar100
 import argparse
 
 
-from neumeta.toy_cls import compute_tv_loss_for_network
-
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -24,7 +22,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion):
         x, target = x.to(device), target.to(device)
 
         # Forward pass
-        predict = model(x) + compute_tv_loss_for_network(model, lambda_tv=1e-2)
+        predict = model(x)
 
         # Compute loss
         loss = criterion(predict, target)
