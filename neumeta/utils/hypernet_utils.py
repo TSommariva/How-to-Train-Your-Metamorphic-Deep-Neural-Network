@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import random
+import wandb
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
@@ -8,6 +9,7 @@ from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResML
 from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
+from neumeta.utils.other_utils import AverageMeter
 
 def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon=1e-6):
     """
@@ -302,6 +304,89 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
                 val_loss += loss.item()
     
     return val_loss / len(val_loader), accuracy_score(gt,preds)
+
+def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args, device='cuda'):
+    losses = AverageMeter()
+    accuracies = AverageMeter()
+    for hidden_dim in range(args.dimensions.range[0], args.dimensions.range[1]):
+        model = create_model(args.model.type, 
+                                hidden_dim=hidden_dim,
+                                num_param=num_param,
+                                bottom_up=args.model.bottom_up,
+                                single_block=False,
+                                path=args.model.pretrained_path, 
+                                smooth=args.model.smooth, fuse=args.model.fuse,
+                                prior=False)
+        
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+        else:
+            model = model.to(device)
+        
+        # Sample the merged model for K times
+        accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
+        val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
+        losses.update(val_loss)
+        accuracies.update(val_acc)
+    
+    wandb.log({"Non-prior Seen - Validation loss": losses.avg, "Non-prior Seen - Validation Accuracy": accuracies.avg}, commit=False)
+    print(f"Non-prior Seen - Validation loss:{losses.avg} Non-prior Seen - Validation Accuracy:{accuracies.avg}")
+    
+    losses.reset()
+    accuracies.reset()
+    
+    for hidden_dim in range(args.dimensions.range[0]//2 , args.dimensions.range[0]):
+        model = create_model(args.model.type, 
+                                hidden_dim=hidden_dim,
+                                num_param=num_param,
+                                bottom_up=args.model.bottom_up,
+                                single_block=False,
+                                path=args.model.pretrained_path, 
+                                smooth=args.model.smooth, fuse=args.model.fuse,
+                                prior=False)
+        
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+        else:
+            model = model.to(device)
+        
+        # Sample the merged model for K times
+        accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
+        val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
+        losses.update(val_loss)
+        accuracies.update(val_acc)
+    
+    wandb.log({"Non-prior Unseen Low - Validation loss": losses.avg, "Non-prior Unseen Low - Validation Accuracy": accuracies.avg}, commit=False)
+    print(f"Non-prior Unseen Low - Validation loss:{losses.avg} Non-prior Unseen Low - Validation Accuracy:{accuracies.avg}")
+    
+    losses.reset()
+    accuracies.reset()
+    
+    for hidden_dim in range(args.dimensions.range[1] + 1 , args.dimensions.range[1] + args.dimensions.range[0]//2 + 1):
+        model = create_model(args.model.type, 
+                                hidden_dim=hidden_dim,
+                                num_param=num_param,
+                                bottom_up=args.model.bottom_up,
+                                single_block=False,
+                                path=args.model.pretrained_path, 
+                                smooth=args.model.smooth, fuse=args.model.fuse,
+                                prior=False)
+        
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+        else:
+            model = model.to(device)
+        
+        # Sample the merged model for K times
+        accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
+        val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
+        losses.update(val_loss)
+        accuracies.update(val_acc)
+    
+    wandb.log({"Non-prior Unseen High - Validation loss": losses.avg, "Non-prior Unseen High - Validation Accuracy": accuracies.avg}, commit=False)
+    print(f"Non-prior Unseen High - Validation loss:{losses.avg} Non-prior Unseen High - Validation Accuracy:{accuracies.avg}")
+        
+    return
     
 def average_models(models):
     """

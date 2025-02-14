@@ -11,7 +11,7 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
                            sample_subset,  save_checkpoint,
                            set_seed, shuffle_coordiates_all,
-                           validate_single, 
+                           validate_single, validate_all_dimensions,
                            initialize_wandb,find_max_dim, register_hooks_and_print_shapes, extend_nerf_compose, load_trained_blocks,
                            get_cifar_optimizer)
 
@@ -361,7 +361,8 @@ def main_iterative_nerf(args):
             print("------------------------------------------------------------------------------------------------------------------------------")
             print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at the end of block {block_id} with accuracy: {best_acc*100:.2f}%")
             print("------------------------------------------------------------------------------------------------------------------------------")
-            
+        
+        validate_all_dimensions(hyper_model, backbone_parameters, block_id, val_loader, criterion, create_model, args, device='cuda')
         prev_NeRF = hyper_model
         
     if ema:
