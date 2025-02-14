@@ -593,7 +593,7 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
             if name in predicted_checkpoint:
                 param.copy_(predicted_checkpoint[name].clone())
 
-    return model_cls, list(predicted_checkpoint.values())
+    return model_cls, predicted_checkpoint
 
 
 def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None):

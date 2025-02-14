@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=NeRF_ResNetXL
-#SBATCH --output=log/ResnetXL/oldHyperparameters_%j.out
-#SBATCH  --error=log/ResnetXL/oldHyperparameters_%j.err
+#SBATCH --output=log/ResnetXL/udatedKeys_%j.out
+#SBATCH  --error=log/ResnetXL/udatedKeys_%j.err
 #SBATCH --time=24:00:00                         
 ##SBATCH --constraint="gpu_A40_48G|gpu_RTXA5000_24G|gpu_RTX6000_24G" #|gpu_RTX5000_16G" #|gpu_2080Ti_11G"
 ##SBATCH --mem=32G
