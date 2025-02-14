@@ -16,6 +16,7 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            get_cifar_optimizer)
 
 import wandb
+import time
 
 device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
@@ -376,7 +377,10 @@ def main_iterative_nerf(args):
             print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at the end of block {block_id} with accuracy: {best_acc*100:.2f}%")
             print("------------------------------------------------------------------------------------------------------------------------------")
         
+        start_time = time.time()
         validate_all_dimensions(hyper_model, backbone_parameters, block_id, val_loader, criterion, create_model, args, device='cuda')
+        elapsed_time = (time.time() - start_time)/60
+        print(f"Time elapsed for validate_all_dimensions: {elapsed_time:.2f} minutes")
         prev_NeRF = hyper_model
         
     if ema:

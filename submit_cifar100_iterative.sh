@@ -3,7 +3,7 @@
 #SBATCH --job-name=NeRF_ResNetXL
 #SBATCH --output=log/ResnetXL/oldHyperparameters_%j.out
 #SBATCH  --error=log/ResnetXL/oldHyperparameters_%j.err
-#SBATCH --time=20:00:00                         
+#SBATCH --time=24:00:00                         
 ##SBATCH --constraint="gpu_A40_48G|gpu_RTXA5000_24G|gpu_RTX6000_24G" #|gpu_RTX5000_16G" #|gpu_2080Ti_11G"
 ##SBATCH --mem=32G
 
@@ -20,7 +20,7 @@
 conda activate neumeta
 # Command to execute Python program
 
-#export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
 
 python3 /homes/tsommariva/neumeta/neumeta/train_cifar100_iterative.py --config neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
