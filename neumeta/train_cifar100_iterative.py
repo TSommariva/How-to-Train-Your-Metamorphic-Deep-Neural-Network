@@ -16,7 +16,6 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
                            get_cifar_optimizer)
 
 import wandb
-from sklearn.metrics import accuracy_score
 
 device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
@@ -130,7 +129,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         # Forward pass
         predict = model_cls(x)
         results=torch.argmax(predict,dim=1)
-        train_acc=accuracy_score(results.cpu(), target.cpu())
+        correct = (results == target).sum().item()
+        total = target.size(0)
+        train_acc = correct / total if total > 0 else 0
         accuracies.update(train_acc)
         
         # Compute loss

@@ -6,7 +6,6 @@ from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_ComposeDict, NeRF_HierarcResMLP_Compose
-from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import copy
 from neumeta.utils.other_utils import AverageMeter
@@ -297,14 +296,15 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
                 predict = model_cls(x)
     
                 pred = torch.argmax(predict, dim=-1)
-                preds.extend(pred.cpu().numpy())
-                gt.extend(target.cpu().numpy())
+
+                correct += (pred == target).sum().item()
+                total += target.size(0)
     
                 loss = criterion(predict, target)
                 val_loss += loss.item()
-    
-    return val_loss / len(val_loader), accuracy_score(gt,preds)
-
+                
+    accuracy = correct / total if total > 0 else 0
+    return val_loss / len(val_loader), accuracy
 def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args, device='cuda'):
     losses = AverageMeter()
     accuracies = AverageMeter()
