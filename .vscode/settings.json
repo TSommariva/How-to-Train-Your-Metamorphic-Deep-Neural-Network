@@ -8,5 +8,6 @@
     },
     "terminal.integrated.env.linux": {
         "PYTHONPATH" : ".:${env:PYTHONPATH}"
-    }
+    },
+    "python.analysis.autoImportCompletions": true
 }

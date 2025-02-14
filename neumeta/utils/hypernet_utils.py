@@ -550,7 +550,7 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
         split_key = key.split('.')
-        i_value = split_key[1]
+        i_value = int(split_key[1])
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
         
@@ -560,6 +560,8 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
             else:
                 with torch.no_grad():
                     predicted_weights = model(input_tensor[boolean_mask], key)
+        else:
+            predicted_weights = model(input_tensor[boolean_mask], key)
 
         # Check the size information for the current mask and proceed accordingly.
         if size_list[boolean_mask][0] == 4:  # Condition for conv weights.

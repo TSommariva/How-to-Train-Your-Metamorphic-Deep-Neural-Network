@@ -18,6 +18,7 @@
       "args": [
         "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml",
         "--resume_from", "experiments/TEST/cifar100_nerf_best.pth",
+        "--experiment.debug=True",
       ], 
       "console": "integratedTerminal"
     },
@@ -27,7 +28,6 @@
       "request": "launch",
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
-        "--experiment.debug=True",
         "--config", "/homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
       ], 
       "console": "integratedTerminal"
