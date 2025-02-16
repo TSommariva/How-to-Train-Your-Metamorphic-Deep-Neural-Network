@@ -9,6 +9,7 @@ from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResML
 from tqdm import tqdm
 import copy
 from neumeta.utils.other_utils import AverageMeter
+import gc
 
 def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon=1e-6):
     """
@@ -309,7 +310,7 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
 
 def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args, device='cuda'):
     losses = AverageMeter()
-    accuracies = AverageMeter()
+    accuracies = []
     for hidden_dim in range(args.dimensions.range[0], args.dimensions.range[1]):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
@@ -328,16 +329,24 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
+        print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
         losses.update(val_loss)
-        accuracies.update(val_acc)
+        accuracies.append(val_acc)
+        del model
+        del accumulated_model
+        gc.collect()
+        torch.cuda.empty_cache()
     
-    wandb.log({"Non-prior Seen - Validation loss": losses.avg, "Non-prior Seen - Validation Accuracy": accuracies.avg}, commit=False)
-    print(f"Non-prior Seen - Validation loss:{losses.avg} Non-prior Seen - Validation Accuracy:{accuracies.avg}")
+    mean_accuracy = np.mean(accuracies)
+    std_accuracy = np.std(accuracies)
+    wandb.log({"Non-prior Seen - Validation loss": losses.avg, "Non-prior Seen - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Seen - Validation loss:{losses.avg:.4f} Non-prior Seen - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    print("------------------------------------------------------------------------------------------------------------------------------")
     
     losses.reset()
-    accuracies.reset()
+    accuracies = []
     
-    for hidden_dim in range(args.dimensions.range[0]//2 , args.dimensions.range[0]):
+    for hidden_dim in range(args.dimensions.range[0]//4 , args.dimensions.range[0]):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
                                 num_param=num_param,
@@ -355,14 +364,22 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
+        print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
         losses.update(val_loss)
-        accuracies.update(val_acc)
+        accuracies.append(val_acc)
+        del model
+        del accumulated_model
+        gc.collect()
+        torch.cuda.empty_cache()
     
-    wandb.log({"Non-prior Unseen Low - Validation loss": losses.avg, "Non-prior Unseen Low - Validation Accuracy": accuracies.avg}, commit=False)
-    print(f"Non-prior Unseen Low - Validation loss:{losses.avg} Non-prior Unseen Low - Validation Accuracy:{accuracies.avg}")
+    mean_accuracy = np.mean(accuracies)
+    std_accuracy = np.std(accuracies)
+    wandb.log({"Non-prior Unseen Low - Validation loss": losses.avg, "Non-prior Unseen Low - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Unseen Low - Validation loss:{losses.avg:.4f} Non-prior Unseen Low - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    print("------------------------------------------------------------------------------------------------------------------------------")
     
     losses.reset()
-    accuracies.reset()
+    accuracies = []
     
     for hidden_dim in range(args.dimensions.range[1] + 1 , args.dimensions.range[1] + args.dimensions.range[0]//2 + 1):
         model = create_model(args.model.type, 
@@ -382,11 +399,19 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
+        print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
         losses.update(val_loss)
-        accuracies.update(val_acc)
+        accuracies.append(val_acc)
+        del model
+        del accumulated_model
+        gc.collect()
+        torch.cuda.empty_cache()
     
-    wandb.log({"Non-prior Unseen High - Validation loss": losses.avg, "Non-prior Unseen High - Validation Accuracy": accuracies.avg}, commit=False)
-    print(f"Non-prior Unseen High - Validation loss:{losses.avg} Non-prior Unseen High - Validation Accuracy:{accuracies.avg}")
+    mean_accuracy = np.mean(accuracies)
+    std_accuracy = np.std(accuracies)
+    wandb.log({"Non-prior Unseen High - Validation loss": losses.avg, "Non-prior Unseen High - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Unseen High - Validation loss:{losses.avg:.4f} Non-prior Unseen High - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    print("------------------------------------------------------------------------------------------------------------------------------")
         
     return
     
@@ -460,6 +485,13 @@ def sample_merge_model(hyper_model, model, args, backbone_parameters ,K=50, devi
         models.append(model_cls_temp)
     
     accumulated_model = average_models(models)
+    
+    for model in models:
+        del model
+    models.clear()
+    del models
+    gc.collect()
+    torch.cuda.empty_cache()
 
     accumulated_model.eval()
     return accumulated_model
