@@ -89,6 +89,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
     accuracies = AverageMeter()
+    block_flags = [True] * block_idx if block_idx <= args.experiment.simul_blocks else [False] * block_idx
     
     for batch_idx, (x, target) in enumerate(train_loader):
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
@@ -101,6 +102,14 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1))
         else:
             hidden_dim = 64
+            if block_idx > args.experiment.simul_blocks:
+                extracted_blocks = []
+                for i in range(args.experiment.simul_blocks):
+                    block = random.choice(range(0, block_idx))
+                    while block in extracted_blocks:
+                        block = random.choice(range(0, block_idx))
+                    extracted_blocks.append(block)
+                    block_flags[block] = True
         #    extracted_dim.append(hidden_dim)
                         
         model_cls, cls_optimizer ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
@@ -122,7 +131,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         model_cls, reconstructed_weights = sample_weights(model, model_cls,
                                                           coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                                                          device=device, NORM=args.dimensions.norm)
+                                                          device=device, NORM=args.dimensions.norm, block_flags=block_flags)
         
         model_cls.train()
         
@@ -139,7 +148,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         cls_losses.update(cls_loss.item())
         
         # Compute regularization loss
-        reg_loss = sum([torch.norm(w, p=2) for w in reconstructed_weights])
+        reg_loss = sum([torch.norm(w, p=2) for w in list(reconstructed_weights.values())])
         reg_losses.update(reg_loss.item())
         
         # Compute MSE loss
@@ -148,7 +157,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             gt_selected_weights = [
                 w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
             reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
-                w, w_gt) for w, w_gt in zip(reconstructed_weights, gt_selected_weights)]))
+                w, w_gt) for w, w_gt in zip(list(reconstructed_weights.values()), gt_selected_weights)]))
         else:
             reconstruct_loss = torch.tensor(0.0)
         reconstruct_losses.update(reconstruct_loss.item())
@@ -164,11 +173,13 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         for updated_weight in model_cls.parameters():
             updated_weight.grad = None
         
+        updated_keys = [k for k in selected_keys if block_flags[int(k.split('.')[1]) - 1]]
+        updated_weights = [w for k, w in reconstructed_weights.items() if k in updated_keys]
+        
         # Scale loss and do backward pass
         scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
         scaled_loss.backward(retain_graph=True)
-        torch.autograd.backward(reconstructed_weights, [
-                        w.grad for k, w in model_cls.named_parameters() if k in selected_keys])
+        torch.autograd.backward(updated_weights, [w.grad for k, w in model_cls.named_parameters() if k in updated_keys])
         
                 
         cls_optimizer.step()

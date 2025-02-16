@@ -9,11 +9,12 @@ model:
   
 # Experiment settings
 experiment:
-  name: HybridTraining_NoBackbone_step2_${hyper_model.type}_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
+  name: HybridTraining_${hyper_model.type}_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
   num_epochs: 50
   log_interval: 26
   eval_interval: 10
   batch_accumulation_steps: 4
+  simul_blocks: 1
   iterative: True
   custom_init: True
 

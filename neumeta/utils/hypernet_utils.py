@@ -533,7 +533,7 @@ def sample_single_model(hyper_model, model, device='cuda', cfg=None):
     model.eval()
     return model
 
-def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
+def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags=None):
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
     else:
@@ -547,10 +547,19 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
+        split_key = key.split('.')
+        i_value = int(split_key[1])
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
         
-        predicted_weights = model(input_tensor[boolean_mask], key)
+        if block_flags is not None:
+            if block_flags[i_value -1]:
+                predicted_weights = model(input_tensor[boolean_mask], key)
+            else:
+                with torch.no_grad():
+                    predicted_weights = model(input_tensor[boolean_mask], key)
+        else:
+            predicted_weights = model(input_tensor[boolean_mask], key)
 
         # Check the size information for the current mask and proceed accordingly.
         if size_list[boolean_mask][0] == 4:  # Condition for conv weights.
@@ -582,10 +591,10 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
             if name in predicted_checkpoint:
                 param.copy_(predicted_checkpoint[name].clone())
 
-    return model_cls, list(predicted_checkpoint.values())
+    return model_cls, predicted_checkpoint
 
 
-def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None):
+def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags=None):
     """
     Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
 
@@ -608,7 +617,7 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     #    model_cls = model_cls.module
     
     if isinstance (model.model, torch.nn.ModuleDict):
-        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler)
+        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler, block_flags=block_flags)
     
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
