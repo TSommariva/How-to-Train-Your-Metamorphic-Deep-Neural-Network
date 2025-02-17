@@ -28,7 +28,7 @@
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
         "--config", "/homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
-        "--resume_from","/work/tesi_tsommariva/experiments/AaITERATIVE/HybridTraining_evenOnly_resmlpDictXL_1simultaneusBlocks_50_4AccumulationSteps_warmup_cosine_20e/cifar100_nerf_last.pth",
+        "--resume_from","/work/tesi_tsommariva/experiments/AaITERATIVE/HybridTraining_OnlyMod4_resmlpDictXL_8simultaneusBlocks_1_4AccumulationSteps_warmup_cosine_20e/cifar100_nerf_best.pth",
         "--experiment.debug=True",
       ], 
       "console": "integratedTerminal"

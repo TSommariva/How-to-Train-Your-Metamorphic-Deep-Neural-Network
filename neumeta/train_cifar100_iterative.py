@@ -96,7 +96,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     reg_weight =  args.hyper_model.loss_weight.reg_weight
     recon_weight = args.hyper_model.loss_weight.recon_weight
     
-    block_flags = [True] * block_idx if block_idx <= args.experiment.simul_blocks else [False] * block_idx
+    block_flags = [True] * block_idx #if block_idx <= args.experiment.simul_blocks else [False] * block_idx
     
     for batch_idx, (x, target) in enumerate(train_loader):
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
@@ -109,14 +109,14 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1, 4))
         else:
             hidden_dim = 256
-            if block_idx > args.experiment.simul_blocks:
-                extracted_blocks = []
-                for i in range(args.experiment.simul_blocks):
-                    block = random.choice(range(0, block_idx))
-                    while block in extracted_blocks:
-                        block = random.choice(range(0, block_idx))
-                    extracted_blocks.append(block)
-                    block_flags[block] = True
+            #if block_idx > args.experiment.simul_blocks:
+            #    extracted_blocks = []
+            #    for i in range(args.experiment.simul_blocks):
+            #        block = random.choice(range(0, block_idx))
+            #        while block in extracted_blocks:
+            #            block = random.choice(range(0, block_idx))
+            #        extracted_blocks.append(block)
+            #        block_flags[block] = True
                     
         #    extracted_dim.append(hidden_dim)
                         
@@ -351,7 +351,7 @@ def main_iterative_nerf(args):
 
             print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
-            if epoch % args.experiment.eval_interval == 0 or epoch == 1:
+            if False and (epoch % args.experiment.eval_interval == 0 or epoch == 1):
                 if ema:
                     ema.apply()
 

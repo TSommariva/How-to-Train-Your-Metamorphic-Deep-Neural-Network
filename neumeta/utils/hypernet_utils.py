@@ -112,7 +112,7 @@ def get_optimizer(args, hyper_model, first_block = False):
     val_criterion = torch.nn.CrossEntropyLoss()
     optimizer_name = args.training.get('optimizer', 'adamw')
     if optimizer_name == 'adamw':
-        optimizer = AdamW(hyper_model.parameters(), 
+        optimizer = AdamW(filter(lambda p: p.requires_grad, hyper_model.parameters()), 
                           lr=args.training.learning_rate, 
                           weight_decay=args.training.weight_decay)
     elif optimizer_name == 'adam':
@@ -276,6 +276,15 @@ def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='c
         ).to(device)
     else:
         raise ValueError(f"Unsupported hyper_model_type: {hyper_model_type}")
+    
+    if args.model.only_last and isinstance(hyper_model.model, torch.nn.ModuleDict):
+        for module_key, module in hyper_model.model.items():
+            if f"layer3_{number_param//4}" in module_key:
+                for param in module.parameters():
+                    param.requires_grad = True
+            else:
+                for param in module.parameters():
+                    param.requires_grad = False
         
     return hyper_model
 
