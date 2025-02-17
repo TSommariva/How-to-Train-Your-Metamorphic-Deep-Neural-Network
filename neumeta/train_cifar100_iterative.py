@@ -347,6 +347,7 @@ def main_iterative_nerf(args):
         for epoch in range(start_epoch + 1, end_epoch):
             train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters)
             scheduler.step()
+            hyper_model.eval()
 
             print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
@@ -354,7 +355,13 @@ def main_iterative_nerf(args):
                 if ema:
                     ema.apply()
 
-                sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=20)
+                model_cls, _ ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{256}"]
+                selected_keys = np.unique(keys_list)
+
+                sampled_model, _ = sample_weights(hyper_model, model_cls,coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                device=device, NORM=args.dimensions.norm, block_flags=None)
+                
+                #sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=2)
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
                 
@@ -400,8 +407,14 @@ def main_iterative_nerf(args):
         
     if ema:
         ema.apply()
-        
-    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args,backbone_parameters=backbone_parameters ,device=device, K=20)
+    
+    model_cls, _ ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{256}"]
+    selected_keys = np.unique(keys_list)
+
+    sampled_model, _ = sample_weights(hyper_model, model_cls,coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                    device=device, NORM=args.dimensions.norm, block_flags=None)
+   
+    #sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args,backbone_parameters=backbone_parameters ,device=device, K=2)
     val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
     
     if ema:
@@ -427,7 +440,7 @@ def main_iterative_nerf(args):
     best_hyper_model = get_hypernet(args, number_param,total_param = number_param ,key_list = model.keys, device=device)
     checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,ema, device=device)
     backbone_parameters = checkpoint_info['backbone_parameters']
-    best_accuracies = []
+    best_hyper_model.eval()
     if best_ema:
             best_ema.apply()
     
@@ -439,6 +452,7 @@ def main_iterative_nerf(args):
     if not args.experiment.debug:
         wandb.finish()
         
+    #best_accuracies = []
     #for hidden_dim in range(args.dimensions.test_range[0], args.dimensions.test_range[1] + 1):
     #    print(f"--------------------------------------------------------HIDDEN DIM {hidden_dim}--------------------------------------------------------")
     #    # Create a model for the given hidden dimension
