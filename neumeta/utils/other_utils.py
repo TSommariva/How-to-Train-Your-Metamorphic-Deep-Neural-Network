@@ -12,6 +12,7 @@ import wandb
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import copy
+from neumeta.utils.hypernet_utils import get_hypernet
 
 
 def parse_args():
@@ -151,15 +152,15 @@ class EMA:
         with torch.no_grad():
             for name, param in self.model.named_parameters():
                 if param.requires_grad:
-                    self.backup[name] = param.clone()
-                    param.copy_(self.shadow[name].clone())
+                    self.backup[name] = param
+                    param.copy_(self.shadow[name])
 
     def restore(self):
         # Restore the original model weights
         with torch.no_grad():
             for name, param in self.model.named_parameters():
                 if param.requires_grad:
-                    param.copy_(self.backup[name].clone())
+                    param.copy_(self.backup[name])
 
     def update(self):
         # Update the shadow weights
@@ -481,7 +482,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-def extend_nerf_compose(base_model, extension_model, custom_init):
+def extend_nerf_compose(base_model, custom_init, args, number_param, total_param, key_list, device='cuda'):
     """
     Extends existing NeRF_ResMLP_Compose model with a new one, handling DDP models.
 
@@ -492,6 +493,7 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
     Returns:
         Extended model wrapped in DDP if input was DDP
     """
+    extension_model = get_hypernet(args, number_param ,total_param=total_param ,key_list=key_list ,device=device)
     # Get underlying models if DDP
     base = base_model.module if isinstance(base_model, torch.nn.parallel.DistributedDataParallel) else base_model
     extension = extension_model.module if isinstance(extension_model, torch.nn.parallel.DistributedDataParallel) else extension_model
@@ -513,10 +515,10 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
             
         for name, param in extension_model.named_parameters():
             if name in base_checkpoint:
-                param.copy_(base_checkpoint[name].clone())
+                param.copy_(base_checkpoint[name])
             elif last is not None:
                 if param.shape == last_params[i].shape:
-                    param.copy_(last_params[i].clone())
+                    param.copy_(last_params[i])
                 else:
                     print(f"src:{name} and previous param have different shapes")
                 i+=1

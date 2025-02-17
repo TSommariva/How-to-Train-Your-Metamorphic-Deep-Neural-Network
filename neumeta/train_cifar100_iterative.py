@@ -48,9 +48,9 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False)
          
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
-            model_cls = model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+            model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
-            model_cls = model_cls.to(device)
+            model_cls.to(device)
         
         optimizer = get_cifar_optimizer(args, model_cls)
             
@@ -71,9 +71,9 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
             
             if device=="cuda" and torch.backends.cudnn.version() >= 7603:
-                model_trained = model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+                model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
             else:
-                model_trained = model_trained.to(device)
+                model_trained.to(device)
             model_trained.eval()
             
             gt_model_dict[f"{dim}"] = model_trained
@@ -133,10 +133,11 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 #if name not in model_cls.learnable_parameter.keys():
                 if 'alpha' in name or 'fc' in name:
                     if name in backbone_parameters:
-                        param.copy_(backbone_parameters[name].clone())
+                        param.copy_(backbone_parameters[name])
                     else:
-                        backbone_parameters[name] = param.clone()
-        
+                        backbone_parameters[name] = param
+                        
+        torch.cuda.empty_cache()
         model_cls, reconstructed_weights = sample_weights(model, model_cls,
                                                             coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
                                                             device=device, NORM=args.dimensions.norm, block_flags=block_flags)
@@ -165,9 +166,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         # Compute MSE loss
         if f"{hidden_dim}" in gt_model_dict:
-            gt_model = gt_model_dict[f"{hidden_dim}"]
+            #gt_model = gt_model_dict[f"{hidden_dim}"]
             gt_selected_weights = [
-                w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
+                w for k, w in gt_model_dict[f"{hidden_dim}"].learnable_parameter.items() if k in selected_keys]
             reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
                 w, w_gt) for w, w_gt in zip(list(reconstructed_weights.values()), gt_selected_weights)]))
         else:
@@ -194,7 +195,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         with torch.no_grad():
             backbone_parameters = {
-                name: param.clone() 
+                name: param
                 for name, param in model_cls.named_parameters() 
                 if 'alpha' in name or 'fc' in name
                 #if name not in model_cls.learnable_parameter.keys()
@@ -303,6 +304,8 @@ def main_iterative_nerf(args):
         backbone_parameters = checkpoint_info['backbone_parameters']
         print(f"Resuming from block: {start_block}, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
         # Note: If there are more elements to retrieve, do so here.  
+        del checkpoint_info
+        gc.collect()
 
     if not args.experiment.debug:
         initialize_wandb(args)
@@ -312,25 +315,22 @@ def main_iterative_nerf(args):
         print(f"BLOCK[{block_id}/{args.model.num_param}]")
         
         if not (args.resume_from and block_id == start_block):
-            if block_id != start_block:
-                hyper_model=extend_nerf_compose(prev_NeRF,hyper_model,args.experiment.custom_init)
+            dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block)
+            dim_dict = shuffle_coordiates_all(dim_dict)
+            _, _, _, keys_list, _, _, _ = dim_dict[f"{256}"]
+            selected_keys = np.unique(keys_list)
+            
+            if block_id == start_block:
+                hyper_model = get_hypernet(args, 4 * block_id,total_param=number_param ,key_list=selected_keys ,device=device)
+            else:
+                hyper_model=extend_nerf_compose(prev_NeRF,args.experiment.custom_init,args, 4 * block_id,total_param=number_param,key_list=selected_keys ,device=device)
                 start_epoch = 0
                 best_acc = 0.0 
-                del dim_dict
-                del gt_model_dict
                 del criterion
                 del val_criterion
                 del optimizer
                 del scheduler
                 gc.collect()
-                torch.cuda.empty_cache()
-                
-            dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block)
-            dim_dict = shuffle_coordiates_all(dim_dict)
-            _, _, _, keys_list, _, _, _ = dim_dict[f"{256}"]
-            selected_keys = np.unique(keys_list)
-            hyper_model = get_hypernet(args, 4 * block_id,total_param=number_param ,key_list=selected_keys ,device=device)
-
 
             criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=block_id==start_block)   
 
@@ -351,17 +351,11 @@ def main_iterative_nerf(args):
 
             print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
-            if False and (epoch % args.experiment.eval_interval == 0 or epoch == 1):
+            if epoch % args.experiment.eval_interval == 0 or epoch == 1:
                 if ema:
                     ema.apply()
-
-                model_cls, _ ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{256}"]
-                selected_keys = np.unique(keys_list)
-
-                sampled_model, _ = sample_weights(hyper_model, model_cls,coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                                device=device, NORM=args.dimensions.norm, block_flags=None)
                 
-                #sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=2)
+                sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
                 
@@ -404,17 +398,10 @@ def main_iterative_nerf(args):
         
         prev_NeRF = hyper_model
         
-        
     if ema:
         ema.apply()
-    
-    model_cls, _ ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{256}"]
-    selected_keys = np.unique(keys_list)
-
-    sampled_model, _ = sample_weights(hyper_model, model_cls,coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
-                    device=device, NORM=args.dimensions.norm, block_flags=None)
-   
-    #sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args,backbone_parameters=backbone_parameters ,device=device, K=2)
+       
+    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args,backbone_parameters=backbone_parameters ,device=device)
     val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
     
     if ema:
@@ -431,18 +418,22 @@ def main_iterative_nerf(args):
     del val_criterion
     del optimizer
     del scheduler
-    gc.collect()
-    torch.cuda.empty_cache()    
          
     print("Training finished.")
     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     #testing the best model
-    best_hyper_model = get_hypernet(args, number_param,total_param = number_param ,key_list = model.keys, device=device)
+    best_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = model.keys, device=device)
     checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,ema, device=device)
     backbone_parameters = checkpoint_info['backbone_parameters']
     best_hyper_model.eval()
     if best_ema:
             best_ema.apply()
+            
+    del checkpoint_info
+    del best_ema
+    del _
+    gc.collect()
+    torch.cuda.empty_cache()    
     
     start_time = time.time()
     validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda')

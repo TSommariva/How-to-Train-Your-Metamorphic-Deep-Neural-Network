@@ -472,38 +472,29 @@ def sample_merge_model(hyper_model, model, args, backbone_parameters ,K=50, devi
     with torch.no_grad():
         for name, param in model.named_parameters():
             if name in backbone_parameters: 
-                param.copy_(backbone_parameters[name].clone())
+                param.copy_(backbone_parameters[name])
                     
     hyper_model.eval()
-    models = []
-    for k in range(K):
-        model_cls_temp = copy.deepcopy(model)
-        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
-            model_cls_temp = model_cls_temp.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
-        else:
-            model_cls_temp = model_cls_temp.to(device)
-        model_cls_temp.eval()
+    model_cls_temp = copy.deepcopy(model)
+    model_cls_temp.eval()
+    param_average = dict()
+    
+    for name, param in model_cls_temp.named_parameters():
+        param_average[name] = torch.zeros_like(param)
         
-        # Sampling and merging weights
+    for k in range(K):
+        # Sampling and averaging weights
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
         key_mask = create_key_masks(keys_list=keys_list)
-        #if k > 0:
-        #    coords_tensor = coords_tensor + ((torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise) #.clamp(-0.49, 0.49)
         model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
 
-        models.append(model_cls_temp)
-    
-    accumulated_model = average_models(models)
-    
-    for model in models:
-        del model
-    models.clear()
-    del models
-    gc.collect()
-    torch.cuda.empty_cache()
+        for name, param in model_cls_temp.named_parameters():
+            param_average[name] += param/K
 
-    accumulated_model.eval()
-    return accumulated_model
+    for name, param in model_cls_temp.named_parameters():
+        param.copy_(param_average[name])
+        
+    return model_cls_temp
 
 def sample_coordinates(model_cls):
     """
@@ -619,20 +610,20 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
                 predicted_weights = predicted_weights[:, start_index:end_index]
             
             # Reshape and assign the adjusted weights to the appropriate position in the checkpoint dictionary.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights.view(-1 ,height, width)
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]].copy_(predicted_weights.view(-1 ,height, width))
         
         elif size_list[boolean_mask][0] == 1:  # Condition for conv biases.
             # Assign the weights to the specified indices.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights.view(-1)
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]].copy_(predicted_weights.view(-1))
         
         elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
             # Directly assign the weights without reshaping.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]].copy_(predicted_weights[boolean_mask][:, 0])
          
     with torch.no_grad():     
         for name, param in model_cls.learnable_parameter.items():
             if name in predicted_checkpoint:
-                param.copy_(predicted_checkpoint[name].clone())
+                param.copy_(predicted_checkpoint[name])
 
     return model_cls, predicted_checkpoint
 
