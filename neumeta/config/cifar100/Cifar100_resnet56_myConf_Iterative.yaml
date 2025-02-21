@@ -10,7 +10,7 @@ model:
   
 # Experiment settings
 experiment:
-  name: HybridTraining_OnlyMod4_OnlyLast_${hyper_model.type}XL_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
+  name: OnlyLast_AllDims_NoEval_${hyper_model.type}XL_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
   num_epochs: 50
   log_interval: 26
   eval_interval: 10

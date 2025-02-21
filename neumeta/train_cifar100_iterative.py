@@ -95,8 +95,13 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     ce_weight = args.hyper_model.loss_weight.ce_weight
     reg_weight =  args.hyper_model.loss_weight.reg_weight
     recon_weight = args.hyper_model.loss_weight.recon_weight
-    
-    block_flags = [True] * block_idx #if block_idx <= args.experiment.simul_blocks else [False] * block_idx
+    if args.model.only_last:
+        block_flags = [False] * block_idx
+        block_flags[-1] = True
+        #if block_idx >= 2:
+        #    block_flags[-2] = True
+    else:
+        block_flags = [True] * block_idx if block_idx <= args.experiment.simul_blocks else [False] * block_idx
     
     for batch_idx, (x, target) in enumerate(train_loader):
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
@@ -137,7 +142,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                     else:
                         backbone_parameters[name] = param
                         
-        torch.cuda.empty_cache()
+        #torch.cuda.empty_cache()
         model_cls, reconstructed_weights = sample_weights(model, model_cls,
                                                             coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
                                                             device=device, NORM=args.dimensions.norm, block_flags=block_flags)
@@ -298,7 +303,7 @@ def main_iterative_nerf(args):
         if optimizer is None:
             criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=trained_blocks==1)
         
-        start_epoch = checkpoint_info['epoch']
+        start_epoch = checkpoint_info['epoch'] - 1
         best_acc = checkpoint_info['best_acc']
         start_block = trained_blocks
         backbone_parameters = checkpoint_info['backbone_parameters']
@@ -346,46 +351,50 @@ def main_iterative_nerf(args):
         
         for epoch in range(start_epoch + 1, end_epoch):
             train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters)
+            torch.cuda.empty_cache()
             scheduler.step()
             hyper_model.eval()
 
             print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
-            if epoch % args.experiment.eval_interval == 0 or epoch == 1:
-                if ema:
-                    ema.apply()
-                
-                sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
-                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
-                val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-                
-                del sampled_model
-                gc.collect()
-                torch.cuda.empty_cache()
-
-                if ema:
-                    ema.restore()
-                if not args.experiment.debug:    
-                    wandb.log({
-                        "Train Loss_model sampled outside training": train_loss,
-                        "Train Accuracy_model sampled outside training": train_acc,
-                        "Validation Loss_model sampled outside training": val_loss,
-                        "Validation Accuracy_model sampled outside training": val_acc
-                    }, step=(epoch) * len(train_loader) // args.experiment.log_interval + (block_id - 1) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
-                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
-                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-
-                # Save the checkpoint
-                if val_acc > best_acc:
-                    best_acc = val_acc
-                    save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
-                    print("------------------------------------------------------------------------------------------------------------------------------")
-                    print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
-                    print("------------------------------------------------------------------------------------------------------------------------------")
-                else:
+            if (epoch % args.experiment.eval_interval == 0 or epoch == 1):
+            #    if ema:
+            #        ema.apply()
+            #    
+            #    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
+            #    train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+            #    val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+            #    
+            #    del sampled_model
+            #    gc.collect()
+            #    torch.cuda.empty_cache()
+            #    
+            #    if ema:
+            #        ema.restore()
+            #    if not args.experiment.debug:    
+            #        wandb.log({
+            #            "Train Loss_model sampled outside training": train_loss,
+            #            "Train Accuracy_model sampled outside training": train_acc,
+            #            "Validation Loss_model sampled outside training": val_loss,
+            #            "Validation Accuracy_model sampled outside training": val_acc
+            #        }, step=(epoch) * len(train_loader) // args.experiment.log_interval + (block_id - 1) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+            #    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            #    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
+            #    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+            #    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            #    
+            #    #Save the checkpoint
+            #    if val_acc > best_acc:
+            #        best_acc = val_acc
+            #        save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
+            #        print("------------------------------------------------------------------------------------------------------------------------------")
+            #        print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
+            #        print("------------------------------------------------------------------------------------------------------------------------------")
+            #    else:
                     save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
+                    print("------------------------------------------------------------------------------------------------------------------------------")
+                    print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} as last")
+                    print("------------------------------------------------------------------------------------------------------------------------------")
         
         if epoch is None:
             epoch = end_epoch
@@ -398,50 +407,43 @@ def main_iterative_nerf(args):
         
         prev_NeRF = hyper_model
         
-    if ema:
-        ema.apply()
-       
-    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args,backbone_parameters=backbone_parameters ,device=device)
-    val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-    
-    if ema:
-        ema.restore()
-        
-    save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc, trained_blocks=args.model.num_param, backbone_parameters=backbone_parameters)
-    print("------------------------------------------------------------------------------------------------------------------------------")
-    print(f"Checkpoint saved at the end of training with accuracy: {val_acc*100:.2f}%")
-    print("------------------------------------------------------------------------------------------------------------------------------")
-    
-    del sampled_model
-    del dim_dict
-    del gt_model_dict
-    del val_criterion
-    del optimizer
-    del scheduler
-         
+    #if ema:
+    #    ema.apply()
+    #   
+    #sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args,backbone_parameters=backbone_parameters ,device=device)
+    #val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+    #
+    #if ema:
+    #    ema.restore()
+    #    
+    #save_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,args.experiment.num_epochs,val_acc, trained_blocks=args.model.num_param, backbone_parameters=backbone_parameters)
+    #print("------------------------------------------------------------------------------------------------------------------------------")
+    #print(f"Checkpoint saved at the end of training with accuracy: {val_acc*100:.2f}%")
+    #print("------------------------------------------------------------------------------------------------------------------------------")
+    #  
     print("Training finished.")
     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     #testing the best model
-    best_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = model.keys, device=device)
-    checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,ema, device=device)
-    backbone_parameters = checkpoint_info['backbone_parameters']
-    best_hyper_model.eval()
-    if best_ema:
-            best_ema.apply()
-            
-    del checkpoint_info
-    del best_ema
-    del _
-    gc.collect()
-    torch.cuda.empty_cache()    
-    
-    start_time = time.time()
-    validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda')
-    elapsed_time = (time.time() - start_time)/60
-    print(f"Time elapsed for validate_all_dimensions: {elapsed_time:.2f} minutes")
-    
-    if not args.experiment.debug:
-        wandb.finish()
+    #best_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = model.keys, device=device)
+    #checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,ema, device=device)
+    #backbone_parameters = checkpoint_info['backbone_parameters']
+    #best_hyper_model.eval()
+    #if best_ema:
+    #        best_ema.apply()
+    #        
+    #del checkpoint_info
+    #del best_ema
+    #del _
+    #gc.collect()
+    #torch.cuda.empty_cache()    
+    #
+    #start_time = time.time()
+    #validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda')
+    #elapsed_time = (time.time() - start_time)/60
+    #print(f"Time elapsed for validate_all_dimensions: {elapsed_time:.2f} minutes")
+    #
+    #if not args.experiment.debug:
+    #    wandb.finish()
         
     #best_accuracies = []
     #for hidden_dim in range(args.dimensions.test_range[0], args.dimensions.test_range[1] + 1):
@@ -471,16 +473,66 @@ def main_iterative_nerf(args):
     #    del accumulated_model_best
     #    gc.collect()
     #    torch.cuda.empty_cache()
-#
+    #
     #best_mean_accuracy = np.mean(best_accuracies)
     #best_std_accuracy = np.std(best_accuracies)
     #
     #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     #print(f"Best NeRF Mean Validation Accuracy: {best_mean_accuracy * 100:.2f}% ± {best_std_accuracy * 100:.2f}%")
+
+def test(args):
+    num_workers = get_num_workers()
+    _, val_loader = get_cifar100(args.training.batch_size, num_workers)
+
+    model = create_model(args.model.type, 
+                         hidden_dim=args.dimensions.start,
+                         num_param=args.model.num_param,
+                         bottom_up=args.model.bottom_up,
+                         path=args.model.pretrained_path, 
+                         smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+
     
+    checkpoint = model.learnable_parameter
+    number_param = len(checkpoint)
+    
+    best_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = model.keys, device=device)
+    if args.hyper_model.get('use_ema', True):
+            best_ema = EMA(best_hyper_model, decay=args.hyper_model.ema_decay)
+    else:
+        best_ema = None
+    
+    criterion, _, optimizer, scheduler = get_optimizer(args, best_hyper_model, first_block=False) 
+        
+    checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
+    if checkpoint_info is None:
+        checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
+    backbone_parameters = checkpoint_info['backbone_parameters']
+    best_hyper_model.eval()
+    if best_ema:
+            best_ema.apply()
+
+    del checkpoint_info
+    del best_ema
+    del model
+    del checkpoint
+    del optimizer
+    del _
+    gc.collect()
+    torch.cuda.empty_cache()    
+
+    start_time = time.time()
+    validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda')
+    elapsed_time = (time.time() - start_time)/60
+    print(f"Time elapsed for testing: {elapsed_time:.2f} minutes")
+
+    if not args.experiment.debug:
+        wandb.finish()
+
 
 if __name__ == "__main__":
     args = parse_args()
     print_omegaconf(args)
     
     main_iterative_nerf(args)
+    
+    test(args)

@@ -8,7 +8,6 @@ import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_ComposeDict, NeRF_HierarcResMLP_Compose
 from tqdm import tqdm
 import copy
-from neumeta.utils.other_utils import AverageMeter
 import gc
 
 def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon=1e-6):
@@ -282,6 +281,9 @@ def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='c
             if f"layer3_{number_param//4}" in module_key:
                 for param in module.parameters():
                     param.requires_grad = True
+            #elif number_param > 4 and f"layer3_{(number_param//4) - 1}" in module_key:
+            #    for param in module.parameters():
+            #        param.requires_grad = True
             else:
                 for param in module.parameters():
                     param.requires_grad = False
@@ -317,10 +319,10 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     accuracy = correct / total if total > 0 else 0
     return val_loss / len(val_loader), accuracy
 
-def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args, device='cuda'):
-    losses = AverageMeter()
+def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args,step=1 ,device='cuda'):
+    losses = []
     accuracies = []
-    for hidden_dim in range(args.dimensions.range[0], args.dimensions.range[1]):
+    for hidden_dim in range(args.dimensions.range[0], args.dimensions.range[1], step):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
                                 num_param=num_param,
@@ -329,17 +331,17 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
                                 prior=False)
-        
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model = model.to(device)
         
+        model.eval()
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
         print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
-        losses.update(val_loss)
+        losses.append(val_loss)
         accuracies.append(val_acc)
         del model
         del accumulated_model
@@ -348,14 +350,14 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
     
     mean_accuracy = np.mean(accuracies)
     std_accuracy = np.std(accuracies)
-    wandb.log({"Non-prior Seen - Validation loss": losses.avg, "Non-prior Seen - Validation Accuracy": mean_accuracy*100}, commit=False)
-    print(f"Non-prior Seen - Validation loss:{losses.avg:.4f} Non-prior Seen - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    wandb.log({"Non-prior Seen - Validation loss": np.mean(losses), "Non-prior Seen - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Seen - Validation loss:{np.mean(losses):.4f} Non-prior Seen - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
     print("------------------------------------------------------------------------------------------------------------------------------")
     
-    losses.reset()
+    losses = []
     accuracies = []
     
-    for hidden_dim in range(args.dimensions.range[0]//4 , args.dimensions.range[0]):
+    for hidden_dim in range(args.dimensions.range[0]//4 , args.dimensions.range[0], step):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
                                 num_param=num_param,
@@ -364,17 +366,17 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
                                 prior=False)
-        
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model = model.to(device)
         
+        model.eval()
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
         print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
-        losses.update(val_loss)
+        losses.append(val_loss)
         accuracies.append(val_acc)
         del model
         del accumulated_model
@@ -383,14 +385,14 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
     
     mean_accuracy = np.mean(accuracies)
     std_accuracy = np.std(accuracies)
-    wandb.log({"Non-prior Unseen Low - Validation loss": losses.avg, "Non-prior Unseen Low - Validation Accuracy": mean_accuracy*100}, commit=False)
-    print(f"Non-prior Unseen Low - Validation loss:{losses.avg:.4f} Non-prior Unseen Low - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    wandb.log({"Non-prior Unseen Low - Validation loss": np.mean(losses), "Non-prior Unseen Low - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Unseen Low - Validation loss:{np.mean(losses):.4f} Non-prior Unseen Low - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
     print("------------------------------------------------------------------------------------------------------------------------------")
     
-    losses.reset()
+    losses = []
     accuracies = []
     
-    for hidden_dim in range(args.dimensions.range[1] + 1 , args.dimensions.range[1] + args.dimensions.range[0]//2 + 1):
+    for hidden_dim in range(args.dimensions.range[1] + 1 , args.dimensions.range[1] + args.dimensions.range[0]//2 + 1, step):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
                                 num_param=num_param,
@@ -399,17 +401,17 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
                                 prior=False)
-        
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model = model.to(device)
         
+        model.eval()
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
         print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
-        losses.update(val_loss)
+        losses.append(val_loss)
         accuracies.append(val_acc)
         del model
         del accumulated_model
@@ -418,8 +420,8 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
     
     mean_accuracy = np.mean(accuracies)
     std_accuracy = np.std(accuracies)
-    wandb.log({"Non-prior Unseen High - Validation loss": losses.avg, "Non-prior Unseen High - Validation Accuracy": mean_accuracy*100}, commit=False)
-    print(f"Non-prior Unseen High - Validation loss:{losses.avg:.4f} Non-prior Unseen High - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    wandb.log({"Non-prior Unseen High - Validation loss": np.mean(losses), "Non-prior Unseen High - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Unseen High - Validation loss:{np.mean(losses):.4f} Non-prior Unseen High - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
     print("------------------------------------------------------------------------------------------------------------------------------")
         
     return
@@ -491,8 +493,9 @@ def sample_merge_model(hyper_model, model, args, backbone_parameters ,K=50, devi
         for name, param in model_cls_temp.named_parameters():
             param_average[name] += param/K
 
-    for name, param in model_cls_temp.named_parameters():
-        param.copy_(param_average[name])
+    with torch.no_grad():
+        for name, param in model_cls_temp.named_parameters():
+            param.copy_(param_average[name])
         
     return model_cls_temp
 
@@ -581,13 +584,11 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
-        split_key = key.split('.')
-        i_value = int(split_key[1])
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
         
         if block_flags is not None:
-            if block_flags[i_value -1]:
+            if block_flags[int(key.split('.')[1]) - 1]:
                 predicted_weights = model(input_tensor[boolean_mask], key)
             else:
                 with torch.no_grad():
@@ -610,15 +611,15 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
                 predicted_weights = predicted_weights[:, start_index:end_index]
             
             # Reshape and assign the adjusted weights to the appropriate position in the checkpoint dictionary.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]].copy_(predicted_weights.view(-1 ,height, width))
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = (predicted_weights.view(-1 ,height, width))
         
         elif size_list[boolean_mask][0] == 1:  # Condition for conv biases.
             # Assign the weights to the specified indices.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]].copy_(predicted_weights.view(-1))
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = (predicted_weights.view(-1))
         
         elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
             # Directly assign the weights without reshaping.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]].copy_(predicted_weights[boolean_mask][:, 0])
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = (predicted_weights[boolean_mask][:, 0])
          
     with torch.no_grad():     
         for name, param in model_cls.learnable_parameter.items():
@@ -649,7 +650,6 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     #    model = model.module
     #if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
     #    model_cls = model_cls.module
-    
     if isinstance (model.model, torch.nn.ModuleDict):
         return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler, block_flags)
     

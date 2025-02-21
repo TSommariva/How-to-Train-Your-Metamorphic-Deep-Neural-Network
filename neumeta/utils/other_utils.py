@@ -319,7 +319,12 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     optimizer (torch.optim.Optimizer): The optimizer.
     ema (EMA): The EMA object.
     """
-    checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
+    try:
+        checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
+    except FileNotFoundError as e:
+        print(f"Error: Could not find checkpoint file at {filepath}")
+        print(f"Details: {str(e)}")
+        return None, model, optimizer, scheduler, ema
     
     # After loading the checkpoint
     #saved_keys = set(checkpoint['model_state_dict'].keys())
