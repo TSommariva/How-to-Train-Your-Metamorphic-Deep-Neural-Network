@@ -1,0 +1,362 @@
+import os
+import random
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
+from neumeta.models import create_model_cifar100 as create_model
+from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
+                           get_hypernet, get_optimizer,get_optimizer_scaledFT, load_checkpoint,
+                           parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
+                           sample_subset,  save_checkpoint,
+                           set_seed, shuffle_coordiates_all,
+                           validate_single, validate_all_dimensions,
+                           initialize_wandb,find_max_dim, register_hooks_and_print_shapes, extend_nerf_compose, load_trained_blocks,
+                           get_cifar_optimizer)
+
+import wandb
+import time
+import gc
+
+device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
+
+def get_num_workers():
+    try:
+        return int(os.environ.get("SLURM_CPUS_PER_TASK", 2))
+    except (ValueError, TypeError):
+        return 2
+
+def init_model_dict(args, num_blocks = 1, single_block = False):
+    """
+    Initializes a dictionary of models for each dimension in the given range, along with ground truth models for the starting dimension.
+
+    Args:
+        args: An object containing the arguments for initializing the models.
+
+    Returns:
+        dim_dict: A dictionary containing the models for each dimension, along with their corresponding coordinates, keys, indices, size, and ground truth models.
+        gt_model_dict: A dictionary containing the ground truth models for the starting dimension.
+    """
+    dim_dict = {}
+    gt_model_dict = {}
+    if not args.experiment.iterative:
+        num_blocks=args.model.num_param
+    #for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1, 4):
+    dim = args.dimensions.start
+    model_cls = create_model(args.model.type, 
+                             hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=single_block ,
+                             path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False)
+     
+    if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+        model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+    else:
+        model_cls.to(device)
+    
+    optimizer = get_cifar_optimizer(args, model_cls)
+        
+    coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
+    dim_dict[f"{dim}"] = (model_cls, optimizer, coords_tensor, keys_list, indices_list, size_list, None)
+    
+    #if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+    #    input_tensor = torch.randn(1, 3, 32, 32).to(device, memory_format=torch.channels_last)
+    #else:
+    #    input_tensor = torch.randn(1, 3, 32, 32).to(device)
+    #
+    #register_hooks_and_print_shapes(model_cls, input_tensor)
+    if dim == args.dimensions.start:
+        print(f"Loading model for dim {dim}")
+        model_trained = create_model(args.model.type, 
+                             hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, single_block=single_block,
+                             path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
+        
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+        else:
+            model_trained.to(device)
+        model_trained.eval()
+        
+        gt_model_dict[f"{dim}"] = model_trained
+    return dim_dict, gt_model_dict
+
+def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx ,ema=None, args=None, block_idx=1, max_epochs=200, backbone_parameters={}):
+    model.train()
+    optimizer.zero_grad()
+    
+    no_accumulation = (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps) == 1
+    step = 0
+    
+    losses = AverageMeter()
+    cls_losses = AverageMeter()
+    reg_losses = AverageMeter()
+    reconstruct_losses = AverageMeter()
+    accuracies = AverageMeter()
+    
+    ce_weight = args.hyper_model.loss_weight.ce_weight
+    reg_weight =  args.hyper_model.loss_weight.reg_weight
+    recon_weight = args.hyper_model.loss_weight.recon_weight
+    if args.model.only_last:
+        block_flags = [False] * block_idx
+        block_flags[-1] = True
+        #if block_idx >= 2:
+        #    block_flags[-2] = True
+    else:
+        block_flags = [True] * block_idx if block_idx <= args.experiment.simul_blocks else [False] * block_idx
+    
+    for batch_idx, (x, target) in enumerate(train_loader):
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            x, target = x.to(device, memory_format=torch.channels_last), target.to(device)
+        else:
+            x, target = x.to(device), target.to(device)
+        
+        step +=1
+        if (step != 1) or no_accumulation:
+            hidden_dim = random.choice(range(args.dimensions.range[0], args.dimensions.range[1] + 1, 4))
+        else:
+            hidden_dim = 256
+            #if block_idx > args.experiment.simul_blocks:
+            #    extracted_blocks = []
+            #    for i in range(args.experiment.simul_blocks):
+            #        block = random.choice(range(0, block_idx))
+            #        while block in extracted_blocks:
+            #            block = random.choice(range(0, block_idx))
+            #        extracted_blocks.append(block)
+            #        block_flags[block] = True
+                    
+        #    extracted_dim.append(hidden_dim)
+                        
+        model_cls, cls_optimizer ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
+        selected_keys = np.unique(keys_list)
+        cls_optimizer.zero_grad()
+        #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
+        
+        #add coordinate noise
+        #coords_tensor = coords_tensor + ((torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise).clamp(-0.49, 0.49)
+        
+        #all the model_cls should share the same backbone_parameters
+        with torch.no_grad():
+            for name, param in model_cls.named_parameters():
+                #if name not in model_cls.learnable_parameter.keys():
+                if 'alpha' in name or 'fc' in name:
+                    if name in backbone_parameters:
+                        param.copy_(backbone_parameters[name])
+                    else:
+                        backbone_parameters[name] = param
+                        
+        #torch.cuda.empty_cache()
+        model_cls, reconstructed_weights = sample_weights(model, model_cls,
+                                                            coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
+                                                            device=device, NORM=args.dimensions.norm, block_flags=block_flags)
+        
+        model_cls.train()
+        
+        # Forward pass
+        predict = model_cls(x)
+        
+        with torch.no_grad():
+            results=torch.argmax(predict,dim=1)
+
+            correct = (results == target).sum().item()
+            total = target.size(0)
+
+            train_acc=correct / total if total > 0 else 0
+            accuracies.update(train_acc)
+        
+        # Compute loss
+        cls_loss = criterion(predict, target)
+        cls_losses.update(cls_loss.item())
+        
+        # Compute regularization loss
+        reg_loss = sum([torch.norm(w, p=2) for w in list(reconstructed_weights.values())])
+        reg_losses.update(reg_loss.item())
+        
+        # Compute MSE loss
+        if f"{hidden_dim}" in gt_model_dict:
+            #gt_model = gt_model_dict[f"{hidden_dim}"]
+            gt_selected_weights = [
+                w for k, w in gt_model_dict[f"{hidden_dim}"].learnable_parameter.items() if k in selected_keys]
+            reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
+                w, w_gt) for w, w_gt in zip(list(reconstructed_weights.values()), gt_selected_weights)]))
+        else:
+            reconstruct_loss = torch.tensor(0.0)
+        reconstruct_losses.update(reconstruct_loss.item())
+        
+        loss = ce_weight * cls_loss + reg_weight * reg_loss + recon_weight * reconstruct_loss
+        losses.update(loss.item())
+        
+        # Zero model_cls grads
+        for updated_weight in model_cls.parameters():
+            updated_weight.grad = None
+        
+        updated_keys = [k for k in selected_keys if block_flags[int(k.split('.')[1]) - 1]]
+        updated_weights = [w for k, w in reconstructed_weights.items() if k in updated_keys]
+        
+        # Scale loss and do backward pass
+        scaled_loss = loss / (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps)
+        scaled_loss.backward(retain_graph=True)
+        torch.autograd.backward(updated_weights, [w.grad for k, w in model_cls.named_parameters() if k in updated_keys])
+        
+                
+        cls_optimizer.step()
+        
+        with torch.no_grad():
+            backbone_parameters = {
+                name: param
+                for name, param in model_cls.named_parameters() 
+                if ('alpha' in name and block_flags[int(name.split('.')[1]) - 1]) or 'fc' in name
+                #if name not in model_cls.learnable_parameter.keys()
+            }
+                
+        if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
+            for i, param_group in enumerate(cls_optimizer.param_groups):
+                wandb.log({f"Backbone Learning rate{i}": param_group['lr']}, step=(batch_idx // args.experiment.log_interval) + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - 1) * max_epochs * len(train_loader) // args.experiment.log_interval)
+            
+            wandb.log({
+                "Running training accuracy argmax" : accuracies.avg,
+                "Running average training loss": losses.avg,
+                "Cls Loss": cls_losses.avg,
+                "Reg Loss": reg_losses.avg,
+                "Reconstruct Loss": reconstruct_losses.avg,
+                "Learning rate": optimizer.param_groups[0]['lr'],
+                }, step=batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - 1) * max_epochs * len(train_loader)// args.experiment.log_interval)
+
+                
+        if batch_idx % args.experiment.log_interval == 0:
+            print(f"Iteration {batch_idx}: Loss = {losses.avg:.4f}, Reg Loss = {reg_losses.avg:.4f}, Reconstruct Loss = {reconstruct_losses.avg:.4f}, Cls Loss = {cls_losses.avg:.4f}, Accuracy = {accuracies.avg*100:.2f}, Learning rate = {optimizer.param_groups[0]['lr']:.4e}")
+
+        if (batch_idx % args.experiment.batch_accumulation_steps) == 0 :
+            if args.training.get('clip_grad', 0.0) > 0:
+                torch.nn.utils.clip_grad_value_(
+                    model.parameters(), args.training.clip_grad)                
+                
+            optimizer.step()        
+            optimizer.zero_grad()
+            step = 0
+            
+            if ema:
+                ema.update()  # Update the EMA after each training step
+    
+    #if step > 0:
+    #    optimizer.step()        
+    #    if ema:
+    #        ema.update()    
+    #tr_loss, tr_acc = validate_single(model_cls, train_loader, nn.CrossEntropyLoss(), args=args, device=device)
+    if not args.experiment.debug:
+        wandb.log({
+                    "trainLoss_last model of the epoch" : losses.avg,
+                    "trainAcc_last model of the epoch" : accuracies.avg
+                }, step=batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - 1) * max_epochs * len(train_loader) // args.experiment.log_interval )
+    return losses.avg, accuracies.avg, backbone_parameters
+
+
+
+args = parse_args()
+print_omegaconf(args)
+set_seed(args.experiment.seed)
+num_workers = get_num_workers()
+initialize_wandb(args)
+train_loader, val_loader = get_cifar100(args.training.batch_size, num_workers)
+    
+model = create_model(args.model.type, 
+                     hidden_dim=args.dimensions.start,
+                     num_param=args.model.num_param,
+                     bottom_up=args.model.bottom_up,
+                     path=args.model.pretrained_path, 
+                     smooth=args.model.smooth, fuse=args.model.smooth).to(device)
+    
+print("Maximum DIM: ",find_max_dim(model))
+
+val_loss, acc = validate_single(model, val_loader, nn.CrossEntropyLoss(), args=args, device=device)
+print(f"Initial Permutated model Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")
+    
+checkpoint = model.learnable_parameter
+number_param = len(checkpoint)
+print(f"Number of parameters to be learned: {number_param}")
+print(f"Parameters keys: {model.keys}")
+        
+os.makedirs(args.training.save_model_path, exist_ok=True)
+
+start_block = 7
+start_epoch = 0
+best_acc = 0.0
+end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
+backbone_parameters = {}
+
+    
+
+for block_id in range(start_block, args.model.num_param + 1):
+    os.makedirs(f"{args.training.save_model_path}/block{block_id}", exist_ok=True)
+    print(f"BLOCK[{block_id}/{args.model.num_param}]")
+    
+    
+    print(f"Resuming from checkpoint: {args.resume_from}/block{block_id}")
+        
+    #trained_blocks = load_trained_blocks(f"{args.resume_from}/block{block_id}")
+    dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block)
+    dim_dict = shuffle_coordiates_all(dim_dict)
+    _, _, _, keys_list, _, _, _ = dim_dict[f"{256}"]
+    selected_keys = np.unique(keys_list)
+    hyper_model = get_hypernet(args, 4 * block_id, total_param=number_param ,key_list=selected_keys,device=device)
+
+    if args.hyper_model.get('use_ema', True):
+        ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
+    else:
+        ema = None
+
+    criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=block_id==1) 
+
+    checkpoint_info, hyper_model, optimizer, scheduler, ema = load_checkpoint(f"{args.resume_from}/block{block_id}/cifar100_nerf_best.pth", hyper_model, optimizer, scheduler, ema, args=args)
+    if checkpoint_info is None:
+        checkpoint_info, hyper_model, optimizer, scheduler, ema = load_checkpoint(f"{args.resume_from}/block{block_id}/cifar100_nerf_last.pth", hyper_model, optimizer,scheduler ,ema, device=device)
+        if checkpoint_info is None:
+            print(f"Resuming block{block_id} failed")
+            continue
+        else:
+            print(f"Resuming from checkpoint: {args.resume_from}/block{block_id}/cifar100_nerf_last.pth")
+    else:
+        print(f"Resuming from checkpoint: {args.resume_from}/block{block_id}/cifar100_nerf_best.pth")
+
+    if optimizer is None:
+        criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=block_id==1)
+
+    start_epoch = checkpoint_info['epoch']
+    best_acc = checkpoint_info['best_acc']
+    start_block = block_id
+    backbone_parameters = checkpoint_info['backbone_parameters']
+    print(f"Resuming from block: {start_block}, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
+    # Note: If there are more elements to retrieve, do so here.  
+    del checkpoint_info
+    gc.collect()
+    
+    for epoch in range(start_epoch + 1, end_epoch):
+        if epoch != start_epoch + 1:
+            continue
+        train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters)
+        torch.cuda.empty_cache()
+        scheduler.step()
+        hyper_model.eval()
+
+        print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
+
+        if (epoch % args.experiment.eval_interval == 0):# or epoch == 1):
+            if ema:
+                ema.apply()
+            sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device,K=10)
+            #train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+            val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+            print(f"Block[{block_id}]- Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+            del sampled_model
+            
+            gc.collect()
+            torch.cuda.empty_cache()
+            if ema:
+                ema.restore()
+            if not args.experiment.debug:    
+                wandb.log({
+                    #"Train Loss_model sampled outside training": train_loss,
+                    #"Train Accuracy_model sampled outside training": train_acc,
+                    "Validation Loss_model sampled outside training": val_loss,
+                    "Validation Accuracy_model sampled outside training": val_acc
+                }, step=(start_epoch) * len(train_loader) // args.experiment.log_interval + (block_id - 1) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+        
+wandb.finish()

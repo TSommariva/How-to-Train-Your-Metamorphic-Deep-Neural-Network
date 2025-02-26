@@ -18,6 +18,7 @@
       "args": [
         "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Debug.yaml",
         "--resume_from", "experiments/TEST/cifar100_nerf_best.pth",
+        "--experiment.debug=True",
       ], 
       "console": "integratedTerminal"
     },
@@ -28,9 +29,19 @@
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
         "--config", "/homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
-        "--resume_from","/work/tesi_tsommariva/experiments/AaITERATIVE/OnlyLast_OnlyMod4_NoEval_resmlpDictXL_8simultaneusBlocks_50_4AccumulationSteps_warmup_cosine_20e/cifar100_nerf_last.pth",
-        "--experiment.debug=True",
+        "--experiment.name='Debug_NoValidate'",
       ], 
+      "console": "integratedTerminal"
+    },
+    {
+      "name" : "Test Blocks",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "/homes/tsommariva/neumeta/neumeta/testBloks.py",
+      "args" :[ 
+        "--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
+        "--resume_from", "/work/tesi_tsommariva/experiments/AaITERATIVE/WithEval_v2_OnlyLast_OnlyMod4_resmlpDictXL_8simultaneusBlocks_50_4AccumulationSteps_warmup_cosine_20e" 
+      ],
       "console": "integratedTerminal"
     },
     {

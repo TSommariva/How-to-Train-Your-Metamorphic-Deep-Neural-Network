@@ -149,17 +149,19 @@ class EMA:
 
     def apply(self):
         # Backup the current model weights and set the model's weights to the shadow weights
+        print("Applying EMA")
         with torch.no_grad():
             for name, param in self.model.named_parameters():
-                if param.requires_grad:
-                    self.backup[name] = param
+                if name in self.shadow:
+                    self.backup[name] = param.clone()
                     param.copy_(self.shadow[name])
 
     def restore(self):
+        print("Restoring EMA")
         # Restore the original model weights
         with torch.no_grad():
             for name, param in self.model.named_parameters():
-                if param.requires_grad:
+                if name in self.backup:
                     param.copy_(self.backup[name])
 
     def update(self):
@@ -170,6 +172,7 @@ class EMA:
                     self.shadow[name] = self.decay * self.shadow[name] + (1.0 - self.decay) * param
                 
     def extend(self, model):
+        print("Extending EMA")
         self.model = model
         with torch.no_grad():
             for name, param in model.named_parameters():
@@ -346,7 +349,7 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     if 'scheduler_state_dict' in checkpoint and scheduler is not None and optimizer is not None:
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         
-    if ema and 'ema_shadow' in checkpoint:
+    if ema is not None and 'ema_shadow' in checkpoint:
         ema.shadow = {k: checkpoint['ema_shadow'][k].to(
             device) for k in checkpoint['ema_shadow']}
     else:
@@ -571,4 +574,14 @@ def get_cifar_optimizer(args, model):
         raise ValueError(f"Unknown optimizer: {optimizer_name}")
     return optimizer
 
+def weight_difference(model1, model2):
+    with torch.no_grad():
+        diff_total = 0.0
+        state_dict1 = model1.state_dict()
+        state_dict2 = model2.state_dict()
 
+        for key in state_dict1:
+            diff = torch.abs(state_dict1[key] - state_dict2[key])
+            diff_total += diff.sum().item()
+        
+    return diff_total
