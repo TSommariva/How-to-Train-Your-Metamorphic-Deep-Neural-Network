@@ -18,7 +18,7 @@ experiment:
   simul_blocks: 8
   iterative: True
   custom_init: True
-  dimensions_step: 1
+  dimensions_step: 4
 
 # Training configurations
 training:

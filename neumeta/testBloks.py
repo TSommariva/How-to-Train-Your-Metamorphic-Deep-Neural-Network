@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
 from neumeta.models import create_model_cifar100 as create_model
 from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
-                           get_hypernet, get_optimizer,get_optimizer_scaledFT, load_checkpoint,
+                           get_hypernet, get_optimizer, load_checkpoint,
                            parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
                            sample_subset,  save_checkpoint,
                            set_seed, shuffle_coordiates_all,
@@ -276,7 +276,7 @@ print(f"Parameters keys: {model.keys}")
         
 os.makedirs(args.training.save_model_path, exist_ok=True)
 
-start_block = 7
+start_block = 1
 start_epoch = 0
 best_acc = 0.0
 end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
@@ -319,7 +319,7 @@ for block_id in range(start_block, args.model.num_param + 1):
     if optimizer is None:
         criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=block_id==1)
 
-    start_epoch = checkpoint_info['epoch']
+    start_epoch = epoch = checkpoint_info['epoch']
     best_acc = checkpoint_info['best_acc']
     start_block = block_id
     backbone_parameters = checkpoint_info['backbone_parameters']
@@ -328,35 +328,29 @@ for block_id in range(start_block, args.model.num_param + 1):
     del checkpoint_info
     gc.collect()
     
-    for epoch in range(start_epoch + 1, end_epoch):
-        if epoch != start_epoch + 1:
-            continue
-        train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters)
-        torch.cuda.empty_cache()
-        scheduler.step()
-        hyper_model.eval()
-
-        print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
-
-        if (epoch % args.experiment.eval_interval == 0):# or epoch == 1):
-            if ema:
-                ema.apply()
-            sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device,K=10)
-            #train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
-            val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-            print(f"Block[{block_id}]- Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
-            del sampled_model
-            
-            gc.collect()
-            torch.cuda.empty_cache()
-            if ema:
-                ema.restore()
-            if not args.experiment.debug:    
-                wandb.log({
-                    #"Train Loss_model sampled outside training": train_loss,
-                    #"Train Accuracy_model sampled outside training": train_acc,
-                    "Validation Loss_model sampled outside training": val_loss,
-                    "Validation Accuracy_model sampled outside training": val_acc
-                }, step=(start_epoch) * len(train_loader) // args.experiment.log_interval + (block_id - 1) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+    #for epoch in range(start_epoch + 1, end_epoch):
+    #    if epoch != start_epoch + 1:
+    #        continue
+        #train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters)
+    torch.cuda.empty_cache()
+    scheduler.step()
+    hyper_model.eval()
+    #print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
+    #if (epoch % args.experiment.eval_interval == 0):# or epoch == 1):
+    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
+    #train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+    val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+    print(f"Block[{block_id}]- Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+    del sampled_model
+    
+    gc.collect()
+    torch.cuda.empty_cache()
+    if not args.experiment.debug:    
+        wandb.log({
+            #"Train Loss_model sampled outside training": train_loss,
+            #"Train Accuracy_model sampled outside training": train_acc,
+            "Validation Loss_model sampled outside training": val_loss,
+            "Validation Accuracy_model sampled outside training": val_acc
+        }, step=(start_epoch) * len(train_loader) // args.experiment.log_interval + (block_id - 1) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
         
 wandb.finish()

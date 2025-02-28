@@ -22,6 +22,16 @@ import gc
 
 device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
+def verify_weights(model1, model2):
+    with torch.no_grad():
+        for (name1, param1), (name2, param2) in zip(model1.named_parameters(), model2.named_parameters()):
+            if name1 != name2:
+                print(f"Parameter name mismatch: {name1} vs {name2}")
+            else:
+                diff = torch.abs(param1 - param2).max().item()
+                if diff > 1e-6:
+                    print(f"Parameter {name1} differs by {diff}")
+
 def get_num_workers():
     try:
         return int(os.environ.get("SLURM_CPUS_PER_TASK", 2))
@@ -227,8 +237,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             optimizer.zero_grad()
             step = 0
             
-            if ema:
-                ema.update()  # Update the EMA after each training step
+            #if ema:
+            #    ema.update()  # Update the EMA after each training step
     
     if not args.experiment.debug:
         wandb.log({
@@ -329,13 +339,13 @@ def main_iterative_nerf(args):
 
             criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=block_id==start_block)   
 
-            if args.hyper_model.get('use_ema', True):
-                if block_id == start_block or not args.hyper_model.get('extend_ema', False):
-                    ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
-                else:
-                    ema.extend(hyper_model)
-            else:
-                ema=None
+            #if args.hyper_model.get('use_ema', True):
+            #    if block_id == start_block or not args.hyper_model.get('extend_ema', False):
+            #        ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
+            #    else:
+            #        ema.extend(hyper_model)
+            #else:
+            #    ema=None
         
         epoch=None
         
@@ -348,19 +358,26 @@ def main_iterative_nerf(args):
             print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
             if (epoch % args.experiment.eval_interval == 0 or epoch == 1):
-                if ema:
-                    ema.apply()
+                testing_model = copy.deepcopy(hyper_model)
+                #if ema:
+                #    ema.apply()
             
-                sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
+                sampled_model = sample_merge_model(testing_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
                 
+                w_diff=weight_difference(hyper_model, testing_model)
+                print(f"Weight difference after evaluation: {w_diff:.4f}")
+                verify_weights(hyper_model, testing_model)
+                if w_diff > 0:
+                    print("Reinitializing testing model")
+                    testing_model = copy.deepcopy(hyper_model)
                 del sampled_model
                 gc.collect()
                 torch.cuda.empty_cache()
                 
-                if ema:
-                    ema.restore()
+                #if ema:
+                #    ema.restore()
                       
                 if not args.experiment.debug:    
                     wandb.log({
@@ -381,12 +398,35 @@ def main_iterative_nerf(args):
                     print("------------------------------------------------------------------------------------------------------------------------------")
                     print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {best_acc*100:.2f}%")
                     print("------------------------------------------------------------------------------------------------------------------------------")
-                
+                    w_diff=weight_difference(hyper_model, testing_model)
+                    print(f"Weight difference after saving: {w_diff:.4f}")
+                    verify_weights(hyper_model, testing_model)
+                    if w_diff > 0:
+                        print("Reinitializing hyper_model")
+                        hyper_model = copy.deepcopy(testing_model)
+                    _, testing_model, optimizer, scheduler, _ = load_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_best.pth",testing_model,optimizer,scheduler,ema,device=device)
+                    w_diff=weight_difference(hyper_model, testing_model)
+                    print(f"Weight difference after loading: {w_diff:.4f}")
+                    verify_weights(hyper_model, testing_model)
                 else:
                     save_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_last.pth",hyper_model,optimizer,scheduler,ema,epoch,best_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
                     print("------------------------------------------------------------------------------------------------------------------------------")
                     print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} as last")
                     print("------------------------------------------------------------------------------------------------------------------------------")
+                    w_diff=weight_difference(hyper_model, testing_model)
+                    print(f"Weight difference after saving: {w_diff:.4f}")
+                    verify_weights(hyper_model, testing_model)
+                    if w_diff > 0:
+                        print("Reinitializing hyper_model")
+                        hyper_model = copy.deepcopy(testing_model)
+                    _, testing_model, optimizer, scheduler, _ = load_checkpoint(f"{args.training.save_model_path}/block{block_id}/cifar100_nerf_best.pth",testing_model,optimizer,scheduler,ema,device=device)
+                    w_diff=weight_difference(hyper_model, testing_model)
+                    print(f"Weight difference after loading: {w_diff:.4f}")
+                    verify_weights(hyper_model, testing_model)
+                del testing_model
+                del _
+                gc.collect()
+                
         
         if epoch is None:
             epoch = end_epoch
@@ -426,13 +466,13 @@ def test(args):
     
     criterion, _, optimizer, scheduler = get_optimizer(args, best_hyper_model, first_block=False) 
         
-    checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
+    checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/block8/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
     if checkpoint_info is None:
-        checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/cifar100_nerf_last.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
+        checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/block8/cifar100_nerf_last.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
     backbone_parameters = checkpoint_info['backbone_parameters']
     best_hyper_model.eval()
-    if best_ema:
-            best_ema.apply()
+    #if best_ema:
+    #        best_ema.apply()
 
     del checkpoint_info
     del best_ema

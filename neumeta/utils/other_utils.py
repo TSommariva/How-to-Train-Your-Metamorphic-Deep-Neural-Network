@@ -266,7 +266,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
     best_acc (float): The best accuracy observed during training.
     """
     # Save the model, optimizer, EMA shadow weights, and other elements
-    model.eval()
+    model.eval() 
     checkpoint = {
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
@@ -323,19 +323,15 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     ema (EMA): The EMA object.
     """
     try:
-        checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
+        checkpoint = torch.load(filepath, weights_only=False)
     except FileNotFoundError as e:
         print(f"Error: Could not find checkpoint file at {filepath}")
         print(f"Details: {str(e)}")
         return None, model, optimizer, scheduler, ema
-    
-    # After loading the checkpoint
-    #saved_keys = set(checkpoint['model_state_dict'].keys())
-    #model_keys = set(model.state_dict().keys())
-    #print("Keys in saved state_dict but not in model:", saved_keys - model_keys)
-    #print("Keys in model but not in saved state_dict:", model_keys - saved_keys)
-    
+     
     model.load_state_dict(checkpoint['model_state_dict'])
+    model.eval()
+    model.to(device)
     
     if optimizer is not None:
         try:
