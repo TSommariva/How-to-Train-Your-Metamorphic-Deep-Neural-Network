@@ -318,7 +318,7 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     optimizer (torch.optim.Optimizer): The optimizer.
     ema (EMA): The EMA object.
     """
-    checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
+    checkpoint = torch.load(filepath, weights_only=False)
     
     # After loading the checkpoint
     #saved_keys = set(checkpoint['model_state_dict'].keys())
@@ -327,6 +327,8 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     #print("Keys in model but not in saved state_dict:", model_keys - saved_keys)
     
     model.load_state_dict(checkpoint['model_state_dict'])
+    model.eval()
+    model.to(device)
     
     if optimizer is not None:
         try:
@@ -565,3 +567,14 @@ def get_cifar_optimizer(args, model):
     return optimizer
 
 
+def weight_difference(model1, model2):
+    with torch.no_grad():
+        diff_total = 0.0
+        state_dict1 = model1.state_dict()
+        state_dict2 = model2.state_dict()
+
+        for key in state_dict1:
+            diff = torch.abs(state_dict1[key] - state_dict2[key])
+            diff_total += diff.sum().item()
+        
+    return diff_total

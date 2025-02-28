@@ -436,31 +436,31 @@ def sample_merge_model(hyper_model, model, args, backbone_parameters ,K=50, devi
     with torch.no_grad():
         for name, param in model.named_parameters():
             if name in backbone_parameters: 
-                param.copy_(backbone_parameters[name].clone())
+                param.copy_(backbone_parameters[name])
+        model_cls_temp = copy.deepcopy(model)
                     
     hyper_model.eval()
-    models = []
-    for k in range(K):
-        model_cls_temp = copy.deepcopy(model)
-        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
-            model_cls_temp = model_cls_temp.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
-        else:
-            model_cls_temp = model_cls_temp.to(device)
-        model_cls_temp.eval()
+    model_cls_temp.eval()
+    param_average = dict()
+    
+    for name, param in model_cls_temp.named_parameters():
+        param_average[name] = torch.zeros_like(param)
         
-        # Sampling and merging weights
+    for k in range(K):
+        # Sampling and averaging weights
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
         key_mask = create_key_masks(keys_list=keys_list)
-        #if k > 0:
-        #    coords_tensor = coords_tensor + ((torch.rand_like(coords_tensor) - 0.5) * args.training.coordinate_noise) #.clamp(-0.49, 0.49)
         model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
+        
+        with torch.no_grad():
+            for name, param in model_cls_temp.named_parameters():
+                param_average[name] += param/K
 
-        models.append(model_cls_temp)
-    
-    accumulated_model = average_models(models)
-
-    accumulated_model.eval()
-    return accumulated_model
+    with torch.no_grad():
+        for name, param in model_cls_temp.named_parameters():
+            param.copy_(param_average[name])
+        
+    return model_cls_temp
 
 def sample_coordinates(model_cls):
     """
