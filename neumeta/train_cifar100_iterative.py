@@ -329,13 +329,13 @@ def main_iterative_nerf(args):
 
             criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=block_id==start_block)   
 
-            #if args.hyper_model.get('use_ema', True):
-            #    if block_id == start_block or not args.hyper_model.get('extend_ema', False):
-            #        ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
-            #    else:
-            #        ema.extend(hyper_model)
-            #else:
-            #    ema=None
+            if args.hyper_model.get('use_ema', True):
+                if block_id == start_block or not args.hyper_model.get('extend_ema', False):
+                    ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
+                #else:
+                #    ema.extend(hyper_model)
+            else:
+                ema=None
         
         epoch=None
         
