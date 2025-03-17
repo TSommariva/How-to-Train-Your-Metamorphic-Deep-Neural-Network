@@ -6,11 +6,11 @@ model:
   num_param: 8 #Learnable Blocks
   smooth: False
   fuse: False
-  only_last: True
+  only_last: False
   
 # Experiment settings
 experiment:
-  name: NoEMA_OnlyLast_DimStep${experiment.dimensions_step}_${hyper_model.type}XL_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
+  name: RXL_OnlyLast:${model.only_last}_${experiment.simul_blocks}simultaneusBlocks_DimStep${experiment.dimensions_step}_${experiment.num_epochs}_${training.scheduler}_${training.warmup_epochs}e_lr${training.learning_rate}_etaMin${training.eta_min}
   num_epochs: 50
   log_interval: 26
   eval_interval: 10
@@ -23,9 +23,10 @@ experiment:
 # Training configurations
 training:
   batch_size: 128
+  optimizer: adamw
   learning_rate: 0.00085
   eta_min: ${training.learning_rate}
-  scheduler: warmup_cosine
+  scheduler: cosine #warmup_cosine
   warmup_epochs: 20
   start_decay: 100
   T_max: ${experiment.num_epochs}

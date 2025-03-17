@@ -5,6 +5,7 @@ import wandb
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
+import bitsandbytes as bnb
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_ComposeDict, NeRF_HierarcResMLP_Compose
 from tqdm import tqdm
 import copy
@@ -72,18 +73,22 @@ def get_optimizer(args, hyper_model, first_block = False):
         optimizer = torch.optim.Adagrad(hyper_model.parameters(), 
                                         lr=args.training.learning_rate, 
                                         weight_decay=args.training.weight_decay)
+    elif optimizer_name == '8bitAdamW':
+        optimizer = bnb.optim.AdamW8bit(filter(lambda p: p.requires_grad, hyper_model.parameters()), 
+                          lr=args.training.learning_rate, 
+                          weight_decay=args.training.weight_decay)
     else:
         raise ValueError(f"Unknown optimizer: {optimizer_name}")
     scheduler_name = args.training.get('scheduler', 'multistep')
     # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
-    if scheduler_name == 'cosine' or (scheduler_name == 'warmup_cosine' and not first_block):
+    if scheduler_name == 'cosine': # or (scheduler_name == 'warmup_cosine' and not first_block):
         print("Using cosine scheduler, T_max:", args.training.T_max)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=args.training.eta_min)
     elif scheduler_name == 'multistep':
         scheduler = MultiStepLR(optimizer,
                                 milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 
                                 gamma=0.1)
-    elif scheduler_name == 'warmup_cosine' and first_block:
+    elif scheduler_name == 'warmup_cosine':
         warmup_epochs = args.training.get('warmup_epochs', 20)
         
         warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-5, end_factor=1.0, total_iters=warmup_epochs)
@@ -428,11 +433,20 @@ def sample_merge_model(hyper_model, model, args, backbone_parameters ,K=50, devi
         # Sampling and averaging weights
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
         key_mask = create_key_masks(keys_list=keys_list)
-        model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
+        model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm, eval=True)
         
         with torch.no_grad():
             for name, param in model_cls_temp.named_parameters():
                 param_average[name] += param/K
+
+        del _
+        del coords_tensor
+        del keys_list
+        del indices_list
+        del size_list
+        del key_mask
+        gc.collect()
+        torch.cuda.empty_cache()
 
     with torch.no_grad():
         for name, param in model_cls_temp.named_parameters():
@@ -511,7 +525,7 @@ def sample_single_model(hyper_model, model, device='cuda', cfg=None):
     model.eval()
     return model
 
-def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None):
+def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None, eval=False):
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
     else:
@@ -525,9 +539,10 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
+        #if eval:
+        #    torch.cuda.empty_cache()
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
-        
         if block_flags is not None:
             if block_flags[int(key.split('.')[1]) - 1]:
                 predicted_weights = model(input_tensor[boolean_mask], key)
@@ -570,7 +585,7 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     return model_cls, predicted_checkpoint
 
 
-def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None):
+def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None, eval=False):
     """
     Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
 
@@ -592,7 +607,7 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     #if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
     #    model_cls = model_cls.module
     if isinstance (model.model, torch.nn.ModuleDict):
-        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler, block_flags)
+        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler, block_flags, eval=eval)
     
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}

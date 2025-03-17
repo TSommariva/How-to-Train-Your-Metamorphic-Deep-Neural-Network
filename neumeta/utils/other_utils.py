@@ -13,6 +13,7 @@ from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import copy
 from neumeta.utils.hypernet_utils import get_hypernet
+import bitsandbytes as bnb
 
 
 def parse_args():
@@ -253,6 +254,12 @@ class EMA_ddp:
                 if param.requires_grad:
                     torch.distributed.broadcast(self.shadow[name], src=0)
 
+def load_trained_blocks(filepath):
+    checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
+    
+    return checkpoint['trained_blocks']
+
+
 def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, backbone_parameters ,trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
@@ -280,6 +287,48 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
         checkpoint['ema_shadow']=ema.shadow
     torch.save(checkpoint, filepath)
     
+    
+def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', args=None):
+    """
+    Loads the state from a checkpoint into the model, optimizer, and EMA object.
+
+    Args:
+    filepath (str): The file path to load the checkpoint from.
+    model (torch.nn.Module): The model.
+    optimizer (torch.optim.Optimizer): The optimizer.
+    ema (EMA): The EMA object.
+    """
+    try:
+        checkpoint = torch.load(filepath, weights_only=False)
+    except FileNotFoundError as e:
+        print(f"Error: Could not find checkpoint file at {filepath}")
+        print(f"Details: {str(e)}")
+        return None, model, optimizer, scheduler, ema
+     
+    model.load_state_dict(checkpoint['model_state_dict'])
+    
+    if optimizer is not None:
+        try:
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        except ValueError as e:
+            print("it's not possible to load the saved optimizer, a new one will be created instead")
+            print(f"Error: {e}")
+            optimizer = None
+   
+    if scheduler is not None and optimizer is not None:
+        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        
+    if ema is not None and 'ema_shadow' in checkpoint:
+        ema.shadow = {k: checkpoint['ema_shadow'][k].to(
+            device) for k in checkpoint['ema_shadow']}
+    else:
+        ema = None
+
+    model.eval()
+    model.to(device)
+    return checkpoint, model, optimizer, scheduler, ema 
+
+
 def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_acc ,trained_blocks=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
@@ -306,52 +355,6 @@ def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_a
             checkpoint['ema_shadow']=ema.shadow
         
         torch.save(checkpoint, filepath)
-
-def load_trained_blocks(filepath):
-    checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
-    
-    return checkpoint['trained_blocks']
-    
-def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', args=None):
-    """
-    Loads the state from a checkpoint into the model, optimizer, and EMA object.
-
-    Args:
-    filepath (str): The file path to load the checkpoint from.
-    model (torch.nn.Module): The model.
-    optimizer (torch.optim.Optimizer): The optimizer.
-    ema (EMA): The EMA object.
-    """
-    try:
-        checkpoint = torch.load(filepath, weights_only=False)
-    except FileNotFoundError as e:
-        print(f"Error: Could not find checkpoint file at {filepath}")
-        print(f"Details: {str(e)}")
-        return None, model, optimizer, scheduler, ema
-     
-    model.load_state_dict(checkpoint['model_state_dict'])
-    model.eval()
-    model.to(device)
-    
-    if optimizer is not None:
-        try:
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        except ValueError as e:
-            print("ERROR!!")
-            print(f"{e}")
-            print("it's not possible to load the saved optimizer, a new one will be created instead")
-            optimizer = None
-            
-    if 'scheduler_state_dict' in checkpoint and scheduler is not None and optimizer is not None:
-        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
-        
-    if ema is not None and 'ema_shadow' in checkpoint:
-        ema.shadow = {k: checkpoint['ema_shadow'][k].to(
-            device) for k in checkpoint['ema_shadow']}
-    else:
-        ema = None
-
-    return checkpoint, model, optimizer, scheduler, ema  # Contains other information like epoch, best_acc
 
 def load_non_ddp_checkpoint_to_ddp(filepath, ddp_model, optimizer, scheduler, ema, device='cuda'):
     """Load non-DDP checkpoint into DDP model"""
@@ -498,12 +501,7 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
         Extended model wrapped in DDP if input was DDP
     """
     extension_model = get_hypernet(args, number_param ,total_param=total_param ,key_list=key_list ,device=device)
-    # Get underlying models if DDP
-    base = base_model.module if isinstance(base_model, torch.nn.parallel.DistributedDataParallel) else base_model
-    extension = extension_model.module if isinstance(extension_model, torch.nn.parallel.DistributedDataParallel) else extension_model
-    
     base_checkpoint = {k:v for k, v in base_model.named_parameters()}
-    last = None
     i=0
     
     with torch.no_grad():
@@ -512,29 +510,24 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
                 last = nn.ModuleList([copy.deepcopy(m) for m in base_model.model[-4:]])
             elif isinstance(base_model.model, nn.ModuleDict):
                 last = nn.ModuleList([copy.deepcopy(v) for _, v in list(base_model.model.items())[-4:]])
-
-        last_params = []
-        for name, param in last.named_parameters():
-            last_params.append(param)
-            
-        for name, param in extension_model.named_parameters():
+        
+            last_params = []
+            for name, param in last.named_parameters():
+                last_params.append(param)
+                    
+        for name, _ in extension_model.named_parameters():
+            #req_grad = (extension_model.state_dict()[name]).requires_grad
             if name in base_checkpoint:
-                param.copy_(base_checkpoint[name])
-            elif last is not None:
-                if param.shape == last_params[i].shape:
-                    param.copy_(last_params[i])
+                (extension_model.state_dict()[name]).copy_(base_checkpoint[name].detach().clone())
+            elif custom_init:
+                if (extension_model.state_dict()[name]).shape == last_params[i].shape:
+                    (extension_model.state_dict()[name]).copy_(last_params[i].detach().clone())
                 else:
                     print(f"src:{name} and previous param have different shapes")
                 i+=1
+            #(extension_model.state_dict()[name]).requires_grad = req_grad
+           
                 
-            
-    # Re-wrap with DDP if input was DDP
-    if isinstance(base_model, torch.nn.parallel.DistributedDataParallel):
-        return torch.nn.parallel.DistributedDataParallel(
-            base,
-            device_ids=[torch.distributed.get_rank()],
-            output_device=torch.distributed.get_rank()
-        )
     return extension_model
 
 def get_cifar_optimizer(args, model):
@@ -566,6 +559,12 @@ def get_cifar_optimizer(args, model):
                                       {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
                                        lr=args.training.alpha_learning_rate, 
                                        weight_decay=args.training.cls_weight_decay)
+    elif optimizer_name == '8bitAdamW':
+        optimizer = bnb.optim.AdamW8bit([{'params': alpha_params},
+                            #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
+                            {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
+                             lr=args.training.alpha_learning_rate, 
+                             weight_decay=args.training.cls_weight_decay)
     else:
         raise ValueError(f"Unknown optimizer: {optimizer_name}")
     return optimizer
