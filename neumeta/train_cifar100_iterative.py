@@ -1,6 +1,7 @@
 import copy
 import os
 import random
+import sys
 import numpy as np
 import torch
 import torch.nn as nn
@@ -58,9 +59,9 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False)
          
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
-            model_cls = model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+            model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
-            model_cls = model_cls.to(device)
+            model_cls.to(device)
         
         optimizer = get_cifar_optimizer(args, model_cls)
             
@@ -81,9 +82,9 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
             
             if device=="cuda" and torch.backends.cudnn.version() >= 7603:
-                model_trained = model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+                model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
             else:
-                model_trained = model_trained.to(device)
+                model_trained.to(device)
             model_trained.eval()
             
             gt_model_dict[f"{dim}"] = model_trained
@@ -91,10 +92,14 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
 
 def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx ,ema=None, args=None, block_idx=1, max_epochs=200, backbone_parameters={}):
     model.train()
-    optimizer.zero_grad()
+    optimizer.zero_grad(set_to_none=True)
     
     no_accumulation = (args.experiment.arch_accumulation_steps * args.experiment.batch_accumulation_steps) == 1
     step = 0
+    
+    ce_weight = args.hyper_model.loss_weight.ce_weight
+    reg_weight =  args.hyper_model.loss_weight.reg_weight
+    recon_weight = args.hyper_model.loss_weight.recon_weight
     
     losses = AverageMeter()
     cls_losses = AverageMeter()
@@ -126,6 +131,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                         
         model_cls, cls_optimizer ,coords_tensor, keys_list, indices_list, size_list, key_mask = dim_dict[f"{hidden_dim}"]
         selected_keys = np.unique(keys_list)
+        cls_optimizer.zero_grad()
         #coords_tensor, keys_list, indices_list, size_list, selected_keys = sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=args.ratio)
         
         #add coordinate noise
@@ -137,9 +143,10 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 #if name not in model_cls.learnable_parameter.keys():
                 if 'alpha' in name or 'fc' in name:
                     if name in backbone_parameters:
-                        param.copy_(backbone_parameters[name].clone())
+                        model_cls.state_dict()[name].copy_(backbone_parameters[name])
+
                     else:
-                        backbone_parameters[name] = param.clone()
+                        backbone_parameters[name] = param.detach().clone()
         
         model_cls, reconstructed_weights = sample_weights(model, model_cls,
                                                           coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys,
@@ -149,12 +156,15 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         # Forward pass
         predict = model_cls(x)
-        results=torch.argmax(predict,dim=1)
-        correct = (results == target).sum().item()
-        total = target.size(0)
-        train_acc = correct / total if total > 0 else 0
-        accuracies.update(train_acc)
-        
+        with torch.no_grad():
+            results=torch.argmax(predict,dim=1)
+
+            correct = (results == target).sum().item()
+            total = target.size(0)
+
+            train_acc=correct / total if total > 0 else 0
+            accuracies.update(train_acc)
+
         # Compute loss
         cls_loss = criterion(predict, target)
         cls_losses.update(cls_loss.item())
@@ -165,18 +175,14 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
         # Compute MSE loss
         if f"{hidden_dim}" in gt_model_dict:
-            gt_model = gt_model_dict[f"{hidden_dim}"]
             gt_selected_weights = [
-                w for k, w in gt_model.learnable_parameter.items() if k in selected_keys]
+                w for k, w in gt_model_dict[f"{hidden_dim}"].learnable_parameter.items() if k in selected_keys]
             reconstruct_loss = torch.mean(torch.stack([F.mse_loss(
                 w, w_gt) for w, w_gt in zip(list(reconstructed_weights.values()), gt_selected_weights)]))
         else:
             reconstruct_loss = torch.tensor(0.0)
         reconstruct_losses.update(reconstruct_loss.item())
         
-        ce_weight = args.hyper_model.loss_weight.ce_weight
-        reg_weight =  args.hyper_model.loss_weight.reg_weight
-        recon_weight = args.hyper_model.loss_weight.recon_weight
         
         loss = ce_weight * cls_loss + reg_weight * reg_loss + recon_weight * reconstruct_loss
         losses.update(loss.item())
@@ -195,12 +201,14 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         
                 
         cls_optimizer.step()
+        model_cls.eval()
         
         with torch.no_grad():
             backbone_parameters = {
-                name: param.clone() 
-                for name, param in model_cls.named_parameters() 
-                if 'alpha' in name or 'fc' in name
+                name: model_cls.state_dict()[name].detach().clone()
+                for name, _ in model_cls.named_parameters() 
+                if ('alpha' in name and block_flags[int(name.split('.')[1]) - 1]) or 'fc' in name
+
                 #if name not in model_cls.learnable_parameter.keys()
             }
                 
@@ -227,7 +235,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                     model.parameters(), args.training.clip_grad)                
                 
             optimizer.step()        
-            optimizer.zero_grad()
+            optimizer.zero_grad(set_to_none=True)
             step = 0
             
             #if ema:
@@ -305,6 +313,30 @@ def main_iterative_nerf(args):
         best_acc = checkpoint_info['best_acc']
         start_block = trained_blocks
         backbone_parameters = checkpoint_info['backbone_parameters']
+        sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
+        train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+        print(f"Loaded Model, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+        a_diff = abs(val_acc - best_acc)*100
+        print(f"Validation accuracy difference: {a_diff:.2f}%")
+        print("------------------------------------------------------------------------------------------------------------------------------")
+        
+        if not args.experiment.debug:    
+            wandb.log({
+                "Train Loss_model sampled outside training": train_loss,
+                "Train Accuracy_model sampled outside training": train_acc,
+                "Validation Loss_model sampled outside training": val_loss,
+                "Validation Accuracy_model sampled outside training": val_acc
+            }, step=(start_epoch) * len(train_loader) // args.experiment.log_interval + (start_block - 1) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+                
+        if a_diff > 0.2:
+            return -2
+        del checkpoint_info
+        del sampled_model
+        gc.collect()
+
+
+
         print(f"Resuming from block: {start_block}, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
         # Note: If there are more elements to retrieve, do so here.  
 
