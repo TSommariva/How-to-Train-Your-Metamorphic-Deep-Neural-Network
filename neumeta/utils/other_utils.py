@@ -12,6 +12,8 @@ import wandb
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import copy
+from neumeta.utils.hypernet_utils import get_hypernet
+
 
 
 def parse_args():
@@ -449,7 +451,7 @@ def initialize_wandb(config):
     # Name the run using current time and configuration name
     run_name = f"{config.experiment.name}-{time.strftime('%Y%m%d%H%M%S')}"
     
-    wandb.init(project="ninr", name=run_name, config=dict(config), group='cifar100', dir='/work/tesi_tsommariva')
+    wandb.init(project="NeuMeta++ Paper", name=run_name, config=dict(config), group='cifar100', dir='/work/tesi_tsommariva')
 
 def register_hooks_and_print_shapes(model, input_tensor):
     output_shapes = {}
@@ -483,7 +485,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-def extend_nerf_compose(base_model, extension_model, custom_init):
+def extend_nerf_compose(base_model, custom_init, args, number_param, total_param, key_list, device='cuda'):
     """
     Extends existing NeRF_ResMLP_Compose model with a new one, handling DDP models.
 
@@ -494,12 +496,8 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
     Returns:
         Extended model wrapped in DDP if input was DDP
     """
-    # Get underlying models if DDP
-    base = base_model.module if isinstance(base_model, torch.nn.parallel.DistributedDataParallel) else base_model
-    extension = extension_model.module if isinstance(extension_model, torch.nn.parallel.DistributedDataParallel) else extension_model
-    
+    extension_model = get_hypernet(args, number_param ,total_param=total_param ,key_list=key_list ,device=device)
     base_checkpoint = {k:v for k, v in base_model.named_parameters()}
-    last = None
     i=0
     
     with torch.no_grad():
@@ -508,29 +506,23 @@ def extend_nerf_compose(base_model, extension_model, custom_init):
                 last = nn.ModuleList([copy.deepcopy(m) for m in base_model.model[-4:]])
             elif isinstance(base_model.model, nn.ModuleDict):
                 last = nn.ModuleList([copy.deepcopy(v) for _, v in list(base_model.model.items())[-4:]])
-
-        last_params = []
-        for name, param in last.named_parameters():
-            last_params.append(param)
-            
-        for name, param in extension_model.named_parameters():
+        
+            last_params = []
+            for name, param in last.named_parameters():
+                last_params.append(param)
+                    
+        for name, _ in extension_model.named_parameters():
+            #req_grad = (extension_model.state_dict()[name]).requires_grad
             if name in base_checkpoint:
-                param.copy_(base_checkpoint[name].clone())
-            elif last is not None:
-                if param.shape == last_params[i].shape:
-                    param.copy_(last_params[i].clone())
+                (extension_model.state_dict()[name]).copy_(base_checkpoint[name].detach().clone())
+            elif custom_init:
+                if (extension_model.state_dict()[name]).shape == last_params[i].shape:
+                    (extension_model.state_dict()[name]).copy_(last_params[i].detach().clone())
                 else:
                     print(f"src:{name} and previous param have different shapes")
                 i+=1
-                
+            #(extension_model.state_dict()[name]).requires_grad = req_grad
             
-    # Re-wrap with DDP if input was DDP
-    if isinstance(base_model, torch.nn.parallel.DistributedDataParallel):
-        return torch.nn.parallel.DistributedDataParallel(
-            base,
-            device_ids=[torch.distributed.get_rank()],
-            output_device=torch.distributed.get_rank()
-        )
     return extension_model
 
 def get_cifar_optimizer(args, model):

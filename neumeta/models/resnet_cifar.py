@@ -125,7 +125,31 @@ class BasicBlock_Resize(BasicBlock):
         out = self.relu(out)
 
         return out
+
+class BasicBlock_Resize_bn(BasicBlock):
+    expansion = 1
+    def __init__(self, inplanes, planes, stride=1, downsample=None):
+        super().__init__(inplanes, planes, stride, downsample)
+        self.conv2 = conv3x3(planes, inplanes)
+        self.bn2 = nn.BatchNorm2d(inplanes)
     
+    def forward(self, x):
+        identity = x
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
+
 class BasicBlock_Resize_skipInit(BasicBlock):
     expansion = 1
     def __init__(self, inplanes, planes, stride=1, downsample=None, alpha=0.0):

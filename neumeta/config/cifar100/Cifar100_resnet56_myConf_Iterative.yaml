@@ -6,13 +6,14 @@ model:
   num_param: 8 #Learnable Blocks
   smooth: False
   fuse: False
+  only_last: False
   
 # Experiment settings
 experiment:
-  name: HybridTraining_${hyper_model.type}_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
+  name: ${hyper_model.type}_${hyper_model.num_layers}l_${hyper_model.hidden_dim}hd_${hyper_model.num_freqs}f_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
   num_epochs: 50
   log_interval: 26
-  eval_interval: 1
+  eval_interval: 10
   batch_accumulation_steps: 4
   simul_blocks: 8
   iterative: True
@@ -21,7 +22,7 @@ experiment:
 # Training configurations
 training:
   batch_size: 128
-  learning_rate: 0.00085
+  learning_rate: 8e-4
   eta_min: ${training.learning_rate}
   scheduler: warmup_cosine
   warmup_epochs: 20
@@ -42,9 +43,9 @@ hyper_model:
   type: resmlpDict
   kernel_groups: 4
   input_dim: 6
-  hidden_dim: 512
-  num_layers: 8
-  num_freqs: 32
+  hidden_dim: 256
+  num_layers: 5
+  num_freqs: 16
   output_dim: 9
   scalar: 0.1
   use_ema: False

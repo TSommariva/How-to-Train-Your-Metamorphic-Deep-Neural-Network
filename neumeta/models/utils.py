@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+
+
 # test()
 
 def fuse_conv_bn(conv, bn):
@@ -79,7 +81,7 @@ def fuse_conv_transpose_bn(conv_transpose, bn):
     return fused_conv_transpose
 
 
-def fuse_module(module):
+def fuse_module(module, skip_block=None):
     """
     Recursively fuse all batch normalization layers in the module with their preceding convolutional layers.
     """
@@ -87,7 +89,10 @@ def fuse_module(module):
     prev_name, prev_module = None, None
 
     for name, child in children:
-        # print(name)
+        #print(name)
+        #if skip_block is not None:
+        #    if isinstance(child, skip_block):
+        #        print(name)
         if isinstance(child, nn.BatchNorm2d) and isinstance(prev_module, nn.Conv2d):
             # Fuse the conv and bn layers, replace the conv layer with the fused layer
             fused_conv = fuse_conv_bn(prev_module, child)
@@ -102,9 +107,9 @@ def fuse_module(module):
 
             # Remove the batch normalization layer
             module._modules[name] = nn.Identity()
-        else:
+        elif skip_block is None or not isinstance(child,skip_block):
             # Recursively apply to all submodules
-            fuse_module(child)
+            fuse_module(child, skip_block=skip_block)
 
         prev_name, prev_module = name, child
 

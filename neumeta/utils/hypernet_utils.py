@@ -1,3 +1,4 @@
+import gc
 import torch
 import numpy as np
 import random
@@ -8,7 +9,6 @@ import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_ComposeDict, NeRF_HierarcResMLP_Compose
 from tqdm import tqdm
 import copy
-from neumeta.utils.other_utils import AverageMeter
 
 def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon=1e-6):
     """
@@ -45,73 +45,13 @@ def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon
 
     return reconstruct_loss
 
-def get_optimizer_scaledFT(args, hyper_model, train_parameters, ft_parameters) :
-    criterion = torch.nn.CrossEntropyLoss()
-    # criterion = LabelSmoothingCrossEntropy()
-    val_criterion = torch.nn.CrossEntropyLoss()
-    optimizer_name = args.training.get('optimizer', 'adamw')
-
-    if optimizer_name == 'adamw':
-        optimizer = AdamW([
-                        {'params': train_parameters},
-                        {'params': ft_parameters, 'lr': args.training.learning_rate * args.training.get('ft_scalinigFactor', 0.1)}],
-                          
-                          lr=args.training.learning_rate, 
-                          weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'adam':
-        optimizer = Adam([
-                        {'params': train_parameters},
-                        {'params': ft_parameters, 'lr': args.training.learning_rate * args.training.get('ft_scalinigFactor', 0.1)}], 
-                         lr=args.training.learning_rate, 
-                         weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'sgd':
-        optimizer = torch.optim.SGD([
-                        {'params': train_parameters},
-                        {'params': ft_parameters, 'lr': args.training.learning_rate * args.training.get('ft_scalinigFactor', 0.1)}],
-                                    lr=args.training.learning_rate, 
-                                    momentum=args.training.get('momentum', 0.9),
-                                    weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'rmsprop':
-        optimizer = torch.optim.RMSprop([
-                        {'params': train_parameters},
-                        {'params': ft_parameters, 'lr': args.training.learning_rate * args.training.get('ft_scalinigFactor', 0.1)}],
-                                        lr=args.training.learning_rate, 
-                                        momentum=args.training.get('momentum', 0.9),
-                                        weight_decay=args.training.weight_decay)
-    elif optimizer_name == 'adagrad':
-        optimizer = torch.optim.Adagrad([
-                        {'params': train_parameters},
-                        {'params': ft_parameters, 'lr': args.training.learning_rate * args.training.get('ft_scalinigFactor', 0.1)}],
-                                        lr=args.training.learning_rate, 
-                                        weight_decay=args.training.weight_decay)
-    else:
-        raise ValueError(f"Unknown optimizer: {optimizer_name}")
-    scheduler_name = args.training.get('scheduler', 'multistep')
-    # scheduler = StepLR(optimizer, step_size=1, gamma=0.95)
-    if scheduler_name == 'cosine':
-        print("Using cosine scheduler, T_max:", args.training.T_max)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.training.T_max,eta_min=args.training.eta_min)
-    elif scheduler_name == 'multistep':
-        scheduler = MultiStepLR(optimizer,
-                                milestones=args.training.get('lr_steps', [args.experiment.num_epochs]), 
-                                gamma=0.1)
-    elif scheduler_name == 'warmup_cosine':
-        warmup_epochs = args.training.get('warmup_epochs', 5)
-        
-        warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-5, end_factor=1.0, total_iters=warmup_epochs)
-        cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(args.training.T_max - warmup_epochs),eta_min=args.training.eta_min)
-        
-        scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[warmup_epochs])
-    return criterion, val_criterion, optimizer, scheduler
-
-
 def get_optimizer(args, hyper_model, first_block = False):
     criterion = torch.nn.CrossEntropyLoss()
     # criterion = LabelSmoothingCrossEntropy()
     val_criterion = torch.nn.CrossEntropyLoss()
     optimizer_name = args.training.get('optimizer', 'adamw')
     if optimizer_name == 'adamw':
-        optimizer = AdamW(hyper_model.parameters(), 
+        optimizer = AdamW(filter(lambda p: p.requires_grad, hyper_model.parameters()), 
                           lr=args.training.learning_rate, 
                           weight_decay=args.training.weight_decay)
     elif optimizer_name == 'adam':
@@ -275,6 +215,18 @@ def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='c
         ).to(device)
     else:
         raise ValueError(f"Unsupported hyper_model_type: {hyper_model_type}")
+            
+    if args.model.only_last and isinstance(hyper_model.model, torch.nn.ModuleDict):
+        for module_key, module in hyper_model.model.items():
+            if f"layer3_{number_param//4}" in module_key:
+                for param in module.parameters():
+                    param.requires_grad = True
+            #elif number_param > 4 and f"layer3_{(number_param//4) - 1}" in module_key:
+            #    for param in module.parameters():
+            #        param.requires_grad = True
+            else:
+                for param in module.parameters():
+                    param.requires_grad = False
         
     return hyper_model
 
@@ -282,6 +234,8 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     val_loss = 0.0
     correct = 0
     total = 0
+    preds = []
+    gt = []
     model_cls = model_cls.to(device)
     model_cls.eval()
     
@@ -296,19 +250,19 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
                 predict = model_cls(x)
     
                 pred = torch.argmax(predict, dim=-1)
-
                 correct += (pred == target).sum().item()
                 total += target.size(0)
     
                 loss = criterion(predict, target)
                 val_loss += loss.item()
-                
+    
     accuracy = correct / total if total > 0 else 0
     return val_loss / len(val_loader), accuracy
-def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args, device='cuda'):
-    losses = AverageMeter()
-    accuracies = AverageMeter()
-    for hidden_dim in range(args.dimensions.range[0], args.dimensions.range[1]):
+
+def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args,step=1 ,device='cuda'):
+    losses = []
+    accuracies = []
+    for hidden_dim in range(args.dimensions.range[0], args.dimensions.range[1], step):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
                                 num_param=num_param,
@@ -317,25 +271,33 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
                                 prior=False)
-        
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model = model.to(device)
         
+        model.eval()
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
-        losses.update(val_loss)
-        accuracies.update(val_acc)
+        print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
+        losses.append(val_loss)
+        accuracies.append(val_acc)
+        del model
+        del accumulated_model
+        gc.collect()
+        torch.cuda.empty_cache()
     
-    wandb.log({"Non-prior Seen - Validation loss": losses.avg, "Non-prior Seen - Validation Accuracy": accuracies.avg}, commit=False)
-    print(f"Non-prior Seen - Validation loss:{losses.avg} Non-prior Seen - Validation Accuracy:{accuracies.avg}")
+    mean_accuracy = np.mean(accuracies)
+    std_accuracy = np.std(accuracies)
+    wandb.log({"Non-prior Seen - Validation loss": np.mean(losses), "Non-prior Seen - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Seen - Validation loss:{np.mean(losses):.4f} Non-prior Seen - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    print("------------------------------------------------------------------------------------------------------------------------------")
     
-    losses.reset()
-    accuracies.reset()
+    losses = []
+    accuracies = []
     
-    for hidden_dim in range(args.dimensions.range[0]//2 , args.dimensions.range[0]):
+    for hidden_dim in range(args.dimensions.range[0]//4 , args.dimensions.range[0], step):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
                                 num_param=num_param,
@@ -344,25 +306,33 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
                                 prior=False)
-        
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model = model.to(device)
         
+        model.eval()
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
-        losses.update(val_loss)
-        accuracies.update(val_acc)
+        print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
+        losses.append(val_loss)
+        accuracies.append(val_acc)
+        del model
+        del accumulated_model
+        gc.collect()
+        torch.cuda.empty_cache()
     
-    wandb.log({"Non-prior Unseen Low - Validation loss": losses.avg, "Non-prior Unseen Low - Validation Accuracy": accuracies.avg}, commit=False)
-    print(f"Non-prior Unseen Low - Validation loss:{losses.avg} Non-prior Unseen Low - Validation Accuracy:{accuracies.avg}")
+    mean_accuracy = np.mean(accuracies)
+    std_accuracy = np.std(accuracies)
+    wandb.log({"Non-prior Unseen Low - Validation loss": np.mean(losses), "Non-prior Unseen Low - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Unseen Low - Validation loss:{np.mean(losses):.4f} Non-prior Unseen Low - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    print("------------------------------------------------------------------------------------------------------------------------------")
     
-    losses.reset()
-    accuracies.reset()
+    losses = []
+    accuracies = []
     
-    for hidden_dim in range(args.dimensions.range[1] + 1 , args.dimensions.range[1] + args.dimensions.range[0]//2 + 1):
+    for hidden_dim in range(args.dimensions.range[1] + 1 , args.dimensions.range[1] + args.dimensions.range[0]//2 + 1, step):
         model = create_model(args.model.type, 
                                 hidden_dim=hidden_dim,
                                 num_param=num_param,
@@ -371,22 +341,31 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
                                 prior=False)
-        
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model = model.to(device)
         
+        model.eval()
         # Sample the merged model for K times
         accumulated_model = sample_merge_model(hypermodel, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
-        losses.update(val_loss)
-        accuracies.update(val_acc)
+        print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
+        losses.append(val_loss)
+        accuracies.append(val_acc)
+        del model
+        del accumulated_model
+        gc.collect()
+        torch.cuda.empty_cache()
     
-    wandb.log({"Non-prior Unseen High - Validation loss": losses.avg, "Non-prior Unseen High - Validation Accuracy": accuracies.avg}, commit=False)
-    print(f"Non-prior Unseen High - Validation loss:{losses.avg} Non-prior Unseen High - Validation Accuracy:{accuracies.avg}")
+    mean_accuracy = np.mean(accuracies)
+    std_accuracy = np.std(accuracies)
+    wandb.log({"Non-prior Unseen High - Validation loss": np.mean(losses), "Non-prior Unseen High - Validation Accuracy": mean_accuracy*100}, commit=False)
+    print(f"Non-prior Unseen High - Validation loss:{np.mean(losses):.4f} Non-prior Unseen High - Validation Accuracy:{mean_accuracy*100:.2f} ± {std_accuracy*100:.2f}")
+    print("------------------------------------------------------------------------------------------------------------------------------")
         
     return
+
     
 def average_models(models):
     """
@@ -450,12 +429,20 @@ def sample_merge_model(hyper_model, model, args, backbone_parameters ,K=50, devi
         # Sampling and averaging weights
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls_temp)
         key_mask = create_key_masks(keys_list=keys_list)
-        model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm)
+        model_cls_temp, _ = sample_weights(hyper_model, model_cls_temp, coords_tensor, keys_list, indices_list, size_list, key_mask, list(key_mask.keys()), device=device, NORM=args.dimensions.norm, eval=True)
         
         with torch.no_grad():
             for name, param in model_cls_temp.named_parameters():
                 param_average[name] += param/K
 
+        del _
+        del coords_tensor
+        del keys_list
+        del indices_list
+        del size_list
+        del key_mask
+        gc.collect()
+        torch.cuda.empty_cache()
     with torch.no_grad():
         for name, param in model_cls_temp.named_parameters():
             param.copy_(param_average[name])
@@ -533,7 +520,8 @@ def sample_single_model(hyper_model, model, device='cuda', cfg=None):
     model.eval()
     return model
 
-def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags=None):
+
+def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None, eval=False):
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
     else:
@@ -547,13 +535,12 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
     
     # Iterate over the keys that have been selected for processing.
     for key in selected_keys:
-        split_key = key.split('.')
-        i_value = int(split_key[1])
+        #if eval:
+        #    torch.cuda.empty_cache()
         # Create a boolean mask based on the selected mask from the key_mask dictionary.
         boolean_mask = key_mask[key][selected_mask].bool()
-        
         if block_flags is not None:
-            if block_flags[i_value -1]:
+            if block_flags[int(key.split('.')[1]) - 1]:
                 predicted_weights = model(input_tensor[boolean_mask], key)
             else:
                 with torch.no_grad():
@@ -576,25 +563,25 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
                 predicted_weights = predicted_weights[:, start_index:end_index]
             
             # Reshape and assign the adjusted weights to the appropriate position in the checkpoint dictionary.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights.view(-1 ,height, width)
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = (predicted_weights.view(-1 ,height, width))
         
         elif size_list[boolean_mask][0] == 1:  # Condition for conv biases.
             # Assign the weights to the specified indices.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = predicted_weights.view(-1)
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = (predicted_weights.view(-1))
         
         elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
             # Directly assign the weights without reshaping.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = predicted_weights[boolean_mask][:, 0]
+            predicted_checkpoint[key][indices_list[boolean_mask][:, 0], indices_list[boolean_mask][:, 1]] = (predicted_weights[boolean_mask][:, 0])
          
     with torch.no_grad():     
         for name, param in model_cls.learnable_parameter.items():
             if name in predicted_checkpoint:
-                param.copy_(predicted_checkpoint[name].clone())
+                param.copy_(predicted_checkpoint[name])
 
     return model_cls, predicted_checkpoint
 
 
-def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags=None):
+def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys=None, device='cuda',large_batch_size = 4096, NORM=1, scaler = None, block_flags = None, eval=False):
     """
     Samples weights from the model and updates the predicted_checkpoint using the batch of predicted weights.
 
@@ -615,9 +602,8 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     #    model = model.module
     #if isinstance(model_cls, torch.nn.parallel.DistributedDataParallel):
     #    model_cls = model_cls.module
-    
     if isinstance (model.model, torch.nn.ModuleDict):
-        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler, block_flags=block_flags)
+        return sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list, size_list, key_mask, selected_keys, device,large_batch_size, NORM, scaler, block_flags, eval=eval)
     
     if selected_keys is not None:
         predicted_checkpoint = {k:v for k, v in model_cls.learnable_parameter.items() if k in selected_keys}
