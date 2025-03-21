@@ -347,7 +347,8 @@ class CifarResNet(nn.Module):
                         #downsample = conv1x1(64,64,stride)
                         layers.append(BasicBlock_Resize_skipInit(64, bottleneck, stride=stride, downsample=None))
                 
-                layers.extend(list(child.children())[self.num_layers_inr+1:])
+                layers.extend(list(child.children())[self.num_layers_inr+1:-2])
+                layers.append(BasicBlock_Resize_bn(64, 64, stride=stride, downsample=None))
                 self._modules[name] = nn.Sequential(*layers)
     
     @property

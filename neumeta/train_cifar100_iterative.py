@@ -1,4 +1,5 @@
 import copy
+import io
 import os
 import random
 import sys
@@ -20,6 +21,7 @@ from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
 import wandb
 import gc
 import time
+import contextlib
 
 def verify_weights(model1, model2):
     with torch.no_grad():
@@ -36,9 +38,9 @@ device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is
 
 def get_num_workers():
     try:
-        return int(os.environ.get("SLURM_CPUS_PER_TASK", 2))
+        return int(os.environ.get("SLURM_CPUS_PER_TASK", 4))
     except (ValueError, TypeError):
-        return 2
+        return 4
 
 def init_model_dict(args, num_blocks = 1, single_block = False):
     """
@@ -51,12 +53,14 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
         dim_dict: A dictionary containing the models for each dimension, along with their corresponding coordinates, keys, indices, size, and ground truth models.
         gt_model_dict: A dictionary containing the ground truth models for the starting dimension.
     """
+    print(f"INITIALIZE DICTIONARY OF MODELS FOR BLOCK {num_blocks}")
     dim_dict = {}
     gt_model_dict = {}
     if not args.experiment.iterative:
         num_blocks=args.model.num_param
     for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1):
-        model_cls = create_model(args.model.type, 
+        with contextlib.redirect_stdout(io.StringIO()):
+            model_cls = create_model(args.model.type, 
                                  hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=single_block ,
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False)
          
@@ -79,7 +83,8 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
 
         if dim == args.dimensions.start:
             print(f"Loading model for dim {dim}")
-            model_trained = create_model(args.model.type, 
+            with contextlib.redirect_stdout(io.StringIO()):
+                model_trained = create_model(args.model.type, 
                                  hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, single_block=single_block,
                                  path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth)
             
@@ -143,7 +148,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         with torch.no_grad():
             for name, param in model_cls.named_parameters():
                 #if name not in model_cls.learnable_parameter.keys():
-                if 'alpha' in name or 'fc' in name:
+                if 'alpha' in name or 'fc' in name or 'layer3.8' in name:
                     if name in backbone_parameters:
                         model_cls.state_dict()[name].copy_(backbone_parameters[name])
 
@@ -209,7 +214,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             backbone_parameters = {
                 name: model_cls.state_dict()[name].detach().clone()
                 for name, _ in model_cls.named_parameters() 
-                if ('alpha' in name and block_flags[int(name.split('.')[1]) - 1]) or 'fc' in name
+                if ('alpha' in name and block_flags[int(name.split('.')[1]) - 1]) or 'fc' in name or 'layer3.8' in name
 
                 #if name not in model_cls.learnable_parameter.keys()
             }
@@ -291,6 +296,13 @@ def main_iterative_nerf(args):
     backbone_parameters = {}
     
     prev_NeRF = get_hypernet(args, 0,total_param=number_param ,device=device)
+    dictionaries = []
+    for i in range(150):
+        with contextlib.redirect_stdout(io.StringIO()):
+            dic, gt_dic = init_model_dict(args, 8, args.model.single_block)
+        dictionaries.append(dic)
+        dictionaries.append(gt_dic)
+    torch.save(dictionaries,"/homes/tsommariva/tmp/dictionary.pth")
     
     # If specified, load the checkpoint
     if args.resume_from:
@@ -390,7 +402,7 @@ def main_iterative_nerf(args):
                 #if ema:
                 #    ema.apply()
 
-                sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
+                sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=100)
                 train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
 
@@ -414,13 +426,13 @@ def main_iterative_nerf(args):
                 save_checkpoint(f"{args.training.save_model_path}/nerf_block{block_id}.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
                 print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
             
-                torch.cuda.empty_cache()
+                #torch.cuda.empty_cache()
         
             #if train_acc < 0.7:
             #    return -4
         
         if end_epoch == start_epoch + 1:
-            torch.cuda.empty_cache()        
+            #torch.cuda.empty_cache()        
             prev_NeRF = hyper_model
             continue
         
@@ -434,7 +446,7 @@ def main_iterative_nerf(args):
         testing_backbone_parameters = checkpoint_info['backbone_parameters']
         del checkpoint_info
         gc.collect()
-        sampled_model = sample_merge_model(testing_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=testing_backbone_parameters ,device=device)
+        sampled_model = sample_merge_model(testing_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=testing_backbone_parameters ,device=device, K=100)
         loaded_val_loss, loaded_val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
         print(f"Loaded Model, Validation Loss: {loaded_val_loss:.4f}, Validation Accuracy: {loaded_val_acc*100:.2f}%")
        

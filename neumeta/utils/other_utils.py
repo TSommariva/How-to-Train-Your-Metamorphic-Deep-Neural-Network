@@ -7,7 +7,7 @@ from omegaconf import OmegaConf
 import argparse
 import torch.nn as nn
 import torch.nn.functional as F
-from neumeta.models import BasicBlock, BasicBlock_Resize
+from neumeta.models import BasicBlock, BasicBlock_Resize, BasicBlock_Resize_skipInit
 import wandb
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
@@ -468,7 +468,7 @@ def register_hooks_and_print_shapes(model, input_tensor):
     # Register hooks to all layers
     hooks = []
     for name, module in model.named_modules():
-        if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize)) and module != model:
+        if not isinstance(module, (nn.Sequential, nn.ModuleList, BasicBlock, BasicBlock_Resize, nn.ModuleDict, BasicBlock_Resize_skipInit)) and module != model:
             if any(key.startswith(name) for key in learnable_keys):
             #if 'layer3' in name:
                 hook = module.register_forward_hook(hook_fnc(name))
@@ -527,14 +527,13 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
 
 def get_cifar_optimizer(args, model):
     alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
-    classifier_params = [p for n, p in model.named_parameters() if 'fc' in n]
-    
-    excluded_substrings = ("alpha", "fc")
-    excluded_keys = set(model.learnable_parameter.keys())
-    backbone_params = [
-        p for n, p in model.named_parameters()
-        if n not in excluded_keys and not any(s in n for s in excluded_substrings)
-    ]
+    classifier_params = [p for n, p in model.named_parameters() if 'fc' in n or ('layer3.8' in n and 'alpha' not in n)]
+    #excluded_substrings = ("alpha", "fc")
+    #excluded_keys = set(model.learnable_parameter.keys())
+    #backbone_params = [
+    #    p for n, p in model.named_parameters()
+    #    if n not in excluded_keys and not any(s in n for s in excluded_substrings)
+    #]
     optimizer_name = args.training.get('cls_optimizer', 'adamw')
     if optimizer_name == 'adamw':
         optimizer = AdamW([{'params': alpha_params},

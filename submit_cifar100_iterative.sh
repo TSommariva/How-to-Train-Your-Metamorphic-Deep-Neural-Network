@@ -1,15 +1,15 @@
 #!/bin/bash
 
-#SBATCH --job-name=NeRF
-#SBATCH --output=log/AaPaper/Baseline_5Layers_hiddenDim256_16freq_%j.out
-#SBATCH  --error=log/AaPaper/Baseline_5Layers_hiddenDim256_16freq_%j.err
-#SBATCH --time=24:00:00                         
+#SBATCH --job-name=NeRFs
+#SBATCH --output=log/AaPaper/Baseline_5Layers_hiddenDim256_32freq_commonB8_%j.out
+#SBATCH  --error=log/AaPaper/Baseline_5Layers_hiddenDim256_32freq_commonB8_%j.err
+#SBATCH --time=16:00:00                         
 #SBATCH --constraint="gpu_L40S_48G|gpu_A40_48G|gpu_RTXA5000_24G|gpu_RTX6000_24G" #|gpu_RTX5000_16G" #|gpu_2080Ti_11G"
-##SBATCH --mem=32G
+#SBATCH --mem=32G
 
 #SBATCH --gres=gpu:1                            
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=4
 
 #SBATCH --account=tesi_tsommariva               
 #SBATCH --partition=all_usr_prod                

@@ -3,14 +3,14 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 8 #Learnable Blocks
+  num_param: 7 #Learnable Blocks
   smooth: False
   fuse: False
   only_last: False
   
 # Experiment settings
 experiment:
-  name: ${hyper_model.type}_${hyper_model.num_layers}l_${hyper_model.hidden_dim}hd_${hyper_model.num_freqs}f_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
+  name: ${hyper_model.type}_CommonB8_${hyper_model.num_layers}l_${hyper_model.hidden_dim}hd_${hyper_model.num_freqs}f_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
   num_epochs: 50
   log_interval: 26
   eval_interval: 10
@@ -31,7 +31,7 @@ training:
   weight_decay: 1e-4
   coordinate_noise: 1.0
   clip_grad: 10.0
-  save_model_path: /work/tesi_tsommariva/experiments/AaITERATIVE/${experiment.name} # Directory to save the trained model
+  save_model_path: /work/tesi_tsommariva/experiments/Paper/${experiment.name} # Directory to save the trained model
   cls_optimizer: adamw
   cls_learning_rate: 7e-5
   alpha_learning_rate: 1e-4
@@ -45,7 +45,7 @@ hyper_model:
   input_dim: 6
   hidden_dim: 256
   num_layers: 5
-  num_freqs: 16
+  num_freqs: 32
   output_dim: 9
   scalar: 0.1
   use_ema: False
