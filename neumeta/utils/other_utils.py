@@ -320,7 +320,11 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     optimizer (torch.optim.Optimizer): The optimizer.
     ema (EMA): The EMA object.
     """
-    checkpoint = torch.load(filepath, weights_only=False)
+    try:
+        checkpoint = torch.load(filepath, weights_only=False)
+    except FileNotFoundError as e:
+            print(f"{e}")
+            return None, None, None, None, None
     
     # After loading the checkpoint
     #saved_keys = set(checkpoint['model_state_dict'].keys())
@@ -525,9 +529,10 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
             
     return extension_model
 
-def get_cifar_optimizer(args, model):
+def get_cifar_optimizer(args, model, n_blocks=8):
     alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
-    classifier_params = [p for n, p in model.named_parameters() if 'fc' in n or ('layer3.8' in n and 'alpha' not in n)]
+    high = n_blocks>=5
+    classifier_params = [p for n, p in model.named_parameters() if 'fc' in n or (high and 'layer3.8' in n and 'alpha' not in n)]
     #excluded_substrings = ("alpha", "fc")
     #excluded_keys = set(model.learnable_parameter.keys())
     #backbone_params = [

@@ -133,6 +133,7 @@ class NeRF_MLP_Compose(nn.Module):
         self.norm = normalizing_factor
         self.coordinate_noise = coordinate_noise
         self.total_param = total_param
+        self.num_compose = num_compose
 
         if isinstance(num_freqs, int):
             num_freqs = num_freqs
@@ -167,11 +168,12 @@ class NeRF_MLP_Compose(nn.Module):
         x /= self.norm
         x[:, :3] = x[:, :3] / x[:, 3:]
         x = self.positional_encoding(x)
-        unique_layer_ids = torch.unique(layer_id)
+        unique_layer_ids = torch.unique(torch.round(layer_id))
         #unique_layer_ids_count = torch.unique(layer_id).numel()
         #unique_layer_ids = torch.arange(unique_layer_ids_count, device=layer_id.device)
         output_x = torch.zeros((x.size(0), self.output_dim)).to(x.device)
-        for lid in unique_layer_ids:
+        for lid in range(self.num_compose): #unique_layer_ids:
+            #lid=int(lids.item())
             mask = lid == layer_id
             model_output = self.model[lid].forward(x[mask])
             output_x[mask] = model_output
@@ -197,12 +199,13 @@ class NeRF_ResMLP_Compose(NeRF_MLP_Compose):
         self.model = nn.ModuleList()
         self.norm = normalizing_factor
         self.total_param = total_param
+        self.num_compose = num_compose
         for i in range(num_compose):
             self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
-            #if i%2 == 0:
-            #    self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
-            #else:
-            #    self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, 1, num_freqs, num_layers, scalar=scalar))
+            if i%2 == 0:
+                self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
+            else:
+                self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, 1, num_freqs, num_layers, scalar=scalar))
         self.apply(weights_init_uniform_relu)
         
 class NeRF_ResMLP_ComposeDict(nn.Module):

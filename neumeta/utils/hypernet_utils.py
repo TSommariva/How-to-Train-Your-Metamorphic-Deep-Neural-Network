@@ -123,7 +123,7 @@ def get_optimizer(args, hyper_model, first_block = False):
             
     return criterion, val_criterion, optimizer, scheduler
 
-def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='cuda'):
+def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='cuda', hyper_model_type=None):
     """
     Returns a hypernetwork model based on the specified hyper_model_type in the arguments.
 
@@ -134,7 +134,8 @@ def get_hypernet(args, number_param, total_param = 32 ,key_list = None,device='c
     Returns:
         torch.nn.Module: Hypernetwork model based on the specified hyper_model_type.
     """
-    hyper_model_type = args.hyper_model.get('type', 'mlp')
+    if hyper_model_type is None:
+        hyper_model_type = args.hyper_model.get('type', 'mlp')
     print("Hyper model type: " + hyper_model_type)
     output_dim = args.hyper_model.output_dim
     if hyper_model_type == 'mlp':

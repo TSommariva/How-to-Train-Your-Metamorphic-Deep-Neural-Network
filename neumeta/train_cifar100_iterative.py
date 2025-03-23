@@ -22,6 +22,7 @@ import wandb
 import gc
 import time
 import contextlib
+from torchsummary import summary
 
 def verify_weights(model1, model2):
     with torch.no_grad():
@@ -113,7 +114,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
     reg_losses = AverageMeter()
     reconstruct_losses = AverageMeter()
     accuracies = AverageMeter()
-    block_flags = [True] * block_idx if block_idx <= args.experiment.simul_blocks else [False] * block_idx
+    block_flags = [True] * 8#block_idx if block_idx <= args.experiment.simul_blocks else [False] * block_idx
     
     for batch_idx, (x, target) in enumerate(train_loader):
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
@@ -148,7 +149,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         with torch.no_grad():
             for name, param in model_cls.named_parameters():
                 #if name not in model_cls.learnable_parameter.keys():
-                if 'alpha' in name or 'fc' in name or 'layer3.8' in name:
+                if 'layer3.8' in name or 'alpha' in name or 'fc' in name:
                     if name in backbone_parameters:
                         model_cls.state_dict()[name].copy_(backbone_parameters[name])
 
@@ -214,7 +215,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             backbone_parameters = {
                 name: model_cls.state_dict()[name].detach().clone()
                 for name, _ in model_cls.named_parameters() 
-                if ('alpha' in name and block_flags[int(name.split('.')[1]) - 1]) or 'fc' in name or 'layer3.8' in name
+                if 'layer3.8' in name or ('alpha' in name and block_flags[int(name.split('.')[1]) - 1]) or 'fc' in name
 
                 #if name not in model_cls.learnable_parameter.keys()
             }
@@ -289,20 +290,18 @@ def main_iterative_nerf(args):
     os.makedirs(args.training.save_model_path, exist_ok=True)
     
     ema=None
-    start_block = 1
+    start_block = args.model.start_block
     start_epoch = 0
     best_acc = 0.0
     end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
     backbone_parameters = {}
-    
     prev_NeRF = get_hypernet(args, 0,total_param=number_param ,device=device)
-    dictionaries = []
-    for i in range(150):
-        with contextlib.redirect_stdout(io.StringIO()):
-            dic, gt_dic = init_model_dict(args, 8, args.model.single_block)
-        dictionaries.append(dic)
-        dictionaries.append(gt_dic)
-    torch.save(dictionaries,"/homes/tsommariva/tmp/dictionary.pth")
+    #dictionaries = []
+    #dic = torch.load("/homes/tsommariva/tmp/model_dictionary.pth", weights_only=False)
+    #for i in range(21):
+    #    tmp_dic = copy.deepcopy(dic)
+    #    dictionaries.append(tmp_dic)
+        
     
     # If specified, load the checkpoint
     if args.resume_from:
@@ -403,8 +402,8 @@ def main_iterative_nerf(args):
                 #    ema.apply()
 
                 sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=100)
-                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
                 val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
 
                 #if ema:
                 #    ema.restore()
@@ -468,6 +467,8 @@ def main_iterative_nerf(args):
         
     print("Training finished.")
     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    #print(hyper_model)
+    #summary(hyper_model, (6,))
     return 0
 
 def test(args):
@@ -493,7 +494,9 @@ def test(args):
     
     criterion, _, optimizer, scheduler = get_optimizer(args, best_hyper_model, first_block=False) 
         
-    checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/nerf_block8.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
+    checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/nerf_block7.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
+    if checkpoint_info is None:
+        checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/nerf_block8.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
     if checkpoint_info is None:
         checkpoint_info, best_hyper_model, _, _, best_ema = load_checkpoint(f"{args.training.save_model_path}/block8/cifar100_nerf_best.pth", best_hyper_model, optimizer,scheduler ,best_ema, device=device)
     if checkpoint_info is None:
@@ -501,7 +504,20 @@ def test(args):
     if checkpoint_info is None:
         return -5
     backbone_parameters = checkpoint_info['backbone_parameters']
+    start_epoch = checkpoint_info['epoch']
+    best_acc = checkpoint_info['best_acc']
+    start_block = args.model.num_param
+    print(f"Testing: Prev Training : block: {start_block}, epoch: {start_epoch}, accuracy: {best_acc*100:.2f}%")
     best_hyper_model.eval()
+    save_checkpoint(f"{args.training.save_model_path}/nerf_block7_v2.pth",best_hyper_model,optimizer,scheduler,None,50,checkpoint_info['epoch'], trained_blocks=7, backbone_parameters=backbone_parameters)
+    hyper_model_type = args.hyper_model.get('type', 'mlp')
+    if hyper_model_type == 'resmlpDict':
+        tmphyp = get_hypernet(args,args.model.num_param * 4, total_param=number_param, device=device, hyper_model_type='resmlp')
+    else:
+        tmphyp = get_hypernet(args,args.model.num_param * 4, total_param=number_param, device=device)
+    summary(tmphyp, (6,))
+    del tmphyp
+    gc.collect()
     #if best_ema:
     #        best_ema.apply()
 
@@ -513,7 +529,27 @@ def test(args):
     del _
     gc.collect()
     torch.cuda.empty_cache()    
-
+    for hidden_dim in [16,32,48,64]:
+         model = create_model(args.model.type, 
+                                 hidden_dim=hidden_dim,
+                                 num_param=args.model.num_param,
+                                 bottom_up=args.model.bottom_up,
+                                 single_block=False,
+                                 path=args.model.pretrained_path, 
+                                 smooth=args.model.smooth, fuse=args.model.fuse,
+                                 prior=False)
+         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+         else:
+             model = model.to(device)
+         
+         model.eval()
+         # Sample the merged model for K times
+         accumulated_model = sample_merge_model(best_hyper_model, model, args,backbone_parameters=backbone_parameters ,K=100, device=device)
+         val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
+         print(f"Dimension:{hidden_dim} Validation loss:{val_loss:.4f} Validation Accuracy:{val_acc*100:.2f}")
+         
+    print("------------------------------------------------------------------------------------------------------------------------------")
     start_time = time.time()
     validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda', step=2)
     elapsed_time = (time.time() - start_time)/60

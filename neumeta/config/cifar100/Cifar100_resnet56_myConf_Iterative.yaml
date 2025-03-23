@@ -4,6 +4,7 @@ model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
   num_param: 7 #Learnable Blocks
+  start_block: 1 #
   smooth: False
   fuse: False
   only_last: False
@@ -11,7 +12,7 @@ model:
 # Experiment settings
 experiment:
   name: ${hyper_model.type}_CommonB8_${hyper_model.num_layers}l_${hyper_model.hidden_dim}hd_${hyper_model.num_freqs}f_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
-  num_epochs: 50
+  num_epochs: 150
   log_interval: 26
   eval_interval: 10
   batch_accumulation_steps: 4
@@ -43,8 +44,8 @@ hyper_model:
   type: resmlpDict
   kernel_groups: 4
   input_dim: 6
-  hidden_dim: 256
-  num_layers: 5
+  hidden_dim: 512
+  num_layers: 8
   num_freqs: 32
   output_dim: 9
   scalar: 0.1
