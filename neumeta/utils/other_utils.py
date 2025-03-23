@@ -531,8 +531,8 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
 
 def get_cifar_optimizer(args, model, n_blocks=8):
     alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
-    high = n_blocks>=5
-    classifier_params = [p for n, p in model.named_parameters() if 'fc' in n or (high and 'layer3.8' in n and 'alpha' not in n)]
+    high = n_blocks >= 6
+    classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n))]# and high]
     #excluded_substrings = ("alpha", "fc")
     #excluded_keys = set(model.learnable_parameter.keys())
     #backbone_params = [

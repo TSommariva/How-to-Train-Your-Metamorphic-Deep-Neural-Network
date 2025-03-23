@@ -70,7 +70,7 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
         else:
             model_cls.to(device)
         
-        optimizer = get_cifar_optimizer(args, model_cls)
+        optimizer = get_cifar_optimizer(args, model_cls, num_blocks)
             
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
         dim_dict[f"{dim}"] = (model_cls, optimizer, coords_tensor, keys_list, indices_list, size_list, None)
@@ -149,7 +149,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         with torch.no_grad():
             for name, param in model_cls.named_parameters():
                 #if name not in model_cls.learnable_parameter.keys():
-                if 'layer3.8' in name or 'alpha' in name or 'fc' in name:
+                if 'alpha' in name or (('layer3.8' in name or 'fc' in name)):# and block_idx >= 6):
                     if name in backbone_parameters:
                         model_cls.state_dict()[name].copy_(backbone_parameters[name])
 
@@ -215,7 +215,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             backbone_parameters = {
                 name: model_cls.state_dict()[name].detach().clone()
                 for name, _ in model_cls.named_parameters() 
-                if 'layer3.8' in name or ('alpha' in name and block_flags[int(name.split('.')[1]) - 1]) or 'fc' in name
+                if 'alpha' in name or (('layer3.8' in name or 'fc' in name))# and block_idx >= 6)
 
                 #if name not in model_cls.learnable_parameter.keys()
             }

@@ -12,7 +12,7 @@ model:
 # Experiment settings
 experiment:
   name: ${hyper_model.type}_CommonB8_${hyper_model.num_layers}l_${hyper_model.hidden_dim}hd_${hyper_model.num_freqs}f_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
-  num_epochs: 150
+  num_epochs: 50
   log_interval: 26
   eval_interval: 10
   batch_accumulation_steps: 4
@@ -53,8 +53,8 @@ hyper_model:
   ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:
-    ce_weight: 100.0
-    reg_weight: 0.001
+    ce_weight: 1.0 #100.0
+    reg_weight: 1e-4 #0.001
     recon_weight: 1.0
     kd_weight: 0.1
 
