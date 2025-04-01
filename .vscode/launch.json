@@ -27,6 +27,8 @@
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
         "--experiment.debug=True",
+        "--experiment.test=True",
+        "--experiment.test_path='/work/tesi_tsommariva/experiments/Paper/lastBlock_resmlpDict_100e_skipInit_StartBlock8_CustmInit:True_4AccumulationSteps'",
         "--config", "/homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
       ], 
       "console": "integratedTerminal"

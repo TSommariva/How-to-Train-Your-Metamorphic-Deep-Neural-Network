@@ -164,9 +164,9 @@ class NeRF_MLP_Compose(nn.Module):
         if input_dim is None:
             input_dim = (x[:, -1])
             
-        x += ((torch.rand_like(x) - 0.5) * self.coordinate_noise)
-        x /= self.norm
+        x = x + ((torch.rand_like(x) - 0.5) * self.coordinate_noise).clamp(-0.49, 0.49)
         x[:, :3] = x[:, :3] / x[:, 3:]
+        x[:, 3:] = x[:, 3:] / self.norm
         x = self.positional_encoding(x)
         unique_layer_ids = torch.unique(torch.round(layer_id))
         #unique_layer_ids_count = torch.unique(layer_id).numel()
@@ -202,10 +202,6 @@ class NeRF_ResMLP_Compose(NeRF_MLP_Compose):
         self.num_compose = num_compose
         for i in range(num_compose):
             self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
-            if i%2 == 0:
-                self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar))
-            else:
-                self.model.append(NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, 1, num_freqs, num_layers, scalar=scalar))
         self.apply(weights_init_uniform_relu)
         
 class NeRF_ResMLP_ComposeDict(nn.Module):
@@ -242,6 +238,7 @@ class NeRF_ResMLP_ComposeDict(nn.Module):
             for key in key_list:
                 key = key.replace('.', '_')
                 if 'bias' in key or 'downsample' in key:
+                    #set output_dim = 1 for Disentaglment
                     self.model[key] = NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, 1, num_freqs, num_layers, scalar=scalar)
                 elif 'weight' in key:
                     self.model[key] = NeRF_MLP_Residual_Scaled(input_dim + 2 * input_dim * num_freqs, hidden_dim, output_dim, num_freqs, num_layers, scalar=scalar)
@@ -264,14 +261,13 @@ class NeRF_ResMLP_ComposeDict(nn.Module):
         """
         key = key.replace('.', '_')
         if 'bias' in key or 'downsample' in key:
+            #set output_dim =1 for Disentaglment
             output_dim = 1
         elif 'weight' in key:
             output_dim = self.output_dim
         input_dim = (x[:, -1])
         x = x + ((torch.rand_like(x) - 0.5) * self.coordinate_noise).clamp(-0.49, 0.49)
-        #x /= self.norm
         x[:, :3] = x[:, :3] / x[:, 3:]
-        #x[:, 3] = x[:, 3] / self.total_param
         x[:, 3:] = x[:, 3:] / self.norm
         x = self.positional_encoding(x)
         out = torch.zeros((x.size(0), output_dim)).to(x.device)

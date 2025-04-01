@@ -324,7 +324,7 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
         checkpoint = torch.load(filepath, weights_only=False)
     except FileNotFoundError as e:
             print(f"{e}")
-            return None, None, None, None, None
+            return None, model, optimizer, scheduler, ema
     
     # After loading the checkpoint
     #saved_keys = set(checkpoint['model_state_dict'].keys())
@@ -348,7 +348,7 @@ def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', ar
     if 'scheduler_state_dict' in checkpoint and scheduler is not None and optimizer is not None:
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         
-    if ema and 'ema_shadow' in checkpoint:
+    if ema is not None and 'ema_shadow' in checkpoint:
         ema.shadow = {k: checkpoint['ema_shadow'][k].to(
             device) for k in checkpoint['ema_shadow']}
     else:
@@ -531,30 +531,21 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
 
 def get_cifar_optimizer(args, model, n_blocks=8):
     alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
-    high = n_blocks >= 6
-    classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n))]# and high]
-    #excluded_substrings = ("alpha", "fc")
-    #excluded_keys = set(model.learnable_parameter.keys())
-    #backbone_params = [
-    #    p for n, p in model.named_parameters()
-    #    if n not in excluded_keys and not any(s in n for s in excluded_substrings)
-    #]
+    #classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n))]
+    classifier_params = [p for n, p in model.named_parameters() if ('fc' in n )]
     optimizer_name = args.training.get('cls_optimizer', 'adamw')
     if optimizer_name == 'adamw':
         optimizer = AdamW([{'params': alpha_params},
-                            #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
                             {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
                              lr=args.training.alpha_learning_rate, 
                              weight_decay=args.training.cls_weight_decay)
     elif optimizer_name == 'adam':
         optimizer = Adam([{'params': alpha_params},
-                           #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
                            {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
                             lr=args.training.alpha_learning_rate, 
                             weight_decay=args.training.cls_weight_decay)
     elif optimizer_name == 'sgd':
         optimizer = torch.optim.SGD([{'params': alpha_params},
-                                      #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
                                       {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
                                        lr=args.training.alpha_learning_rate, 
                                        weight_decay=args.training.cls_weight_decay)

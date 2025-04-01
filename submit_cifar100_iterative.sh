@@ -1,15 +1,15 @@
 #!/bin/bash
 
-#SBATCH --job-name=NeRF
-#SBATCH --output=log/AaPaper/Backbone_50e_originLossWeights_%j.out
-#SBATCH  --error=log/AaPaper/Backbone_50e_originLossWeights_%j.err
-#SBATCH --time=17:00:00                         
-#SBATCH --constraint="gpu_L40S_48G|gpu_A40_48G" #|gpu_RTXA5000_24G|gpu_RTX6000_24G" #|gpu_RTX5000_16G" #|gpu_2080Ti_11G"
-##SBATCH --mem=60G
+#SBATCH --job-name=NeuMeta
+#SBATCH --output=log/AaPaper/Ablation/LastBlock/NeuMeta_%j.out
+#SBATCH  --error=log/AaPaper/Ablation/LastBlock/NeuMeta_%j.err
+#SBATCH --time=12:00:00                         
+#SBATCH --constraint="gpu_L40S_48G|gpu_A40_48G|gpu_RTXA5000_24G|gpu_RTX6000_24G" #|gpu_RTX5000_16G" #|gpu_2080Ti_11G"
+#SBATCH --mem=24G
 
 #SBATCH --gres=gpu:1                            
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 
 #SBATCH --account=tesi_tsommariva               
 #SBATCH --partition=all_usr_prod                
@@ -24,6 +24,12 @@ conda activate neumeta
 export PYTHONPATH=/homes/tsommariva/neumeta:$PYTHONPATH
 
 python3 /homes/tsommariva/neumeta/neumeta/train_cifar100_iterative.py --config neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml \
-    #--resume_from "/work/tesi_tsommariva/experiments/AaITERATIVE/resmlpDict_CommonB8_8l_512hd_32f_8simultaneusBlocks_50_4AccumulationSteps_warmup_cosine_20e/nerf_block1.pth" \
-    #--experiment.num_epochs=85 \
+    --model.metamorphic_block_type='resize' \
+    --hyper_model.type='resmlp' \
+    --experiment.batch_accumulation_steps=1 \
+    --training.cls_learning_rate=0.0 \
+    #--resume_from "/work/tesi_tsommariva/experiments/Paper/resmlpDict_150e_skipInit_StartBlock7_CustmInit:True_4AccumulationSteps/nerf_block7.pth" \
+    #--experiment.num_epochs=350 \
+    #--model.start_block=7 \
+    #--hyper_model.type='resmlpDict'
     #--training.scheduler="warmup_const_cosine" \

@@ -3,22 +3,25 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 7 #Learnable Blocks
-  start_block: 1 #
+  num_param: 8 
+  start_block: 8 #7
   smooth: False
   fuse: False
   only_last: False
+  metamorphic_block_type: 'skipInit' #'resize' 
   
 # Experiment settings
 experiment:
-  name: ${hyper_model.type}_CommonB8_${hyper_model.num_layers}l_${hyper_model.hidden_dim}hd_${hyper_model.num_freqs}f_${experiment.simul_blocks}simultaneusBlocks_${experiment.num_epochs}_${experiment.batch_accumulation_steps}AccumulationSteps_${training.scheduler}_${training.warmup_epochs}e
-  num_epochs: 50
+  name: lastBlock_${hyper_model.type}_${experiment.num_epochs}e_${model.metamorphic_block_type}_StartBlock${model.start_block}_CustmInit:${experiment.custom_init}_${experiment.batch_accumulation_steps}AccumulationSteps
+  num_epochs: 100 #350
   log_interval: 26
   eval_interval: 10
-  batch_accumulation_steps: 4
+  batch_accumulation_steps: 4 #1
   simul_blocks: 8
   iterative: True
-  custom_init: True
+  custom_init: True  #False
+  test: False
+  test_path: ''
 
 # Training configurations
 training:
@@ -34,14 +37,14 @@ training:
   clip_grad: 10.0
   save_model_path: /work/tesi_tsommariva/experiments/Paper/${experiment.name} # Directory to save the trained model
   cls_optimizer: adamw
-  cls_learning_rate: 7e-5
-  alpha_learning_rate: 1e-4
-  backbone_learning_rate: 1e-5
+  cls_learning_rate: 7e-5 #0
+  alpha_learning_rate: 1e-4 #0
+  backbone_learning_rate: 1e-5 #0
   cls_weight_decay: 1e-2
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
-  type: resmlpDict
+  type: resmlpDict #resmlp
   kernel_groups: 4
   input_dim: 6
   hidden_dim: 512
@@ -53,8 +56,8 @@ hyper_model:
   ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:
-    ce_weight: 1.0 #100.0
-    reg_weight: 1e-4 #0.001
+    ce_weight: 100.0
+    reg_weight: 0.001
     recon_weight: 1.0
     kd_weight: 0.1
 

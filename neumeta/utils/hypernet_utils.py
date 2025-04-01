@@ -271,7 +271,7 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 single_block=False,
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
-                                prior=False)
+                                prior=False, config_args=args)
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
@@ -306,7 +306,7 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 single_block=False,
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
-                                prior=False)
+                                prior=False, config_args=args)
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
@@ -341,7 +341,7 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 single_block=False,
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
-                                prior=False)
+                                prior=False, config_args=args)
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
@@ -568,7 +568,10 @@ def sample_weights_Dict(model, model_cls, coords_tensor, keys_list, indices_list
         
         elif size_list[boolean_mask][0] == 1:  # Condition for conv biases.
             # Assign the weights to the specified indices.
-            predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = (predicted_weights.view(-1))
+            if predicted_checkpoint[key][indices_list[boolean_mask][:, 0]].shape == (predicted_weights.view(-1)).shape:
+                predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = (predicted_weights.view(-1))
+            else:
+                predicted_checkpoint[key][indices_list[boolean_mask][:, 0]] = (predicted_weights[:,0].view(-1))
         
         elif size_list[boolean_mask][0] == 2:  # Condition for a different size.
             # Directly assign the weights without reshaping.
@@ -654,9 +657,9 @@ def sample_weights(model, model_cls, coords_tensor, keys_list, indices_list, siz
     with torch.no_grad():     
         for name, param in model_cls.learnable_parameter.items():
             if name in predicted_checkpoint:
-                param.copy_(predicted_checkpoint[name].clone())
+                param.copy_(predicted_checkpoint[name])
 
-    return model_cls, list(predicted_checkpoint.values())
+    return model_cls, predicted_checkpoint
 
 def sample_subset(coords_tensor, keys_list, indices_list, size_list, key_mask, ratio=0.5):
     """
