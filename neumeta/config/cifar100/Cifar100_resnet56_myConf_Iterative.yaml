@@ -3,8 +3,9 @@ base_config: neumeta/config/base_config.yaml
 model:
   type: ResNet56
   pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
-  num_param: 8 
-  start_block: 8 #7
+  num_param: 7 
+  start_block: 7 #8 #7
+  first_meta_block: 1
   smooth: False
   fuse: False
   only_last: False
@@ -13,7 +14,7 @@ model:
 # Experiment settings
 experiment:
   name: lastBlock_${hyper_model.type}_${experiment.num_epochs}e_${model.metamorphic_block_type}_StartBlock${model.start_block}_CustmInit:${experiment.custom_init}_${experiment.batch_accumulation_steps}AccumulationSteps
-  num_epochs: 100 #350
+  num_epochs: 350 #100 #350
   log_interval: 26
   eval_interval: 10
   batch_accumulation_steps: 4 #1
@@ -37,9 +38,9 @@ training:
   clip_grad: 10.0
   save_model_path: /work/tesi_tsommariva/experiments/Paper/${experiment.name} # Directory to save the trained model
   cls_optimizer: adamw
-  cls_learning_rate: 7e-5 #0
+  cls_learning_rate: 0 #7e-5 #0
   alpha_learning_rate: 1e-4 #0
-  backbone_learning_rate: 1e-5 #0
+  backbone_learning_rate: 0 #1e-5 
   cls_weight_decay: 1e-2
 
 # Hyper-model specifications (specific to NeRF)

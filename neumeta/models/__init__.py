@@ -67,7 +67,7 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse =
     return model    
 
 
-def create_model_cifar100(model_name, hidden_dim,num_param, prior=True ,single_block=False,bottom_up=False ,path=None, smooth=False, fuse=True, config_args = None):
+def create_model_cifar100(model_name, hidden_dim,num_param, prior=True ,single_block=False,bottom_up=False ,path=None, smooth=False, fuse=True, config_args = None, prune = False):
     """
     Create a model based on the specified name.
 
@@ -86,7 +86,7 @@ def create_model_cifar100(model_name, hidden_dim,num_param, prior=True ,single_b
     else:
         raise ValueError(f"Unsupported model: {model_name}")
     
-    if path and not smooth and not fuse:
+    if path and not smooth and not fuse and not prune:
         if os.path.exists(path):
             #model = torch.load(path,weights_only=False)
             fuse_module(model, skip_block=BasicBlock_Resize_bn)
@@ -94,7 +94,7 @@ def create_model_cifar100(model_name, hidden_dim,num_param, prior=True ,single_b
             state_dict = torch.load(path, map_location=torch.device('cpu'),weights_only=False)
             load_checkpoint(model, state_dict)
             return model
-        
+
     if path:
         print("Loading model from", path)
         state_dict = torch.load(path, map_location=torch.device('cpu'))

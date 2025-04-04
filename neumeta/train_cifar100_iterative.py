@@ -148,8 +148,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         #all the model_cls should share the same backbone_parameters
         with torch.no_grad():
             for name, param in model_cls.named_parameters():
-                #if 'alpha' in name or (('layer3.8' in name or 'fc' in name)):
-                if 'alpha' in name or 'fc' in name:
+                #if 'alpha' in name or 'fc' in name:
+                if 'alpha' in name: # or (('layer3.8' in name or 'fc' in name)):
                     if name in backbone_parameters:
                         model_cls.state_dict()[name].copy_(backbone_parameters[name])
 
@@ -215,8 +215,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             backbone_parameters = {
                 name: model_cls.state_dict()[name].detach().clone()
                 for name, _ in model_cls.named_parameters() 
-                #if 'alpha' in name or (('layer3.8' in name or 'fc' in name))
-                if 'alpha' in name or 'fc' in name
+                if 'alpha' in name # or (('layer3.8' in name or 'fc' in name))
+                #if 'alpha' in name or 'fc' in name
             }
                 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
@@ -516,9 +516,9 @@ def test(args):
     #save_checkpoint(f"{test_path}/nerf_block7_v2.pth",best_hyper_model,optimizer,scheduler,None,50,checkpoint_info['epoch'], trained_blocks=7, backbone_parameters=backbone_parameters)
     hyper_model_type = args.hyper_model.get('type', 'mlp')
     if hyper_model_type == 'resmlpDict':
-        tmphyp = get_hypernet(args,args.model.num_param * 4, total_param=number_param, device=device, hyper_model_type='resmlp')
+        tmphyp = get_hypernet(args, (args.model.num_param - args.model.start_block + 1 )* 4, total_param=number_param, device=device, hyper_model_type='resmlp')
     else:
-        tmphyp = get_hypernet(args,args.model.num_param * 4, total_param=number_param, device=device)
+        tmphyp = get_hypernet(args, (args.model.num_param - args.model.start_block + 1) * 4, total_param=number_param, device=device)
     summary(tmphyp, (6,))
     del tmphyp
     gc.collect()

@@ -2,6 +2,30 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Prune Cifar100 - Resnet56",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "/homes/tsommariva/neumeta/neumeta/prune/cifar100.py",
+      "args": [
+        "--config","neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
+        "--model.start_block=1",
+        "--resume_from", "/work/tesi_tsommariva/experiments/AaITERATIVE/resmlpDict_CommonB8_8l_512hd_32f_8simultaneusBlocks_50_4AccumulationSteps_warmup_cosine_20e/nerf_block7.pth" 
+      ], 
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "print Cifar100 - Resnet56",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "/homes/tsommariva/neumeta/print_img.py",
+      "args": [
+        "--config","neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
+        "--model.start_block=1",
+        "--resume_from", "/work/tesi_tsommariva/experiments/AaITERATIVE/resmlpDict_CommonB8_8l_512hd_32f_8simultaneusBlocks_50_4AccumulationSteps_warmup_cosine_20e/nerf_block7.pth" 
+      ], 
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Train ResnetXL",
       "type": "debugpy",
       "request": "launch",
@@ -27,8 +51,6 @@
       "program": "neumeta/train_cifar100_iterative.py",
       "args": [
         "--experiment.debug=True",
-        "--experiment.test=True",
-        "--experiment.test_path='/work/tesi_tsommariva/experiments/Paper/lastBlock_resmlpDict_100e_skipInit_StartBlock8_CustmInit:True_4AccumulationSteps'",
         "--config", "/homes/tsommariva/neumeta/neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
       ], 
       "console": "integratedTerminal"

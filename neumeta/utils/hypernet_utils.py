@@ -237,7 +237,10 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     total = 0
     preds = []
     gt = []
-    model_cls = model_cls.to(device)
+    if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+        model_cls = model_cls.to(device, memory_format=torch.channels_last)
+    else:
+        model_cls = model_cls.to(device)
     model_cls.eval()
     
     with torch.no_grad():
