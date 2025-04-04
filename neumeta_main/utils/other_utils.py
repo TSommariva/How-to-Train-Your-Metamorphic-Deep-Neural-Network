@@ -13,7 +13,7 @@ from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import copy
 from neumeta.utils.hypernet_utils import get_hypernet
-import bitsandbytes as bnb
+
 
 
 def parse_args():
@@ -546,16 +546,9 @@ def get_cifar_optimizer(args, model, n_blocks=8):
                             weight_decay=args.training.cls_weight_decay)
     elif optimizer_name == 'sgd':
         optimizer = torch.optim.SGD([{'params': alpha_params},
-                                      #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
                                       {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
                                        lr=args.training.alpha_learning_rate, 
                                        weight_decay=args.training.cls_weight_decay)
-    elif optimizer_name == '8bitAdamW':
-        optimizer = bnb.optim.AdamW8bit([{'params': alpha_params},
-                            #{'params': backbone_params, 'lr': args.training.backbone_learning_rate},
-                            {'params': classifier_params, 'lr': args.training.cls_learning_rate}],
-                             lr=args.training.alpha_learning_rate, 
-                             weight_decay=args.training.cls_weight_decay)
     else:
         raise ValueError(f"Unknown optimizer: {optimizer_name}")
     return optimizer

@@ -89,7 +89,7 @@ def create_model_cifar100(model_name, hidden_dim,num_param, prior=True ,single_b
     if path and not smooth and not fuse:
         if os.path.exists(path):
             #model = torch.load(path,weights_only=False)
-            fuse_module(model)
+            fuse_module(model, skip_block=BasicBlock_Resize_bn)
             print("Loading model from", path)
             state_dict = torch.load(path, map_location=torch.device('cpu'),weights_only=False)
             load_checkpoint(model, state_dict)

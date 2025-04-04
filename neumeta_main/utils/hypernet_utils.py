@@ -1,3 +1,4 @@
+import gc
 import torch
 import numpy as np
 import random
@@ -5,11 +6,9 @@ import wandb
 from torch.optim import Adam, AdamW
 from torch.optim.lr_scheduler import  MultiStepLR
 import torch.nn.functional as F
-import bitsandbytes as bnb
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose, NeRF_ResMLP_ComposeDict, NeRF_HierarcResMLP_ComposeDict, NeRF_HierarcResMLP_Compose
 from tqdm import tqdm
 import copy
-import gc
 
 def weighted_regression_loss(reconstructed_weights, gt_selected_weights, epsilon=1e-6):
     """
@@ -73,10 +72,6 @@ def get_optimizer(args, hyper_model, first_block = False):
         optimizer = torch.optim.Adagrad(hyper_model.parameters(), 
                                         lr=args.training.learning_rate, 
                                         weight_decay=args.training.weight_decay)
-    elif optimizer_name == '8bitAdamW':
-        optimizer = bnb.optim.AdamW8bit(filter(lambda p: p.requires_grad, hyper_model.parameters()), 
-                          lr=args.training.learning_rate, 
-                          weight_decay=args.training.weight_decay)
     else:
         raise ValueError(f"Unknown optimizer: {optimizer_name}")
     scheduler_name = args.training.get('scheduler', 'multistep')

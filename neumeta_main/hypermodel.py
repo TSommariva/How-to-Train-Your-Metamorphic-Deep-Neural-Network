@@ -46,6 +46,15 @@ class PositionalEncoding(nn.Module):
             for fn in [torch.sin, torch.cos]:
                 out.append(fn(2.**f*torch.pi*x))
         return torch.cat(out, dim=-1)
+    #def forward(self, x):
+    #    # x: [B, 5] (layer_id, in_channel_id, out_channel_id, in_layer_size, out_layer_size)
+    #    out = [x]
+    #    for i in range(self.freqs_low, self.freqs_high):
+    #        freq = 2.0**i * np.pi
+    #        for j in range(self.input_dim):  # 5 input dimensions
+    #            out.append(torch.sin(freq * x[:, j].unsqueeze(-1)))
+    #            out.append(torch.cos(freq * x[:, j].unsqueeze(-1)))
+    #    return torch.cat(out, dim=-1)  # [B, 5 + 10*5]
     
 
 class NeRF_MLP_Residual_Scaled(nn.Module):

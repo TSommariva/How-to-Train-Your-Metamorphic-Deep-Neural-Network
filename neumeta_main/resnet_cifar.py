@@ -269,18 +269,18 @@ class CifarResNet(nn.Module):
         if config_args is not None:
             if config_args.model.metamorphic_block_type == 'resize':
                 self.metamorphic_block_type = BasicBlock_Resize
-        self.inplanes = 64
+        self.inplanes = 16
         self.prior = prior
-        self.conv1 = conv3x3(3, 64)
-        self.bn1 = nn.BatchNorm2d(64)
+        self.conv1 = conv3x3(3, 16)
+        self.bn1 = nn.BatchNorm2d(16)
         self.relu = nn.ReLU(inplace=True)
 
-        self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
+        self.layer1 = self._make_layer(block, 16, layers[0])
+        self.layer2 = self._make_layer(block, 32, layers[1], stride=2)
+        self.layer3 = self._make_layer(block, 64, layers[2], stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(256 * block.expansion, num_classes)
+        self.fc = nn.Linear(64 * block.expansion, num_classes)
         
         self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
 
@@ -335,10 +335,10 @@ class CifarResNet(nn.Module):
                 
                 if self.prior:
                     for _ in range(self.start_block, self.num_layers_inr + 1):
-                        layers.append(BasicBlock_Resize(256, bottleneck, stride))
+                        layers.append(BasicBlock_Resize(64, bottleneck, stride))
                 else:
                     for _ in range(self.start_block, self.num_layers_inr + 1):
-                        layers.append(self.metamorphic_block_type(256, bottleneck, stride=stride, downsample=None))
+                        layers.append(self.metamorphic_block_type(64, bottleneck, stride=stride, downsample=None))
                 
                 layers.extend(list(child.children())[self.num_layers_inr+1:])
                 #layers.append(BasicBlock_Resize_skipInit(64, 64, stride=stride, downsample=None))
