@@ -531,8 +531,8 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
 
 def get_cifar_optimizer(args, model, n_blocks=8):
     alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
-    #classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n))]
-    classifier_params = [p for n, p in model.named_parameters() if ('fc' in n )]
+    classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n))]
+    #classifier_params = [p for n, p in model.named_parameters() if ('fc' in n )]
     optimizer_name = args.training.get('cls_optimizer', 'adamw')
     if optimizer_name == 'adamw':
         optimizer = AdamW([{'params': alpha_params},

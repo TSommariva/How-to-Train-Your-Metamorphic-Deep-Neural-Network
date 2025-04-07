@@ -262,18 +262,23 @@ class CifarResNet(nn.Module):
         self.layers = layers
         self.num_param = num_param
         self.num_layers_inr = num_param #- 1
-        self.start_block = config_args.model.get('start_block', 1)
-        #self.single_block = single_block
-        #self.bottom_up = bottom_up
-        self.metamorphic_block_type = BasicBlock_Resize_skipInit
-        if config_args is not None:
-            if config_args.model.metamorphic_block_type == 'resize':
-                self.metamorphic_block_type = BasicBlock_Resize
+        self.single_block = single_block
         self.inplanes = 64
+        self.bottom_up = bottom_up
         self.prior = prior
         self.conv1 = conv3x3(3, 64)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
+        
+        self.metamorphic_block_type = BasicBlock_Resize_skipInit
+        if config_args is not None:
+            self.start_block = config_args.model.get('start_block', 1)
+            self.first_meta_block = config_args.model.get('first_meta_block', 1)
+            if config_args.model.metamorphic_block_type == 'resize':
+                self.metamorphic_block_type = BasicBlock_Resize
+        else:
+            self.start_block = 1
+            self.first_meta_block = 1
 
         self.layer1 = self._make_layer(block, 64, layers[0])
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
@@ -282,7 +287,8 @@ class CifarResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(256 * block.expansion, num_classes)
         
-        self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
+        if not self.prior:
+            self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -331,13 +337,9 @@ class CifarResNet(nn.Module):
                 print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
                 # Get all the layers except the last block
                 layers = []
-                layers.extend(list(child.children())[0 : self.start_block])
+                layers.extend(list(child.children())[0 : self.first_meta_block])
                 
-                if self.prior:
-                    for _ in range(self.start_block, self.num_layers_inr + 1):
-                        layers.append(BasicBlock_Resize(256, bottleneck, stride))
-                else:
-                    for _ in range(self.start_block, self.num_layers_inr + 1):
+                for _ in range(self.first_meta_block, self.num_layers_inr + 1):
                         layers.append(self.metamorphic_block_type(256, bottleneck, stride=stride, downsample=None))
                 
                 layers.extend(list(child.children())[self.num_layers_inr+1:])
@@ -348,8 +350,10 @@ class CifarResNet(nn.Module):
     def learnable_parameter(self):
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
         self.keys = [k for k, _ in self.named_parameters()
-                    if any(k.startswith(f'layer3.{i}') for i in range(self.start_block, self.num_param + 1)) and 'alpha' not in k]
+                    if any(k.startswith(f'layer3.{i}') for i in range(self.first_meta_block, self.num_param + 1)) and 'alpha' not in k]
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
+
+
 
 def _resnet(
     arch: str,

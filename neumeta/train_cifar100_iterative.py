@@ -143,8 +143,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         #all the model_cls should share the same backbone_parameters
         with torch.no_grad():
             for name, param in model_cls.named_parameters():
-                #if 'alpha' in name or (('layer3.8' in name or 'fc' in name)):
-                if 'alpha' in name or 'fc' in name:
+                if 'alpha' in name or (('layer3.8' in name or 'fc' in name)):
+                #if 'alpha' in name or 'fc' in name:
                     if name in backbone_parameters:
                         model_cls.state_dict()[name].copy_(backbone_parameters[name])
 
@@ -209,8 +209,8 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             backbone_parameters = {
                 name: model_cls.state_dict()[name].detach().clone()
                 for name, _ in model_cls.named_parameters() 
-                #if 'alpha' in name or (('layer3.8' in name or 'fc' in name))
-                if 'alpha' in name or 'fc' in name
+                if 'alpha' in name or (('layer3.8' in name or 'fc' in name))
+                #if 'alpha' in name or 'fc' in name
             }
                 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
@@ -403,9 +403,9 @@ def main_iterative_nerf(args):
                 # Save the checkpoint
                 if val_acc >= best_acc:
                     best_acc = val_acc
-                    save_checkpoint(f"{args.training.save_model_path}/nerf_block{block_id}_best.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
+                    save_checkpoint(f"{args.training.save_model_path}/nerf_best.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
                 else:
-                    save_checkpoint(f"{args.training.save_model_path}/nerf_block{block_id}_last.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
+                    save_checkpoint(f"{args.training.save_model_path}/nerf_last.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
                 print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
             
                 torch.cuda.empty_cache()
@@ -482,6 +482,8 @@ def test(args):
     if checkpoint_info is None:
         checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block7.pth", best_hyper_model, None,None ,None, device=device)
     if checkpoint_info is None:
+        checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_best.pth", best_hyper_model, None,None ,None, device=device)
+    if checkpoint_info is None:
         checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block8.pth", best_hyper_model, None,None ,None, device=device)
     if checkpoint_info is None:
         checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block8_best.pth", best_hyper_model, None,None ,None, device=device)
@@ -534,11 +536,17 @@ def test(args):
          
     print("------------------------------------------------------------------------------------------------------------------------------")
     
-    last_checkpoint_info, last_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block7_last.pth", best_hyper_model, None, None ,None, device=device)
+    last_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = model.keys, device=device)
+    
+    last_checkpoint_info, last_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block7_last.pth", last_hyper_model, None, None ,None, device=device)
     if last_checkpoint_info is None:
-        last_checkpoint_info, last_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block8_last.pth", best_hyper_model, None, None ,None, device=device)
+        last_checkpoint_info, last_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block8_last.pth", last_hyper_model, None, None ,None, device=device)
+    if checkpoint_info is None:
+        last_checkpoint_info, last_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_last.pth", last_hyper_model, None,None ,None, device=device)
     if last_checkpoint_info is not None:
         last_backbone_parameters = last_checkpoint_info['backbone_parameters']
+        last_hyper_model.eval()
+        last_hyper_model.to(device)
         for hidden_dim in [64,128,192,256]:
              model = create_model(args.model.type, 
                                      hidden_dim=hidden_dim,
