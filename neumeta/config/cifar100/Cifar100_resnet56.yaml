@@ -20,9 +20,9 @@ experiment:
 
 # Training configurations
 training:
-  batch_size: 256
-  learning_rate: 5e-3
-  eta_min: 1e-4
+  batch_size: 1024
+  learning_rate: 1e-2
+  eta_min: 1e-3
   warmup_epochs: 5
   T_max: ${experiment.num_epochs}
   weight_decay: 5e-4

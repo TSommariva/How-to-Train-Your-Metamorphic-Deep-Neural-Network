@@ -1,18 +1,18 @@
 #!/bin/bash
 
-#SBATCH --job-name=7Individual
+#SBATCH --job-name=bash
 #SBATCH --output=log/AaPaper/Ablation/Individual/priorSlim_7Blocks_%j.out
 #SBATCH  --error=log/AaPaper/Ablation/Individual/priorSlim_7Blocks_%j.err
-#SBATCH --time=16:00:00                         
-#SBATCH --constraint="gpu_A40_48G|gpu_RTXA5000_24G|gpu_RTX6000_24G|gpu_RTX5000_16G|gpu_L40S_48G" #|gpu_2080Ti_11G"
-#SBATCH --mem=24G
+#SBATCH --time=4:00:00                         
+##SBATCH --constraint=#"gpu_A40_48G|gpu_RTXA5000_24G|gpu_RTX6000_24G|gpu_RTX5000_16G|gpu_L40S_48G" #|gpu_2080Ti_11G"
+##SBATCH --mem=20G
 
 #SBATCH --gres=gpu:1                            
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=4
 
 #SBATCH --account=tesi_tsommariva               
-#SBATCH --partition=all_usr_prod                
+#SBATCH --partition=all_serial                
 #SBATCH --mail-type=ALL                   
 #SBATCH --mail-user=ts.slurm@gmail.com          
 

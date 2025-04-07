@@ -124,9 +124,9 @@ def main():
     val_dataset = CIFAR100(root='./data', train=False, transform=transform_test)
     
     train_loader = DataLoader(train_dataset, batch_size=args.training.batch_size, 
-                            shuffle=True, num_workers=8)
+                            shuffle=True, num_workers=2)
     val_loader = DataLoader(val_dataset, batch_size=args.training.batch_size,
-                          shuffle=False, num_workers=8)
+                          shuffle=False, num_workers=2)
     for dim in [64,48,32,16]:
         # Create model
         model = cifar100_resnet56(
