@@ -465,12 +465,15 @@ def test(args):
                          path=args.model.pretrained_path, 
                          smooth=args.model.smooth, fuse=args.model.smooth,
                          config_args=args).to(device)
-
+    dim_dict, gt_model_dict = init_model_dict(args, args.model.num_param, args.model.single_block)
+    dim_dict = shuffle_coordiates_all(dim_dict)
+    _, _, _, keys_list, _, _, _ = dim_dict[f"{256}"]
+    selected_keys = np.unique(keys_list)
     
     checkpoint = model.learnable_parameter
     number_param = len(checkpoint)
     
-    best_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = model.keys, device=device)
+    best_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = selected_keys, device=device)
     
     criterion, _, _, _ = get_optimizer(args, best_hyper_model, first_block=False) 
     if args.experiment.test == True:
@@ -536,7 +539,7 @@ def test(args):
          
     print("------------------------------------------------------------------------------------------------------------------------------")
     
-    last_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = model.keys, device=device)
+    last_hyper_model = get_hypernet(args, number_param,total_param = number_param,key_list = selected_keys, device=device)
     
     last_checkpoint_info, last_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block7_last.pth", last_hyper_model, None, None ,None, device=device)
     if last_checkpoint_info is None:
