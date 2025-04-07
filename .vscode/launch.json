@@ -26,12 +26,21 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "Train ResnetXL",
+      "name": "Train Resnet",
       "type": "debugpy",
       "request": "launch",
-      "program": "neumeta/trainResnet56XL.py",
+      "program": "neumeta/trainResnet56.py",
       "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56.yaml",
                "--experiment.debug=True"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Prune Resnet",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "/homes/tsommariva/neumeta/neumeta/prune/cifar100.py",
+      "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56_myConf_Iterative.yaml",
+    ],
       "console": "integratedTerminal"
     },
     {

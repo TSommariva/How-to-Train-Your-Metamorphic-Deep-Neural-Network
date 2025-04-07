@@ -261,18 +261,12 @@ class CifarResNet(nn.Module):
         super(CifarResNet, self).__init__()
         self.layers = layers
         self.num_param = num_param
-        self.num_layers_inr = num_param #- 1
-        #self.single_block = single_block
-        #self.bottom_up = bottom_up
-
         self.metamorphic_block_type = BasicBlock_Resize_skipInit
         if config_args is not None:
-            self.start_block = config_args.model.get('start_block', 1)
             self.first_meta_block = config_args.model.get('first_meta_block', 1)
             if config_args.model.metamorphic_block_type == 'resize':
                 self.metamorphic_block_type = BasicBlock_Resize
         else:
-            self.start_block = 1
             self.first_meta_block = 1
         self.inplanes = 16
         self.prior = prior
@@ -334,15 +328,15 @@ class CifarResNet(nn.Module):
         for name, child in self.named_children():
         # Change the last block of layer3
             if name == 'layer3':
-                print(f'Replace first {self.num_layers_inr} blocks of layer3 with new blocks of hidden dim {bottleneck}')
+                print(f'Replace first {self.num_param} blocks of layer3 with new blocks of hidden dim {bottleneck}')
                 # Get all the layers except the last block
                 layers = []
                 layers.extend(list(child.children())[0 : self.first_meta_block])
                 
-                for _ in range(self.first_meta_block, self.num_layers_inr + 1):
+                for _ in range(self.first_meta_block, self.num_param + 1):
                         layers.append(self.metamorphic_block_type(64, bottleneck, stride=stride, downsample=None))
                 
-                layers.extend(list(child.children())[self.num_layers_inr+1:])
+                layers.extend(list(child.children())[self.num_param+1:])
                 #layers.append(BasicBlock_Resize_skipInit(64, 64, stride=stride, downsample=None))
                 self._modules[name] = nn.Sequential(*layers)
     

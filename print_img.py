@@ -100,7 +100,7 @@ def main(args):
     dimensions = checkpoint['dimensions']
     accuracy = checkpoint['accuracy']
     loss = checkpoint['loss']
-    fig, (ax_acc, ax_loss) = plt.subplots(1, 2, figsize=(10, 4))
+    fig, (ax_acc, ax_loss) = plt.subplots(2, 1, figsize=(6, 6))
 
     # --- Accuracy subplot ---
     ax_acc.plot(dimensions, accuracy, color='red', label='Accuracy')
@@ -109,11 +109,11 @@ def main(args):
     ax_acc.axvspan(32, 64, color='gray', alpha=0.35)
 
     highlight_box = dict(facecolor='yellow', edgecolor='none', boxstyle='round,pad=0.3', alpha=0.5)
-    ax_acc.text(0.19, 0.2, 'Untrained', transform=ax_acc.transAxes,
-                ha='center', va='center', fontsize=11, fontweight='bold', color='black',
+    ax_acc.text(0.16, 0.2, 'Untrained', transform=ax_acc.transAxes,
+                ha='center', va='center', fontsize=15, fontweight='bold', color='black',
                 bbox=highlight_box)
-    ax_acc.text(0.85, 0.2, 'Untrained', transform=ax_acc.transAxes,
-                ha='center', va='center', fontsize=11, fontweight='bold', color='black',
+    ax_acc.text(0.82, 0.2, 'Untrained', transform=ax_acc.transAxes,
+                ha='center', va='center', fontsize=15, fontweight='bold', color='black',
                 bbox=highlight_box)
     ax_acc.grid(True)
 
@@ -124,11 +124,11 @@ def main(args):
     ax_loss.axvspan(32, 64, color='gray', alpha=0.35)
 
     # Add the same text markers
-    ax_loss.text(0.19, 0.8, 'Untrained', transform=ax_loss.transAxes,
-                 ha='center', va='center', fontsize=11, fontweight='bold', color='black',
+    ax_loss.text(0.17, 0.8, 'Untrained', transform=ax_loss.transAxes,
+                 ha='center', va='center', fontsize=15, fontweight='bold', color='black',
                  bbox=highlight_box)
-    ax_loss.text(0.85, 0.8, 'Untrained', transform=ax_loss.transAxes,
-                 ha='center', va='center', fontsize=11, fontweight='bold', color='black',
+    ax_loss.text(0.82, 0.8, 'Untrained', transform=ax_loss.transAxes,
+                 ha='center', va='center', fontsize=15, fontweight='bold', color='black',
                  bbox=highlight_box)
     
     ax_loss.grid(True)

@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score
 import wandb
 from torch.optim import AdamW
 import time
+from torchsummary import summary
 
 from neumeta.utils.other_utils import (
     parse_args, set_seed, AverageMeter,print_omegaconf
@@ -103,12 +104,6 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     os.makedirs(args.training.save_model_path, exist_ok=True)
     
-    # Name the run using current time and configuration name
-    run_name = f"{args.experiment.name}-{time.strftime('%Y%m%d%H%M%S')}"
-    if not args.experiment.debug:
-        wandb.init(project="resnet", name=run_name, config=dict(args), group='cifar100', dir='/work/tesi_tsommariva')
-
-    
     # Set seeds for reproducibility
     set_seed(42)
     
@@ -129,65 +124,73 @@ def main():
     val_dataset = CIFAR100(root='./data', train=False, transform=transform_test)
     
     train_loader = DataLoader(train_dataset, batch_size=args.training.batch_size, 
-                            shuffle=True, num_workers=2)
+                            shuffle=True, num_workers=8)
     val_loader = DataLoader(val_dataset, batch_size=args.training.batch_size,
-                          shuffle=False, num_workers=2)
-    
-    # Create model
-    model = cifar100_resnet56(
-        hidden_dim=0,
-        num_param=0,
-        bottom_up=False,
-        single_block=False,
-        pretrained=False
-    ).to(device)
-    
-    # Loss and optimizer
-    criterion = nn.CrossEntropyLoss()
-    optimizer = AdamW(model.parameters(), 
-                        lr=args.training.learning_rate, 
-                        weight_decay=args.training.weight_decay)    
-    # Learning rate scheduler
-    warmup_epochs = args.training.get('warmup_epochs', 5)
-            
-    warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-2, end_factor=1.0, total_iters=warmup_epochs)
-    cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(args.training.T_max - warmup_epochs),eta_min=(args.training.learning_rate * 0.1))
-            
-    scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[warmup_epochs])
-    
-    # Training loop
-    best_acc = 0
-    start_epoch = 0
-    
-    if args.resume_from:
-        checkpoint = torch.load(args.resume_from, map_location='cpu')
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
-        start_epoch = checkpoint['epoch']
-        best_acc = checkpoint['best_acc']
+                          shuffle=False, num_workers=8)
+    for dim in [64,48,32,16]:
+        # Create model
+        model = cifar100_resnet56(
+            hidden_dim=dim,
+            num_param=args.model.num_param,
+            bottom_up=False,
+            single_block=False,
+            pretrained=False,
+            config_args=args,
+            prior=False
+        ).to(device)
+        summary(model,(3, 32, 32))
+        run_name = f"hiddenDim{dim}_{args.experiment.name}-{time.strftime('%Y%m%d%H%M%S')}"
+        if not args.experiment.debug:
+            wandb.init(project="resnet", name=run_name, config=dict(args), group='cifar100', dir='/work/tesi_tsommariva')
 
-    for epoch in range(start_epoch, args.experiment.num_epochs):
-        train_loss, train_acc= train_epoch(
-            epoch, model, train_loader, criterion, optimizer, device, args)
-        
-        val_loss, val_acc = validate(
-            model, val_loader, criterion, device, epoch, args)
-        
-        scheduler.step()
-        
-        # Save checkpoint
-        if val_acc > best_acc:
-            best_acc = val_acc
-            save_checkpoint(
-                os.path.join(args.training.save_model_path, f'best_model.pth'),
-                model, optimizer, scheduler, epoch, best_acc
-            )
-        else:
-            save_checkpoint(
-                os.path.join(args.training.save_model_path, f'last_model.pth'),
-                model, optimizer, scheduler, epoch, best_acc
-            )
+        # Loss and optimizer
+        criterion = nn.CrossEntropyLoss()
+        optimizer = AdamW(model.parameters(), 
+                            lr=args.training.learning_rate, 
+                            weight_decay=args.training.weight_decay)    
+        # Learning rate scheduler
+        warmup_epochs = args.training.get('warmup_epochs', 5)
+
+        warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-2, end_factor=1.0, total_iters=warmup_epochs)
+        cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(args.training.T_max - warmup_epochs),eta_min=(args.training.learning_rate * 0.1))
+
+        scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[warmup_epochs])
+
+        # Training loop
+        best_acc = 0
+        start_epoch = 0
+
+        if args.resume_from:
+            checkpoint = torch.load(args.resume_from, map_location='cpu')
+            model.load_state_dict(checkpoint['model_state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            start_epoch = checkpoint['epoch']
+            best_acc = checkpoint['best_acc']
+
+        for epoch in range(start_epoch, args.experiment.num_epochs):
+            train_loss, train_acc= train_epoch(
+                epoch, model, train_loader, criterion, optimizer, device, args)
+
+            val_loss, val_acc = validate(
+                model, val_loader, criterion, device, epoch, args)
+            
+            scheduler.step()
+
+            # Save checkpoint
+            if val_acc > best_acc:
+                best_acc = val_acc
+                save_checkpoint(
+                    os.path.join(args.training.save_model_path, f'dim{dim}_best_model.pth'),
+                    model, optimizer, scheduler, epoch, best_acc
+                )
+            else:
+                save_checkpoint(
+                    os.path.join(args.training.save_model_path, f'dim{dim}_last_model.pth'),
+                    model, optimizer, scheduler, epoch, best_acc
+                )
+        if not args.experiment.debug:
+            wandb.finish()   
 
 if __name__ == "__main__":
     main()
