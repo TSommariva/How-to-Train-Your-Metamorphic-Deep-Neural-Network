@@ -1,14 +1,14 @@
 model:
   type: ResNet56
-  num_param: 7 #Learnable Blocks
-  first_meta_block: 1
+  num_param: 8 #Learnable Blocks
+  first_meta_block: 8
   smooth: False
   fuse: False
   metamorphic_block_type: 'resize'
   
 # Experiment settings
 experiment:
-  name: Resnet56_Large_${training.optimizer}_${experiment.num_epochs}e_${training.batch_size}bs
+  name: Resnet56_Small_SGD_${experiment.num_epochs}e_${training.batch_size}bs_${training.learning_rate}lr
   debug: False
   num_epochs: 200
   log_interval: 25
@@ -21,10 +21,10 @@ experiment:
 # Training configurations
 training:
   batch_size: 256
-  learning_rate: 5e-3
-  eta_min: 1e-4
+  learning_rate: 1e-2
+  eta_min: 1e-3
   warmup_epochs: 5
   T_max: ${experiment.num_epochs}
   weight_decay: 5e-4
   save_model_path: experiments/${experiment.name} # Directory to save the trained model
-  optimizer: sgd
+  cls_optimizer: adamw
