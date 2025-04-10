@@ -10,7 +10,7 @@ model:
 experiment:
   name: Resnet56_Large_${training.optimizer}_${experiment.num_epochs}e_${training.batch_size}bs
   debug: False
-  num_epochs: 200
+  num_epochs: 80
   log_interval: 25
   eval_interval: 5
   iterative: True
@@ -20,11 +20,11 @@ experiment:
 
 # Training configurations
 training:
-  batch_size: 256
+  batch_size: 64
   learning_rate: 5e-3
   eta_min: 1e-4
   warmup_epochs: 5
   T_max: ${experiment.num_epochs}
   weight_decay: 5e-4
   save_model_path: experiments/${experiment.name} # Directory to save the trained model
-  optimizer: sgd
+  optimizer: adamw

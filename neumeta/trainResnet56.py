@@ -124,10 +124,10 @@ def main():
     val_dataset = CIFAR100(root='./data', train=False, transform=transform_test)
     
     train_loader = DataLoader(train_dataset, batch_size=args.training.batch_size, 
-                            shuffle=True, num_workers=2)
+                            shuffle=True, num_workers=8)
     val_loader = DataLoader(val_dataset, batch_size=args.training.batch_size,
-                          shuffle=False, num_workers=2)
-    for dim in [64,48,32,16]:
+                          shuffle=False, num_workers=8)
+    for dim in [256,192,128,64]:
         # Create model
         model = cifar100_resnet56(
             hidden_dim=dim,
@@ -194,7 +194,7 @@ def main():
                     os.path.join(args.training.save_model_path, f'dim{dim}_last_model.pth'),
                     model, optimizer, scheduler, epoch, best_acc
                 )
-            print(f"best accuracy: {best_acc}")
+            print(f"best accuracy: {best_acc:.2f}")
             print("--------------------------------------------------------------------------------------")
         if not args.experiment.debug:
             wandb.finish()   

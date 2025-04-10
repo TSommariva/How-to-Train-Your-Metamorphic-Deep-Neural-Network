@@ -5,7 +5,7 @@
       "name": "Train ResnetXL",
       "type": "debugpy",
       "request": "launch",
-      "program": "neumeta/trainResnet56XL.py",
+      "program": "neumeta/trainResnet56.py",
       "args": ["--config", "neumeta/config/cifar100/Cifar100_resnet56.yaml",
                "--experiment.debug=True"],
       "console": "integratedTerminal"
