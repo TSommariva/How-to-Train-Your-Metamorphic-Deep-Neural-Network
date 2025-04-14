@@ -66,8 +66,7 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
 def main(args):
     random_value = random.randint(0,1000000)
     
-    _, val_loader = get_cifar100(args.training.batch_size, num_workers=8)
-    
+    #_, val_loader = get_cifar100(args.training.batch_size, num_workers=8)
     #trained_blocks = load_trained_blocks(args.resume_from)
     #dim_dict, gt_model_dict = init_model_dict(args, trained_blocks, args.model.single_block)
     #dim_dict = shuffle_coordiates_all(dim_dict)
@@ -94,48 +93,58 @@ def main(args):
     #    loss[i] = val_loss
     #    # Optionally, print the results to the console
     #    print(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Accuracy: {acc * 100:.2f}")
-    
+    plt.rcParams.update({
+        'font.size': 8,         # Global default font size
+        'axes.titlesize':  11,   # Axis title font size
+        'axes.labelsize':  11,    # Axis label font size
+        'xtick.labelsize': 9,   # X-tick label font size
+        'ytick.labelsize': 9    # Y-tick label font size
+    })
     # Create a 1x2 figure
     checkpoint = torch.load("/homes/tsommariva/neumeta/assets/accuracyVSdim.pth", weights_only=False)
     dimensions = checkpoint['dimensions']
     accuracy = checkpoint['accuracy']
     loss = checkpoint['loss']
-    fig, (ax_acc, ax_loss) = plt.subplots(2, 1, figsize=(6, 6))
+    fig, (ax_acc, ax_loss) = plt.subplots(2, 1, figsize=(3, 3))
 
     # --- Accuracy subplot ---
-    ax_acc.plot(dimensions, accuracy, color='red', label='Accuracy')
+    ax_acc.plot(dimensions, accuracy, color='#D23F0F',linewidth=1.5 ,label='Accuracy')
     ax_acc.set_xlabel('Hidden Dimension')
     ax_acc.set_ylabel('Accuracy (%)')
     ax_acc.axvspan(32, 64, color='gray', alpha=0.35)
 
-    highlight_box = dict(facecolor='yellow', edgecolor='none', boxstyle='round,pad=0.3', alpha=0.5)
+    highlight_box = dict(facecolor='#F6CB52', edgecolor='none', boxstyle='round,pad=0.3', alpha=0.5)
     ax_acc.text(0.16, 0.2, 'Untrained', transform=ax_acc.transAxes,
-                ha='center', va='center', fontsize=15, fontweight='bold', color='black',
+                ha='center', va='center', fontweight='bold', color='black',
                 bbox=highlight_box)
     ax_acc.text(0.82, 0.2, 'Untrained', transform=ax_acc.transAxes,
-                ha='center', va='center', fontsize=15, fontweight='bold', color='black',
+                ha='center', va='center', fontweight='bold', color='black',
                 bbox=highlight_box)
-    ax_acc.grid(True)
+    ax_acc.spines['top'].set_visible(False)
+    ax_acc.spines['right'].set_visible(False)
+    ax_acc.grid(True, linestyle=':')
 
     # --- Loss subplot ---
-    ax_loss.plot(dimensions, loss, color='red', label='Loss')
+    ax_loss.plot(dimensions, loss, color='#D23F0F',linewidth=1.5, label='Loss')
     ax_loss.set_xlabel('Hidden Dimension')
     ax_loss.set_ylabel('Loss')
     ax_loss.axvspan(32, 64, color='gray', alpha=0.35)
 
     # Add the same text markers
     ax_loss.text(0.17, 0.8, 'Untrained', transform=ax_loss.transAxes,
-                 ha='center', va='center', fontsize=15, fontweight='bold', color='black',
+                 ha='center', va='center', fontweight='bold', color='black',
                  bbox=highlight_box)
     ax_loss.text(0.82, 0.8, 'Untrained', transform=ax_loss.transAxes,
-                 ha='center', va='center', fontsize=15, fontweight='bold', color='black',
+                 ha='center', va='center', fontweight='bold', color='black',
                  bbox=highlight_box)
     
-    ax_loss.grid(True)
+    ax_loss.spines['top'].set_visible(False)
+    ax_loss.spines['right'].set_visible(False)
+    ax_loss.grid(True, linestyle=':')
     plt.tight_layout()
-    plt.savefig(f'/homes/tsommariva/neumeta/assets/accuracyVSdim_{random_value}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'/homes/tsommariva/neumeta/assets/accuracyVSdim_{random_value}.pdf', dpi=1200, bbox_inches='tight')
     #plt.show()
-    print(f'accuracyVSdim_{random_value}.png')
+    print(f'accuracyVSdim_{random_value}')
     
     #checkpoint = {
     #    'dimensions': dimensions,

@@ -251,7 +251,7 @@ class EMA_ddp:
                 if param.requires_grad:
                     torch.distributed.broadcast(self.shadow[name], src=0)
 
-def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, backbone_parameters ,trained_blocks=1):
+def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, backbone_parameters ,trained_blocks=1, trained_layers=1):
     """
     Saves the current state including a model, optimizer, and EMA shadow weights.
 
@@ -272,6 +272,7 @@ def save_checkpoint(filepath, model, optimizer,scheduler ,ema, epoch, best_acc, 
         'scheduler_state_dict' : scheduler.state_dict(),
         'best_acc': best_acc,
         'trained_blocks': trained_blocks,
+        'trained_layers': trained_layers,
         'backbone_parameters': backbone_parameters
     }
     if ema:
@@ -308,7 +309,7 @@ def save_checkpoint_ddp(filepath, model, optimizer,scheduler ,ema, epoch, best_a
 def load_trained_blocks(filepath):
     checkpoint = torch.load(filepath, map_location='cpu', weights_only=False)
     
-    return checkpoint['trained_blocks']
+    return checkpoint['trained_layers'] ,checkpoint['trained_blocks']
     
 def load_checkpoint(filepath, model, optimizer, scheduler,ema, device='cuda', args=None):
     """
@@ -529,10 +530,13 @@ def extend_nerf_compose(base_model, custom_init, args, number_param, total_param
             
     return extension_model
 
-def get_cifar_optimizer(args, model, n_blocks=8):
+def get_cifar_optimizer(args, model, n_blocks=8, layers=3):
     alpha_params = [p for n, p in model.named_parameters() if 'alpha' in n]
-    #classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n))]
-    classifier_params = [p for n, p in model.named_parameters() if ('fc' in n )]
+    if args.model.first_meta_block==0:
+        classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n)) or 'downsample' in n] if layers==3 else [p for n, p in model.named_parameters() if ((any(n.startswith(f'layer{l}') for l in range(1, layers + 1))) and 'downsample' in n)]
+    else:
+        classifier_params = [p for n, p in model.named_parameters() if ('fc' in n or ('layer3.8' in n and 'alpha' not in n))] if layers==3 else []
+    #classifier_params = [p for n, p in model.named_parameters() if ('fc' in n )]
     optimizer_name = args.training.get('cls_optimizer', 'adamw')
     if optimizer_name == 'adamw':
         optimizer = AdamW([{'params': alpha_params},

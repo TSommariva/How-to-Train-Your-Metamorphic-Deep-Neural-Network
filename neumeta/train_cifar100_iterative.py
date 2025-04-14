@@ -43,7 +43,7 @@ def get_num_workers():
     except (ValueError, TypeError):
         return 8
 
-def init_model_dict(args, num_blocks = 1, single_block = False):
+def init_model_dict(args, num_blocks = 1, single_block = False,first_meta_layer=3,num_layers=3):
     """
     Initializes a dictionary of models for each dimension in the given range, along with ground truth models for the starting dimension.
 
@@ -60,17 +60,16 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
     if not args.experiment.iterative:
         num_blocks=args.model.num_param
     for dim in range(args.dimensions.range[0], args.dimensions.range[1] + 1):
-        with contextlib.redirect_stdout(io.StringIO()):
-            model_cls = create_model(args.model.type, 
-                                 hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=single_block ,
-                                 path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False, config_args=args)
+        model_cls = create_model(args.model.type, 
+                             hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=single_block ,
+                             path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False, config_args=args, first_meta_layer=first_meta_layer, num_layers=num_layers)
          
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
             model_cls.to(device)
         
-        optimizer = get_cifar_optimizer(args, model_cls, num_blocks)
+        optimizer = get_cifar_optimizer(args, model_cls, num_blocks,num_layers)
             
         coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
         dim_dict[f"{dim}"] = (model_cls, optimizer, coords_tensor, keys_list, indices_list, size_list, None)
@@ -87,7 +86,7 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
             with contextlib.redirect_stdout(io.StringIO()):
                 model_trained = create_model(args.model.type, 
                                  hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up, single_block=single_block,
-                                 path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, config_args=args)
+                                 path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, config_args=args, first_meta_layer=first_meta_layer, num_layers=num_layers)
             
             if device=="cuda" and torch.backends.cudnn.version() >= 7603:
                 model_trained.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
@@ -98,7 +97,7 @@ def init_model_dict(args, num_blocks = 1, single_block = False):
             gt_model_dict[f"{dim}"] = model_trained
     return dim_dict, gt_model_dict
 
-def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx ,ema=None, args=None, block_idx=1, max_epochs=200, backbone_parameters={}):
+def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx ,ema=None, args=None, block_idx=1, max_epochs=200, backbone_parameters={}, layers=3):
     model.train()
     optimizer.zero_grad(set_to_none=True)
     
@@ -149,10 +148,9 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         with torch.no_grad():
             for name, param in model_cls.named_parameters():
                 #if 'alpha' in name or 'fc' in name:
-                if 'alpha' in name: # or (('layer3.8' in name or 'fc' in name)):
+                if 'alpha' in name or 'downsample' in name or (('layer3.8' in name or 'fc' in name) and layers==3):
                     if name in backbone_parameters:
                         model_cls.state_dict()[name].copy_(backbone_parameters[name])
-
                     else:
                         backbone_parameters[name] = param.detach().clone()
         
@@ -215,13 +213,13 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
             backbone_parameters = {
                 name: model_cls.state_dict()[name].detach().clone()
                 for name, _ in model_cls.named_parameters() 
-                if 'alpha' in name # or (('layer3.8' in name or 'fc' in name))
+                if 'alpha' in name or 'downsample' in name or (('layer3.8' in name or 'fc' in name) and layers==3)
                 #if 'alpha' in name or 'fc' in name
             }
                 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             for i, param_group in enumerate(cls_optimizer.param_groups):
-                wandb.log({f"Backbone Learning rate{i}": param_group['lr']}, step=(batch_idx // args.experiment.log_interval) + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval)
+                wandb.log({f"Backbone Learning rate{i}": param_group['lr']}, step=((layers-args.model.start_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + (batch_idx // args.experiment.log_interval) + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval)
             
             wandb.log({
                 "Running training accuracy argmax" : accuracies.avg,
@@ -230,7 +228,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
                 "Learning rate": optimizer.param_groups[0]['lr'],
-                }, step=batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader)// args.experiment.log_interval)
+                }, step=((layers-args.model.start_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader)// args.experiment.log_interval)
 
                 
         if batch_idx % args.experiment.log_interval == 0:
@@ -257,7 +255,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         wandb.log({
                     "trainLoss_last model of the epoch" : losses.avg,
                     "trainAcc_last model of the epoch" : accuracies.avg
-                }, step=batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval )
+                }, step=((layers-args.model.start_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval )
     return losses.avg, accuracies.avg, backbone_parameters
     
 def main_iterative_nerf(args):
@@ -272,7 +270,7 @@ def main_iterative_nerf(args):
                          bottom_up=args.model.bottom_up,
                          path=args.model.pretrained_path, 
                          smooth=args.model.smooth, fuse=args.model.smooth,
-                         config_args=args).to(device)
+                         config_args=args,first_meta_layer=args.model.start_layer,num_layers=3).to(device)
     
     print("Maximum DIM: ",find_max_dim(model))
 
@@ -290,9 +288,10 @@ def main_iterative_nerf(args):
     start_block = args.model.start_block
     start_epoch = 0
     best_acc = 0.0
-    end_epoch = args.experiment.num_epochs + 1 if not args.model.single_block else args.experiment.num_epochs // 4 + 1
+    end_epoch = args.experiment.num_epochs + 1
     backbone_parameters = {}
     prev_NeRF = get_hypernet(args, 0,total_param=number_param ,device=device)
+    trained_layers = args.model.start_layer
     #dictionaries = []
     #dic = torch.load("/homes/tsommariva/tmp/model_dictionary.pth", weights_only=False)
     #for i in range(21):
@@ -303,9 +302,8 @@ def main_iterative_nerf(args):
     # If specified, load the checkpoint
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        
-        trained_blocks = load_trained_blocks(args.resume_from)
-        dim_dict, gt_model_dict = init_model_dict(args, trained_blocks, args.model.single_block)
+        trained_layers, trained_blocks = load_trained_blocks(args.resume_from)
+        dim_dict, gt_model_dict = init_model_dict(args, trained_blocks, args.model.single_block, first_meta_layer=args.model.start_layer, num_layers=trained_layers)
         dim_dict = shuffle_coordiates_all(dim_dict)
         _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
         selected_keys = np.unique(keys_list)
@@ -327,6 +325,9 @@ def main_iterative_nerf(args):
         best_acc = checkpoint_info['best_acc']
         start_block = trained_blocks
         backbone_parameters = checkpoint_info['backbone_parameters']
+        if not args.experiment.all_layers_sim:
+            dim_dict, gt_model_dict = init_model_dict(args, trained_blocks, args.model.single_block, first_meta_layer=trained_layers, num_layers=trained_layers)
+            dim_dict = shuffle_coordiates_all(dim_dict)
         sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device)
         train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
         val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
@@ -341,128 +342,102 @@ def main_iterative_nerf(args):
                 "Train Accuracy_model sampled outside training": train_acc,
                 "Validation Loss_model sampled outside training": val_loss,
                 "Validation Accuracy_model sampled outside training": val_acc
-            }, step=(start_epoch) * len(train_loader) // args.experiment.log_interval + (start_block - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+            }, step=((trained_layers-args.model.start_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (start_epoch) * len(train_loader) // args.experiment.log_interval + (start_block - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
                 
-        if a_diff > 0.2:
+        if a_diff > 0.5:
             return -2
         del checkpoint_info
         del sampled_model
         gc.collect()
 
-
-
-        print(f"Resuming from block: {start_block}, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
+        print(f"Resuming from layer: {trained_layers} block: {start_block}, epoch: {start_epoch}, best accuracy: {best_acc*100:.2f}%")
         # Note: If there are more elements to retrieve, do so here.  
 
-    
-    for block_id in range(start_block, args.model.num_param + 1):
-        #os.makedirs(f"{args.training.save_model_path}/block{block_id}", exist_ok=True)
-        print(f"BLOCK[{block_id}/{args.model.num_param}]")
-        
-        if not (args.resume_from and block_id == start_block):
-            dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block)
-            dim_dict = shuffle_coordiates_all(dim_dict)
-            _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
-            selected_keys = np.unique(keys_list)
-            if block_id == start_block:
-                hyper_model = get_hypernet(args, 4 * block_id,total_param=number_param ,key_list=selected_keys ,device=device)
-            else:
-                hyper_model=extend_nerf_compose(prev_NeRF,args.experiment.custom_init,args, 4 * block_id,total_param=number_param,key_list=selected_keys ,device=device)
-                start_epoch = 0
-                best_acc = 0.0 
-                del criterion
-                del val_criterion
-                del optimizer
-                del scheduler
+    for layers in range(trained_layers, 4):
+        print(f"LAYER[{layers}/3]")
+        os.makedirs(f"{args.training.save_model_path}/layer{layers}", exist_ok=True)
+        num_param = args.model.num_param
+        if layers==3 and num_param>=7:
+            num_param=7
+        start_layer = args.model.start_layer if args.experiment.all_layers_sim else layers
+        for block_id in range(start_block, num_param + 1):
+            print(f"BLOCK[{block_id}/{args.model.num_param}]")
 
-            criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=block_id==start_block)   
-
-            #if args.hyper_model.get('use_ema', True):
-            #    if block_id == start_block or not args.hyper_model.get('extend_ema', False):
-            #        ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
-            #    #else:
-            #    #    ema.extend(hyper_model)
-            #else:
-            #    ema=None
-        
-        epoch=None
-        
-        for epoch in range(start_epoch + 1, end_epoch):
-            train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters)
-            scheduler.step()
-            hyper_model.eval()
-
-            print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
-
-            if epoch % args.experiment.eval_interval == 0 or epoch == 1:
-                #if ema:
-                #    ema.apply()
-
-                sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=100)
-                val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-                train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
-
-                #if ema:
-                #    ema.restore()
-                if not args.experiment.debug:    
-                    wandb.log({
-                        "Train Loss_model sampled outside training": train_loss,
-                        "Train Accuracy_model sampled outside training": train_acc,
-                        "Validation Loss_model sampled outside training": val_loss,
-                        "Validation Accuracy_model sampled outside training": val_acc
-                    }, step=(epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
-                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
-                print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-
-                # Save the checkpoint
-                if val_acc >= best_acc:
-                    best_acc = val_acc
-                    save_checkpoint(f"{args.training.save_model_path}/nerf_block{block_id}_best.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
+            if not (args.resume_from and block_id == start_block and layers == trained_layers):
+                dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block,first_meta_layer=args.model.start_layer,num_layers=layers)
+                dim_dict = shuffle_coordiates_all(dim_dict)
+                _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
+                selected_keys = np.unique(keys_list)
+                if block_id == start_block and layers==1:
+                    hyper_model = get_hypernet(args, 4 * block_id * layers,total_param=number_param ,key_list=selected_keys ,device=device)
                 else:
-                    save_checkpoint(f"{args.training.save_model_path}/nerf_block{block_id}_last.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id, backbone_parameters=backbone_parameters)
-                print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
+                    if block_id == start_block:
+                        hyper_model = extend_nerf_compose(prev_NeRF,False, args, 4 * block_id * layers,total_param=number_param,key_list=selected_keys ,device=device)
+                    else:
+                        hyper_model = extend_nerf_compose(prev_NeRF,args.experiment.custom_init, args, 4 * block_id * layers,total_param=number_param,key_list=selected_keys ,device=device)
+                    start_epoch = 0
+                    best_acc = 0.0 
+
+                criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=(block_id==start_block))   
+                if not args.experiment.all_layers_sim and layers != args.model.start_layer:
+                    dim_dict, gt_model_dict = init_model_dict(args, block_id, args.model.single_block,first_meta_layer=start_layer,num_layers=layers)
+                    dim_dict = shuffle_coordiates_all(dim_dict)
             
-                #torch.cuda.empty_cache()
-        
-            #if train_acc < 0.7:
-            #    return -4
-        
-        if end_epoch == start_epoch + 1:
-            #torch.cuda.empty_cache()        
+                _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
+                selected_keys = np.unique(keys_list)
+                print(f"key learned in this iteration: {selected_keys}")     
+                gc.collect()
+                
+            epoch=None
+            end_epoch = 71 if block_id==0 else args.experiment.num_epochs + 1
+            for epoch in range(start_epoch + 1, end_epoch):
+                train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters,layers=layers)
+                scheduler.step()
+                hyper_model.eval()
+
+                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
+
+                if epoch % args.experiment.eval_interval == 0 or epoch == 1:
+
+                    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=100)
+                    val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                    train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
+
+                    if not args.experiment.debug:    
+                        wandb.log({
+                            "Train Loss_model sampled outside training": train_loss,
+                            "Train Accuracy_model sampled outside training": train_acc,
+                            "Validation Loss_model sampled outside training": val_loss,
+                            "Validation Accuracy_model sampled outside training": val_acc
+                        }, step=((layers-args.model.start_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+                    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
+                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+                    # Save the checkpoint
+                    if val_acc >= best_acc:
+                        best_acc = val_acc
+                        save_checkpoint(f"{args.training.save_model_path}/layer{layers}/nerf_block{block_id}_best.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id,trained_layers=layers ,backbone_parameters=backbone_parameters)
+                    print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
+
+                    #torch.cuda.empty_cache()
+
+                #if train_acc < 0.7:
+                #    return -4
+
+            if end_epoch == start_epoch + 1:
+                #torch.cuda.empty_cache()        
+                prev_NeRF = hyper_model
+                continue
+            
             prev_NeRF = hyper_model
-            continue
         
-        #testing_model = copy.deepcopy(hyper_model)
-        #
-        #checkpoint_info, testing_model, _, _, _ = load_checkpoint(f"{args.training.save_model_path}/nerf_block{block_id}_last.pth",testing_model,None,None,None,device=device)
-        #w_diff=weight_difference(hyper_model, testing_model)
-        #print(f"Weight difference after loading: {w_diff:.4f}")
-        #if w_diff > 0:
-        #    verify_weights(hyper_model, testing_model)
-        #testing_backbone_parameters = checkpoint_info['backbone_parameters']
-        #del checkpoint_info
-        #gc.collect()
-        #sampled_model = sample_merge_model(testing_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=testing_backbone_parameters ,device=device, K=100)
-        #loaded_val_loss, loaded_val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-        #print(f"Loaded Model, Validation Loss: {loaded_val_loss:.4f}, Validation Accuracy: {loaded_val_acc*100:.2f}%")
-        #
-        #a_diff = abs(val_acc - loaded_val_acc)*100
-        #print(f"Validation accuracy difference: {a_diff:.2f}%")
-        #print("------------------------------------------------------------------------------------------------------------------------------")
-        #
-        #if w_diff > 0:
-        #    return -1
-        #if a_diff > 0.2:
-        #    return -2
-        #del testing_model
-        #del testing_backbone_parameters
-        del sampled_model
-        del _
-        prev_NeRF = hyper_model
-        gc.collect()
-        torch.cuda.empty_cache()        
+        if args.resume_from:
+            start_block = args.model.start_block          
+            
+        
+                    
         
     print("Training finished.")
     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
@@ -480,7 +455,7 @@ def test(args):
                          bottom_up=args.model.bottom_up,
                          path=args.model.pretrained_path, 
                          smooth=args.model.smooth, fuse=args.model.smooth,
-                         config_args=args).to(device)
+                         config_args=args, first_meta_layer=args.model.start_layer, num_layers=3).to(device)
 
     
     checkpoint = model.learnable_parameter
@@ -494,7 +469,13 @@ def test(args):
     else:
         test_path = args.training.save_model_path
         
-    checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block7_best.pth", best_hyper_model, None,None ,None, device=device)
+    checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/layer3/nerf_block7_best.pth", best_hyper_model, None,None ,None, device=device)
+    if checkpoint_info is None:
+        checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/layer2/nerf_block8_best.pth", best_hyper_model, None,None ,None, device=device)
+    if checkpoint_info is None:
+        checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/layer1/nerf_block8_best.pth", best_hyper_model, None,None ,None, device=device)
+    if checkpoint_info is None:
+        checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block7_best.pth", best_hyper_model, None,None ,None, device=device)
     if checkpoint_info is None:
         checkpoint_info, best_hyper_model, _, _, _ = load_checkpoint(f"{test_path}/nerf_block7.pth", best_hyper_model, None,None ,None, device=device)
     if checkpoint_info is None:
@@ -536,7 +517,7 @@ def test(args):
                                  single_block=False,
                                  path=args.model.pretrained_path, 
                                  smooth=args.model.smooth, fuse=args.model.fuse,
-                                 prior=False, config_args=args)
+                                 prior=False, config_args=args, first_meta_layer=args.model.start_layer, num_layers=3)
          if device=="cuda" and torch.backends.cudnn.version() >= 7603:
              model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
          else:
@@ -563,7 +544,7 @@ def test(args):
                                      single_block=False,
                                      path=args.model.pretrained_path, 
                                      smooth=args.model.smooth, fuse=args.model.fuse,
-                                     prior=False, config_args=args)
+                                     prior=False, config_args=args, first_meta_layer=args.model.start_layer, num_layers=3)
              if device=="cuda" and torch.backends.cudnn.version() >= 7603:
                  model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
              else:
@@ -578,7 +559,7 @@ def test(args):
         print("------------------------------------------------------------------------------------------------------------------------------")
     
     start_time = time.time()
-    validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda', step=2)
+    validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda', step=2, first_meta_layer=args.model.start_layer, num_layers=3)
     elapsed_time = (time.time() - start_time)/60
     print(f"Time elapsed for testing: {elapsed_time:.2f} minutes")
 

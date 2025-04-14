@@ -5,7 +5,7 @@
 #SBATCH  --error=log/AaPaper/Pruning/Pruning_%j.err
 #SBATCH --time=2:00:00                         
 #SBATCH --constraint="gpu_L40S_48G|gpu_A40_48G|gpu_RTXA5000_24G|gpu_RTX6000_24G|gpu_RTX5000_16G|gpu_2080Ti_11G"
-#SBATCH --mem=24G
+##SBATCH --mem=24G
 
 #SBATCH --gres=gpu:1                            
 #SBATCH --ntasks=1

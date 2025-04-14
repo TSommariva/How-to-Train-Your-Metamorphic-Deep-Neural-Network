@@ -236,6 +236,7 @@ class First_BasicBlock_Resize(BasicBlock):
         super().__init__(inplanes, hidden_dim, stride, downsample)
         self.conv2 = conv3x3(hidden_dim, outplanes)
         self.bn2 = nn.BatchNorm2d(outplanes)
+        self.alpha = nn.Parameter(torch.tensor(0.0), requires_grad=True)
     
     def forward(self, x):
         identity = x
@@ -246,6 +247,8 @@ class First_BasicBlock_Resize(BasicBlock):
         out = self.conv2(out)
         out = self.bn2(out)
 
+        out *= self.alpha
+        
         if self.downsample is not None:
             identity = self.downsample(x)
 
@@ -257,10 +260,13 @@ class First_BasicBlock_Resize(BasicBlock):
 
 class CifarResNet(nn.Module):
 
-    def __init__(self, block, hidden_dim, num_param ,layers,single_block = False, bottom_up=False ,num_classes=10, num_layers_inr=1, prior=True, config_args=None):
+    def __init__(self, block, hidden_dim, num_param ,layers,single_block = False, bottom_up=False ,num_classes=10, num_layers_inr=1, prior=True, config_args=None,first_meta_layer=3,num_layers=3):
         super(CifarResNet, self).__init__()
+        gamma = (1 - hidden_dim / config_args.dimensions.start)
         self.layers = layers
         self.num_param = num_param
+        self.first_meta_layer = first_meta_layer
+        self.num_layers = num_layers
         self.metamorphic_block_type = BasicBlock_Resize_skipInit
         if config_args is not None:
             self.first_meta_block = config_args.model.get('first_meta_block', 1)
@@ -282,7 +288,7 @@ class CifarResNet(nn.Module):
         self.fc = nn.Linear(64 * block.expansion, num_classes)
         
         if not self.prior:
-            self.set_changeable(block, hidden_dim, stride=1, num_classes=num_classes)
+            self.set_changeable(block, gamma, stride=1, num_classes=num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -324,27 +330,88 @@ class CifarResNet(nn.Module):
         return x
     
     
-    def set_changeable(self, block, bottleneck, stride, num_classes=10):
+    def set_changeable(self, block, gamma, stride, num_classes=10):
         for name, child in self.named_children():
         # Change the last block of layer3
-            if name == 'layer3':
-                print(f'Replace first {self.num_param} blocks of layer3 with new blocks of hidden dim {bottleneck}')
+            if name == 'layer1' and any(name == f'layer{n}'for n in range(self.first_meta_layer, self.num_layers + 1)):
+                bottleneck = round((1 - gamma) * 16)
+                num_param = 8 if self.num_layers > 1 else self.num_param
+                    
+                print(f'Replace first {num_param} blocks of layer1 with new blocks of hidden dim {bottleneck}')
                 # Get all the layers except the last block
                 layers = []
-                layers.extend(list(child.children())[0 : self.first_meta_block])
+                if self.first_meta_block == 0:
+                    fmb = 1
+                    layers.append(First_BasicBlock_Resize(16,bottleneck,16,stride=list(child.children())[0].stride,downsample=list(child.children())[0].downsample))
+                else:
+                    fmb = self.first_meta_block
+                    layers.extend(list(child.children())[0 : self.first_meta_block])
+                for _ in range(fmb, num_param + 1):
+                        layers.append(self.metamorphic_block_type(16, bottleneck, stride=stride, downsample=None))
                 
-                for _ in range(self.first_meta_block, self.num_param + 1):
+                layers.extend(list(child.children())[num_param+1:])
+                #layers.append(BasicBlock_Resize_skipInit(64, 64, stride=stride, downsample=None))
+                self._modules[name] = nn.Sequential(*layers)
+            
+            if name == 'layer2' and any(name == f'layer{n}'for n in range(self.first_meta_layer, self.num_layers + 1)):
+                bottleneck = round((1 - gamma) * 32)
+                num_param = 8 if self.num_layers > 2 else self.num_param
+                print(f'Replace first {num_param} blocks of layer2 with new blocks of hidden dim {bottleneck}')
+                # Get all the layers except the last block
+                layers = []
+                
+                if self.first_meta_block == 0:
+                    fmb = 1
+                    layers.append(First_BasicBlock_Resize(16,bottleneck,32,stride=list(child.children())[0].stride,downsample=list(child.children())[0].downsample))
+                else:
+                    fmb = self.first_meta_block
+                    layers.extend(list(child.children())[0 : self.first_meta_block])
+                for _ in range(fmb, num_param + 1):
+                        layers.append(self.metamorphic_block_type(32, bottleneck, stride=stride, downsample=None))
+                
+                layers.extend(list(child.children())[num_param+1:])
+                #layers.append(BasicBlock_Resize_skipInit(64, 64, stride=stride, downsample=None))
+                self._modules[name] = nn.Sequential(*layers)
+            
+            if name == 'layer3' and any(name == f'layer{n}'for n in range(self.first_meta_layer, self.num_layers + 1)):
+                bottleneck = round((1 - gamma) * 64)
+                num_param = self.num_param if self.num_param < 7 else 7
+                print(f'Replace first {num_param} blocks of layer3 with new blocks of hidden dim {bottleneck}')
+                # Get all the layers except the last block
+                layers = []
+                
+                
+                if self.first_meta_block == 0:
+                    layers.append(First_BasicBlock_Resize(32,bottleneck,64,stride=list(child.children())[0].stride,downsample=list(child.children())[0].downsample))
+                    fmb = 1
+                else:
+                    fmb = self.first_meta_block
+                    layers.extend(list(child.children())[0 : self.first_meta_block])
+                for _ in range(fmb, num_param + 1):
                         layers.append(self.metamorphic_block_type(64, bottleneck, stride=stride, downsample=None))
                 
-                layers.extend(list(child.children())[self.num_param+1:])
+                layers.extend(list(child.children())[num_param+1:])
                 #layers.append(BasicBlock_Resize_skipInit(64, 64, stride=stride, downsample=None))
                 self._modules[name] = nn.Sequential(*layers)
     
     @property
     def learnable_parameter(self):
         #self.keys = [k for k, w in self.named_parameters() if k.startswith(f'layer3.{self.layers[-1]-1}') ]
-        self.keys = [k for k, _ in self.named_parameters()
-                    if any(k.startswith(f'layer3.{i}') for i in range(self.first_meta_block, self.num_param + 1)) and 'alpha' not in k]
+        self.keys = [
+            k for k, _ in self.named_parameters()
+            if any(
+                k.startswith(f'layer{n}.{i}')
+                for n in range(self.first_meta_layer, self.num_layers)
+                for i in range(self.first_meta_block, 9)
+            ) or any (
+                k.startswith(f'layer{self.num_layers}.{i}')
+                for i in range(self.first_meta_block, self.num_param + 1)
+            ) and ('alpha' not in k and 'downsample' not in k and '3.8' not in k)
+        ]
+
+        #self.keys = [k for k, _ in self.named_parameters()
+        #            if any(k.startswith(f'layer3.{i}') for i in range(self.first_meta_block, self.num_param + 1)) and 'alpha' not in k]
+        
         return {k: v for k, v in self.state_dict().items() if k in self.keys}
 
 def _resnet(
@@ -359,9 +426,11 @@ def _resnet(
     pretrained: bool = True,
     prior: bool = True,
     config_args: Dict[str, Any] = None,
+    first_meta_layer:int=3,
+    num_layers:int=3,
     **kwargs: Any
 ) -> CifarResNet:
-    model = CifarResNet(BasicBlock, hidden_dim, num_param, layers, single_block, bottom_up, prior=prior,config_args=config_args,**kwargs)
+    model = CifarResNet(BasicBlock, hidden_dim, num_param, layers, single_block, bottom_up, prior=prior,config_args=config_args,first_meta_layer=first_meta_layer,num_layers=num_layers,**kwargs)
     if pretrained:
         print("Loading pretrained weights for {}".format(arch))
         state_dict = load_state_dict_from_url(model_urls[arch],
@@ -424,7 +493,7 @@ def cifar100_resnet20(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    num_classes=num_classes, 
                    pretrained=pretrained,
                    prior=prior,
-                   config_args=config_args,
+                   config_args=config_args
                    *args, 
                    **kwargs)
 
@@ -439,7 +508,7 @@ def cifar100_resnet32(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    num_classes=num_classes, 
                    pretrained=pretrained,
                    prior=prior,
-                   config_args=config_args,
+                   config_args=config_args
                    *args, 
                    **kwargs)
 
@@ -454,11 +523,11 @@ def cifar100_resnet44(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    num_classes=num_classes, 
                    pretrained=pretrained,
                    prior=prior,
-                   config_args=config_args,
+                   config_args=config_args
                    *args, 
                    **kwargs)
 
-def cifar100_resnet56(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=100, pretrained=True,config_args=None, *args, **kwargs):
+def cifar100_resnet56(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=100, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet56", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -470,15 +539,6 @@ def cifar100_resnet56(hidden_dim,num_param,bottom_up,prior=True, single_block=Fa
                    pretrained=pretrained,
                    prior=prior,
                    config_args=config_args,
-                   *args, 
-                   **kwargs)
-
-def tinyimagenet_resnet56(hidden_dim, num_classes=200, pretrained=True,*args, **kwargs):
-    return _resnet(arch="resnet56", 
-                   hidden_dim=hidden_dim,
-                   layers=[9]*3, 
-                   model_urls=cifar100_pretrained_weight_urls, 
-                   num_classes=num_classes, 
-                   pretrained=pretrained,
+                   first_meta_layer=first_meta_layer,num_layers=num_layers,
                    *args, 
                    **kwargs)

@@ -263,7 +263,7 @@ def validate_single(model_cls, val_loader, criterion, args=None, device='cuda'):
     accuracy = correct / total if total > 0 else 0
     return val_loss / len(val_loader), accuracy
 
-def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args,step=1 ,device='cuda'):
+def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loader, criterion, create_model ,args,step=1 ,device='cuda', first_meta_layer=3, num_layers=3):
     losses = []
     accuracies = []
     for hidden_dim in range(args.dimensions.range[0], args.dimensions.range[1], step):
@@ -274,7 +274,7 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 single_block=False,
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
-                                prior=False, config_args=args)
+                                prior=False, config_args=args, first_meta_layer=first_meta_layer, num_layers=num_layers)
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
@@ -309,7 +309,7 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 single_block=False,
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
-                                prior=False, config_args=args)
+                                prior=False, config_args=args, first_meta_layer=first_meta_layer, num_layers=num_layers)
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
@@ -344,7 +344,7 @@ def validate_all_dimensions(hypermodel,backbone_parameters, num_param ,val_loade
                                 single_block=False,
                                 path=args.model.pretrained_path, 
                                 smooth=args.model.smooth, fuse=args.model.fuse,
-                                prior=False, config_args=args)
+                                prior=False, config_args=args, first_meta_layer=first_meta_layer, num_layers=num_layers)
         if device=="cuda" and torch.backends.cudnn.version() >= 7603:
             model = model.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
         else:
