@@ -8,8 +8,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
-from neumeta.models import create_model_cifar100 as create_model
-from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100,
+from neumeta.models import create_model_cifar10 as create_model
+from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100, get_cifar10,
                            get_hypernet, get_optimizer, load_checkpoint,
                            parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
                            sample_subset,  save_checkpoint,
@@ -38,10 +38,7 @@ def verify_weights(model1, model2):
 device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
 def get_num_workers():
-    try:
-        return int(os.environ.get("SLURM_CPUS_PER_TASK", 8))
-    except (ValueError, TypeError):
-        return 8
+    return 16
 
 def init_model_dict(args, num_blocks = 1, single_block = False,first_meta_layer=3,num_layers=3):
     """
@@ -302,7 +299,11 @@ def main_iterative_nerf(args):
     # If specified, load the checkpoint
     if args.resume_from:
         print(f"Resuming from checkpoint: {args.resume_from}")
-        trained_layers, trained_blocks = load_trained_blocks(args.resume_from)
+        if args.resume_from == "/work/tesi_tsommariva/experiments/Paper/FULL_allLayersSim:True_Blocks1to8_from2557846/layer3/nerf_block4_best.pth":
+            resume_from="/work/tesi_tsommariva/experiments/Paper/FULL_allLayersSim:True_Blocks1to8_from2557846/layer3/nerf_block4_best.pth"
+        else:
+            resume_from=args.resume_from
+        trained_layers, trained_blocks = load_trained_blocks(resume_from)
         dim_dict, gt_model_dict = init_model_dict(args, trained_blocks, args.model.single_block, first_meta_layer=args.model.start_layer, num_layers=trained_layers)
         dim_dict = shuffle_coordiates_all(dim_dict)
         _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
@@ -316,7 +317,7 @@ def main_iterative_nerf(args):
     
         criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=trained_blocks==1) 
         
-        checkpoint_info, hyper_model, optimizer, scheduler, ema = load_checkpoint(args.resume_from, hyper_model, optimizer, scheduler, None, args=args)
+        checkpoint_info, hyper_model, optimizer, scheduler, ema = load_checkpoint(resume_from, hyper_model, optimizer, scheduler, None, args=args)
         
         if optimizer is None:
             criterion, val_criterion, optimizer, scheduler = get_optimizer(args, hyper_model, first_block=trained_blocks==1)
@@ -389,7 +390,7 @@ def main_iterative_nerf(args):
                 gc.collect()
                 
             epoch=None
-            end_epoch = 71 if block_id==0 else args.experiment.num_epochs + 1
+            end_epoch = args.experiment.num_epochs + 1
             for epoch in range(start_epoch + 1, end_epoch):
                 train_loss, train_acc, backbone_parameters = train_one_epoch(hyper_model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx=epoch, ema=ema, args=args, block_idx=block_id, max_epochs=args.experiment.num_epochs, backbone_parameters=backbone_parameters,layers=layers)
                 scheduler.step()
@@ -398,28 +399,28 @@ def main_iterative_nerf(args):
                 print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
                 if epoch % args.experiment.eval_interval == 0 or epoch == 1:
-
-                    sampled_model = sample_merge_model(hyper_model, dim_dict[f"{args.dimensions.start}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=100)
-                    val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
-                    train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
-
-                    if not args.experiment.debug:    
-                        wandb.log({
-                            "Train Loss_model sampled outside training": train_loss,
-                            "Train Accuracy_model sampled outside training": train_acc,
-                            "Validation Loss_model sampled outside training": val_loss,
-                            "Validation Accuracy_model sampled outside training": val_acc
-                        }, step=((layers-args.model.start_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                    print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
-                    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                    for dim in [16,32,48,64]:
+                        sampled_model = sample_merge_model(hyper_model, dim_dict[f"{dim}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=100)
+                        val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
+                        train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
 
-                    # Save the checkpoint
-                    if val_acc >= best_acc:
-                        best_acc = val_acc
-                        save_checkpoint(f"{args.training.save_model_path}/layer{layers}/nerf_block{block_id}_best.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id,trained_layers=layers ,backbone_parameters=backbone_parameters)
-                    print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
+                        if not args.experiment.debug and dim == 64:    
+                            wandb.log({
+                                "Train Loss_model sampled outside training": train_loss,
+                                "Train Accuracy_model sampled outside training": train_acc,
+                                "Validation Loss_model sampled outside training": val_loss,
+                                "Validation Accuracy_model sampled outside training": val_acc
+                            }, step=((layers-args.model.start_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+                        print(f"Hidden Dim = {dim} - Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
+                        print(f"Hidden Dim = {dim} - Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+
+                        # Save the checkpoint
+                        if val_acc >= best_acc and dim == 64:
+                            best_acc = val_acc
+                            save_checkpoint(f"{args.training.save_model_path}/layer{layers}/nerf_block{block_id}_best.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id,trained_layers=layers ,backbone_parameters=backbone_parameters)
+                        print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
+                    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
                     #torch.cuda.empty_cache()
 

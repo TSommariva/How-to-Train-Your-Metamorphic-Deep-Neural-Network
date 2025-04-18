@@ -441,48 +441,72 @@ def _resnet(
     return model
 
 # Functions for CIFAR-10
-def cifar10_resnet20(hidden_dim, num_classes=10, pretrained=True, *args, **kwargs):
+def cifar10_resnet20(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=10, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet20", 
                    hidden_dim=hidden_dim,
                    layers=[3]*3,  # Indicates the repetitions of certain block types
                    model_urls=cifar10_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   num_param=num_param,
+                   bottom_up=bottom_up, 
+                   single_block=single_block,
+                   prior=prior,
+                   config_args=config_args,
+                   first_meta_layer=first_meta_layer,num_layers=num_layers,
                    *args, 
                    **kwargs)
 
-def cifar10_resnet32(hidden_dim, num_classes=10, pretrained=True, *args, **kwargs):
+def cifar10_resnet32(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=10, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet32", 
                    hidden_dim=hidden_dim,
                    layers=[5]*3, 
                    model_urls=cifar10_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   num_param=num_param,
+                   bottom_up=bottom_up, 
+                   single_block=single_block,
+                   prior=prior,
+                   config_args=config_args,
+                   first_meta_layer=first_meta_layer,num_layers=num_layers,
                    *args, 
                    **kwargs)
 
-def cifar10_resnet44(hidden_dim, num_classes=10, pretrained=True, *args, **kwargs):
+def cifar10_resnet44(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=10, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet44", 
                    hidden_dim=hidden_dim,
                    layers=[7]*3, 
                    model_urls=cifar10_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   num_param=num_param,
+                   bottom_up=bottom_up, 
+                   single_block=single_block,
+                   prior=prior,
+                   config_args=config_args,
+                   first_meta_layer=first_meta_layer,num_layers=num_layers,
                    *args, 
                    **kwargs)
 
-def cifar10_resnet56(hidden_dim, num_classes=10, pretrained=True, *args, **kwargs):
+def cifar10_resnet56(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=10, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet56", 
                    hidden_dim=hidden_dim,
                    layers=[9]*3, 
                    model_urls=cifar10_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   num_param=num_param,
+                   bottom_up=bottom_up, 
+                   single_block=single_block,
+                   prior=prior,
+                   config_args=config_args,
+                   first_meta_layer=first_meta_layer,num_layers=num_layers,
                    *args, 
                    **kwargs)
 
 # Functions for CIFAR-100
-def cifar100_resnet20(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,prior=True,config_args=None,*args, **kwargs):
+def cifar100_resnet20(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=100, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet20", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -497,7 +521,7 @@ def cifar100_resnet20(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    *args, 
                    **kwargs)
 
-def cifar100_resnet32(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,prior=True,config_args=None, *args, **kwargs):
+def cifar100_resnet32(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=100, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet32", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -512,7 +536,7 @@ def cifar100_resnet32(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
                    *args, 
                    **kwargs)
 
-def cifar100_resnet44(hidden_dim,num_param,bottom_up,single_block=False ,num_classes=100, pretrained=True,prior=True,config_args=None, *args, **kwargs):
+def cifar100_resnet44(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=100, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet44", 
                    hidden_dim=hidden_dim,
                    num_param=num_param,
@@ -530,13 +554,13 @@ def cifar100_resnet44(hidden_dim,num_param,bottom_up,single_block=False ,num_cla
 def cifar100_resnet56(hidden_dim,num_param,bottom_up,prior=True, single_block=False ,num_classes=100, pretrained=True,config_args=None,first_meta_layer=3,num_layers=3, *args, **kwargs):
     return _resnet(arch="resnet56", 
                    hidden_dim=hidden_dim,
-                   num_param=num_param,
                    layers=[9]*3,
-                   bottom_up=bottom_up, 
-                   single_block=single_block,
                    model_urls=cifar100_pretrained_weight_urls, 
                    num_classes=num_classes, 
                    pretrained=pretrained,
+                   num_param=num_param,
+                   bottom_up=bottom_up, 
+                   single_block=single_block,
                    prior=prior,
                    config_args=config_args,
                    first_meta_layer=first_meta_layer,num_layers=num_layers,

@@ -20,7 +20,7 @@ def create_mnist_model(model_name, hidden_dim, depths=None, path=None):
         raise ValueError(f"Unsupported model: {model_name}")
     return model
         
-def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse = True):
+def create_model_cifar10(model_name, hidden_dim,num_param, prior=True ,single_block=False,bottom_up=False ,path=None, smooth=False, fuse=True, config_args = None, prune = False,first_meta_layer=3,num_layers=3):
     """
     Create a model based on the specified name.
 
@@ -29,13 +29,13 @@ def create_model_cifar10(model_name, hidden_dim, path=None, smooth=False, fuse =
     :return: The initialized model.
     """
     if model_name == "ResNet20":  # Add other models as you support them
-        model = cifar10_resnet20(hidden_dim=hidden_dim)
+        model = cifar10_resnet20(hidden_dim=hidden_dim,prior=prior, num_param=num_param, bottom_up=bottom_up, single_block=single_block,config_args=config_args,first_meta_layer=first_meta_layer,num_layers=num_layers)
     elif model_name == "ResNet32":  # Add other models as you support them
-        model = cifar10_resnet32(hidden_dim=hidden_dim)
+        model = cifar10_resnet32(hidden_dim=hidden_dim,prior=prior, num_param=num_param, bottom_up=bottom_up, single_block=single_block,config_args=config_args,first_meta_layer=first_meta_layer,num_layers=num_layers)
     elif model_name == "ResNet44":  # Add other models as you support them
-        model = cifar10_resnet44(hidden_dim=hidden_dim)
+        model = cifar10_resnet44(hidden_dim=hidden_dim,prior=prior, num_param=num_param, bottom_up=bottom_up, single_block=single_block,config_args=config_args,first_meta_layer=first_meta_layer,num_layers=num_layers)
     elif model_name == "ResNet56":  # Add other models as you support them
-        model = cifar10_resnet56(hidden_dim=hidden_dim)
+        model = cifar10_resnet56(hidden_dim=hidden_dim,prior=prior, num_param=num_param, bottom_up=bottom_up, single_block=single_block,config_args=config_args,first_meta_layer=first_meta_layer,num_layers=num_layers)
     else:
         raise ValueError(f"Unsupported model: {model_name}")
     
@@ -109,20 +109,6 @@ def create_model_cifar100(model_name, hidden_dim,num_param, prior=True ,single_b
         permute_dict = permute_func.compute_permute_dict()
         model = permute_func.apply_permutations(permute_dict, ignored_keys=[('conv1.weight', 'in_channels'), ('fc.weight', 'out_channels'), ('fc.bias', 'out_channels')])
     
-   # elif path and not smooth:
-   #     fuse_module(model)
-   #     
-   #     print("Loading model from", path)
-   #     state_dict = torch.load(path, map_location=torch.device('cpu'))
-   #     load_checkpoint(model, state_dict)
-   # elif not path and smooth:
-   #     fuse_module(model)
-   #     print("Smooth the parameters of the model")
-   #     input_tensor = torch.randn(1, 3, 32, 32)
-   #     permute_func = PermutationManager(model, input_tensor)
-   #     permute_dict = permute_func.compute_permute_dict()
-   #     model = permute_func.apply_permutations(permute_dict, ignored_keys=[('conv1.weight', 'in_channels'), ('fc.weight', 'out_channels'), ('fc.bias', 'out_channels')])
-        
     return model
 
 def check_downsample_identity(model):
