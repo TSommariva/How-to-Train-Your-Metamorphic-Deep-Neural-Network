@@ -1,6 +1,6 @@
 model:
   type: ResNet56
-  num_param: 7 #Learnable Blocks
+  num_param: 8 #Learnable Blocks
   first_meta_block: 1
   smooth: False
   fuse: False
@@ -10,7 +10,7 @@ model:
 experiment:
   name: Resnet56_Small_${experiment.num_epochs}e_${training.batch_size}bs_${training.learning_rate}lr
   debug: False
-  num_epochs: 400
+  num_epochs: 200
   log_interval: 25
   eval_interval: 5
   iterative: True
@@ -20,11 +20,18 @@ experiment:
 
 # Training configurations
 training:
-  batch_size: 1024
+  batch_size: 256
   learning_rate: 1e-2
   eta_min: 1e-3
   warmup_epochs: 5
   T_max: ${experiment.num_epochs}
   weight_decay: 5e-4
   save_model_path: experiments/${experiment.name} # Directory to save the trained model
-  cls_optimizer: adamw
+  optimizer: sgd
+
+dimensions:
+  range: [32, 64]  # Dimension range for the experiment
+  test_range: [16, 64]  # Dimension range for testing
+  test: 32  # Testing dimension
+  norm: 64  # Normalization factor
+  start: 64  # Starting dimension

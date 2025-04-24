@@ -95,17 +95,27 @@ def main(args):
     #    print(f"Hidden_dim: {hidden_dim}, Validation Loss: {val_loss:.4f}, Accuracy: {acc * 100:.2f}")
     plt.rcParams.update({
         'font.size': 8,         # Global default font size
-        'axes.titlesize':  11,   # Axis title font size
-        'axes.labelsize':  11,    # Axis label font size
-        'xtick.labelsize': 9,   # X-tick label font size
-        'ytick.labelsize': 9    # Y-tick label font size
+        'axes.titlesize':  8,   # Axis title font size
+        'axes.labelsize':  8,    # Axis label font size
+        'xtick.labelsize': 8,   # X-tick label font size
+        'ytick.labelsize': 8    # Y-tick label font size
     })
     # Create a 1x2 figure
     checkpoint = torch.load("/homes/tsommariva/neumeta/assets/accuracyVSdim.pth", weights_only=False)
     dimensions = checkpoint['dimensions']
     accuracy = checkpoint['accuracy']
     loss = checkpoint['loss']
-    fig, (ax_acc, ax_loss) = plt.subplots(2, 1, figsize=(3, 3))
+    hist_w, hist_h = 6, 4    # inches
+
+    # choose a width that suits your minipage (here: half of 6″ minus a bit of margin)
+    subplot_w = hist_w / 2  # ≃3
+    subplot_h = hist_h / 2 +0.35 # ≃2
+
+    fig, (ax_acc, ax_loss) = plt.subplots(
+        2, 1,
+        figsize=(subplot_w, subplot_h),
+        constrained_layout=True
+    )
 
     # --- Accuracy subplot ---
     ax_acc.plot(dimensions, accuracy, color='#D23F0F',linewidth=1.5 ,label='Accuracy')
@@ -142,6 +152,7 @@ def main(args):
     ax_loss.spines['right'].set_visible(False)
     ax_loss.grid(True, linestyle=':')
     plt.tight_layout()
+    plt.savefig(f'/homes/tsommariva/neumeta/assets/accuracyVSdim_{random_value}.png', dpi=1200, bbox_inches='tight')
     plt.savefig(f'/homes/tsommariva/neumeta/assets/accuracyVSdim_{random_value}.pdf', dpi=1200, bbox_inches='tight')
     #plt.show()
     print(f'accuracyVSdim_{random_value}')

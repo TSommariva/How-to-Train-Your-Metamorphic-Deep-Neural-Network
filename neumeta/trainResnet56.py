@@ -124,38 +124,47 @@ def main():
     val_dataset = CIFAR100(root='./data', train=False, transform=transform_test)
     
     train_loader = DataLoader(train_dataset, batch_size=args.training.batch_size, 
-                            shuffle=True, num_workers=2)
+                            shuffle=True, num_workers=8)
     val_loader = DataLoader(val_dataset, batch_size=args.training.batch_size,
-                          shuffle=False, num_workers=2)
-    for dim in [64,48,32,16]:
+                          shuffle=False, num_workers=8)
+    for dim in [48,32,16]: #also 64
         # Create model
         model = cifar100_resnet56(
             hidden_dim=dim,
-            num_param=args.model.num_param,
+            num_param=8,
             bottom_up=False,
             single_block=False,
             pretrained=False,
             config_args=args,
-            prior=False
+            prior=False,
+            first_meta_layer=1,num_layers=3,
         ).to(device)
         summary(model,(3, 32, 32))
+        checkpoint = model.learnable_parameter
+        number_param = len(checkpoint)
+        print(f"Number of parameters to be learned: {number_param}")
+        print(f"Parameters keys: {model.keys}")
         run_name = f"hiddenDim{dim}_{args.experiment.name}-{time.strftime('%Y%m%d%H%M%S')}"
         if not args.experiment.debug:
             wandb.init(project="resnet", name=run_name, config=dict(args), group='cifar100', dir='/work/tesi_tsommariva')
 
         # Loss and optimizer
         criterion = nn.CrossEntropyLoss()
-        optimizer = AdamW(model.parameters(), 
-                            lr=args.training.learning_rate, 
-                            weight_decay=args.training.weight_decay)    
-        # Learning rate scheduler
-        warmup_epochs = args.training.get('warmup_epochs', 5)
-
-        warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-2, end_factor=1.0, total_iters=warmup_epochs)
-        cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(args.training.T_max - warmup_epochs),eta_min=(args.training.learning_rate * 0.1))
-
-        scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[warmup_epochs])
-
+        if args.training.optimizer == 'adamw':
+            optimizer = AdamW(model.parameters(), 
+                                lr=args.training.learning_rate, 
+                                weight_decay=args.training.weight_decay)  
+            warmup_epochs = args.training.get('warmup_epochs', 5)
+            warmup_scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1e-2, end_factor=1.0, total_iters=warmup_epochs)
+            cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(args.training.T_max - warmup_epochs),eta_min=(args.training.learning_rate * 0.1))
+            scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[warmup_epochs])        
+            
+        elif args.training.optimizer == 'sgd':
+            optimizer = torch.optim.SGD(model.parameters(), 
+                                        lr=0.1, 
+                                        momentum=args.training.get('momentum', 0.9),
+                                        weight_decay=0.0005, nesterov=True)
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200,eta_min=0)
         # Training loop
         best_acc = 0
         start_epoch = 0

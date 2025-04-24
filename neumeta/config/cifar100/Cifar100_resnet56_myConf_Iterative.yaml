@@ -10,11 +10,12 @@ model:
   fuse: False
   only_last: False
   metamorphic_block_type: 'skipInit' #'resize' 
-  start_layer: 1
+  start_layer: 1 #first metamorphic layer
+  first_trained_layer: 3 #first trained layer for the iterative training
   
 # Experiment settings
 experiment:
-  name: FULL_allLayersSim:${experiment.all_layers_sim}_Blocks${model.first_meta_block}to${model.num_param}_from2557846    #${hyper_model.type}_${experiment.num_epochs}e_${model.metamorphic_block_type}_StartBlock${model.start_block}_CustmInit:${experiment.custom_init}_${experiment.batch_accumulation_steps}AccumulationSteps
+  name: FULL_allLayersSim:${experiment.all_layers_sim}_Blocks${model.first_meta_block}to${model.num_param}_normalLR   #${hyper_model.type}_${experiment.num_epochs}e_${model.metamorphic_block_type}_StartBlock${model.start_block}_CustmInit:${experiment.custom_init}_${experiment.batch_accumulation_steps}AccumulationSteps
   num_epochs: 50 #100 #350
   log_interval: 26
   eval_interval: 10

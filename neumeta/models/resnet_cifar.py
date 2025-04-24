@@ -375,7 +375,7 @@ class CifarResNet(nn.Module):
             
             if name == 'layer3' and any(name == f'layer{n}'for n in range(self.first_meta_layer, self.num_layers + 1)):
                 bottleneck = round((1 - gamma) * 64)
-                num_param = self.num_param if self.num_param < 7 else 7
+                num_param = self.num_param if self.num_param <= 7 else 7
                 print(f'Replace first {num_param} blocks of layer3 with new blocks of hidden dim {bottleneck}')
                 # Get all the layers except the last block
                 layers = []

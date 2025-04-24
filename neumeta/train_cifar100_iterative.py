@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from neumeta.hypermodel import NeRF_MLP_Compose, NeRF_ResMLP_Compose
-from neumeta.models import create_model_cifar10 as create_model
+from neumeta.models import create_model_cifar100 as create_model
 from neumeta.utils import (AverageMeter, EMA, create_key_masks, get_cifar100, get_cifar10,
                            get_hypernet, get_optimizer, load_checkpoint,
                            parse_args, print_omegaconf, sample_coordinates, sample_weights, sample_merge_model,
@@ -38,7 +38,7 @@ def verify_weights(model1, model2):
 device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
 def get_num_workers():
-    return 16
+    return 32
 
 def init_model_dict(args, num_blocks = 1, single_block = False,first_meta_layer=3,num_layers=3):
     """
@@ -92,6 +92,21 @@ def init_model_dict(args, num_blocks = 1, single_block = False,first_meta_layer=
             model_trained.eval()
             
             gt_model_dict[f"{dim}"] = model_trained
+    for dim in [16]:
+        model_cls = create_model(args.model.type, 
+                             hidden_dim=dim, num_param=num_blocks, bottom_up=args.model.bottom_up,single_block=single_block ,
+                             path=args.model.pretrained_path, smooth=args.model.smooth, fuse=args.model.smooth, prior=False, config_args=args, first_meta_layer=first_meta_layer, num_layers=num_layers)
+         
+        if device=="cuda" and torch.backends.cudnn.version() >= 7603:
+            model_cls.to(device, memory_format=torch.channels_last)  # Module parameters need to be channels last
+        else:
+            model_cls.to(device)
+        
+        optimizer = get_cifar_optimizer(args, model_cls, num_blocks,num_layers)
+            
+        coords_tensor, keys_list, indices_list, size_list = sample_coordinates(model_cls)
+        dim_dict[f"{dim}"] = (model_cls, optimizer, coords_tensor, keys_list, indices_list, size_list, None)
+
     return dim_dict, gt_model_dict
 
 def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_model_dict, epoch_idx ,ema=None, args=None, block_idx=1, max_epochs=200, backbone_parameters={}, layers=3):
@@ -216,7 +231,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 
         if batch_idx % args.experiment.log_interval == 0 and not args.experiment.debug:
             for i, param_group in enumerate(cls_optimizer.param_groups):
-                wandb.log({f"Backbone Learning rate{i}": param_group['lr']}, step=((layers-args.model.start_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + (batch_idx // args.experiment.log_interval) + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval)
+                wandb.log({f"Backbone Learning rate{i}": param_group['lr']}, step=((layers-args.model.first_trained_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + (batch_idx // args.experiment.log_interval) + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval)
             
             wandb.log({
                 "Running training accuracy argmax" : accuracies.avg,
@@ -225,7 +240,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
                 "Reg Loss": reg_losses.avg,
                 "Reconstruct Loss": reconstruct_losses.avg,
                 "Learning rate": optimizer.param_groups[0]['lr'],
-                }, step=((layers-args.model.start_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader)// args.experiment.log_interval)
+                }, step=((layers-args.model.first_trained_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader)// args.experiment.log_interval)
 
                 
         if batch_idx % args.experiment.log_interval == 0:
@@ -252,7 +267,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion, dim_dict, gt_mode
         wandb.log({
                     "trainLoss_last model of the epoch" : losses.avg,
                     "trainAcc_last model of the epoch" : accuracies.avg
-                }, step=((layers-args.model.start_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval )
+                }, step=((layers-args.model.first_trained_layer) * args.model.num_param * max_epochs * len(train_loader) // args.experiment.log_interval) + batch_idx // args.experiment.log_interval + (epoch_idx - 1) * len(train_loader) // args.experiment.log_interval + (block_idx - args.model.start_block) * max_epochs * len(train_loader) // args.experiment.log_interval )
     return losses.avg, accuracies.avg, backbone_parameters
     
 def main_iterative_nerf(args):
@@ -288,7 +303,7 @@ def main_iterative_nerf(args):
     end_epoch = args.experiment.num_epochs + 1
     backbone_parameters = {}
     prev_NeRF = get_hypernet(args, 0,total_param=number_param ,device=device)
-    trained_layers = args.model.start_layer
+    trained_layers = args.model.first_trained_layer
     #dictionaries = []
     #dic = torch.load("/homes/tsommariva/tmp/model_dictionary.pth", weights_only=False)
     #for i in range(21):
@@ -308,7 +323,7 @@ def main_iterative_nerf(args):
         dim_dict = shuffle_coordiates_all(dim_dict)
         _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
         selected_keys = np.unique(keys_list)
-        hyper_model = get_hypernet(args, 4 * trained_blocks, total_param=number_param ,key_list=selected_keys,device=device)
+        hyper_model = get_hypernet(args, 4 * trained_blocks + (4 * (trained_layers - args.model.start_layer) * args.model.num_param),total_param=number_param ,key_list=selected_keys ,device=device)
         
         if args.hyper_model.get('use_ema', True):
             ema = EMA(hyper_model, decay=args.hyper_model.ema_decay)
@@ -343,7 +358,7 @@ def main_iterative_nerf(args):
                 "Train Accuracy_model sampled outside training": train_acc,
                 "Validation Loss_model sampled outside training": val_loss,
                 "Validation Accuracy_model sampled outside training": val_acc
-            }, step=((trained_layers-args.model.start_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (start_epoch) * len(train_loader) // args.experiment.log_interval + (start_block - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+            }, step=((trained_layers-args.model.first_trained_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (start_epoch) * len(train_loader) // args.experiment.log_interval + (start_block - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
                 
         if a_diff > 0.5:
             return -2
@@ -370,12 +385,12 @@ def main_iterative_nerf(args):
                 _, _, _, keys_list, _, _, _ = dim_dict[f"{64}"]
                 selected_keys = np.unique(keys_list)
                 if block_id == start_block and layers==1:
-                    hyper_model = get_hypernet(args, 4 * block_id * layers,total_param=number_param ,key_list=selected_keys ,device=device)
+                    hyper_model = get_hypernet(args, 4 * block_id + (4 * (layers - args.model.start_layer) * args.model.num_param),total_param=number_param ,key_list=selected_keys ,device=device)
                 else:
                     if block_id == start_block:
-                        hyper_model = extend_nerf_compose(prev_NeRF,False, args, 4 * block_id * layers,total_param=number_param,key_list=selected_keys ,device=device)
+                        hyper_model = extend_nerf_compose(prev_NeRF,False, args, 4 * block_id + (4 * (layers - args.model.start_layer) * args.model.num_param),total_param=number_param,key_list=selected_keys ,device=device)
                     else:
-                        hyper_model = extend_nerf_compose(prev_NeRF,args.experiment.custom_init, args, 4 * block_id * layers,total_param=number_param,key_list=selected_keys ,device=device)
+                        hyper_model = extend_nerf_compose(prev_NeRF,args.experiment.custom_init, args, 4 * block_id + (4 * (layers - args.model.start_layer) * args.model.num_param), total_param=number_param,key_list=selected_keys ,device=device)
                     start_epoch = 0
                     best_acc = 0.0 
 
@@ -396,7 +411,7 @@ def main_iterative_nerf(args):
                 scheduler.step()
                 hyper_model.eval()
 
-                print(f"Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
+                print(f"LAYER[{layers}/3]-Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Training Loss: {train_loss:.4f}, Training Accuracy: {train_acc*100:.2f}, Learning Rate: {scheduler.get_last_lr()[0]:.6f}")
 
                 if epoch % args.experiment.eval_interval == 0 or epoch == 1:
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -411,15 +426,20 @@ def main_iterative_nerf(args):
                                 "Train Accuracy_model sampled outside training": train_acc,
                                 "Validation Loss_model sampled outside training": val_loss,
                                 "Validation Accuracy_model sampled outside training": val_acc
-                            }, step=((layers-args.model.start_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
-                        print(f"Hidden Dim = {dim} - Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
-                        print(f"Hidden Dim = {dim} - Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                            }, step=((layers-args.model.first_trained_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+                        print(f"Hidden Dim = {dim} - LAYER[{layers}/3]-Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
+                        print(f"Hidden Dim = {dim} - LAYER[{layers}/3]-Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")
+                        print("------------------------------------------------------------------------------------------------------------------------------")
 
                         # Save the checkpoint
                         if val_acc >= best_acc and dim == 64:
                             best_acc = val_acc
                             save_checkpoint(f"{args.training.save_model_path}/layer{layers}/nerf_block{block_id}_best.pth",hyper_model,optimizer,scheduler,ema,epoch,val_acc, trained_blocks=block_id,trained_layers=layers ,backbone_parameters=backbone_parameters)
-                        print(f"Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
+                            print(f"LAYER[{layers}/3]-Block[{block_id}/{args.model.num_param}] Checkpoint saved at epoch {epoch} with accuracy: {val_acc*100:.2f}%; best accuracy: {best_acc*100:.2f}%")
+                        #elif val_acc < 0.1:
+                        #    return -1
+                        elif dim==64:
+                            print(f"LAYER[{layers}/3]-Block[{block_id}/{args.model.num_param}], best accuracy: {best_acc*100:.2f}%")
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
                     #torch.cuda.empty_cache()
@@ -560,7 +580,7 @@ def test(args):
         print("------------------------------------------------------------------------------------------------------------------------------")
     
     start_time = time.time()
-    validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda', step=2, first_meta_layer=args.model.start_layer, num_layers=3)
+    validate_all_dimensions(best_hyper_model, backbone_parameters, args.model.num_param, val_loader, criterion, create_model, args, device='cuda', step = 2, first_meta_layer=args.model.start_layer, num_layers=3)
     elapsed_time = (time.time() - start_time)/60
     print(f"Time elapsed for testing: {elapsed_time:.2f} minutes")
 
