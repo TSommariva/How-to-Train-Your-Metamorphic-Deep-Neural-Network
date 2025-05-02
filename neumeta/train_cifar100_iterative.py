@@ -415,7 +415,11 @@ def main_iterative_nerf(args):
 
                 if epoch % args.experiment.eval_interval == 0 or epoch == 1:
                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                    for dim in [16,32,48,64]:
+                    if (epoch == end_epoch - 1) or (epoch % 50 == 0):
+                        test_dims = [16,32,48,64]
+                    else:
+                        test_dims = [64]
+                    for dim in test_dims:
                         sampled_model = sample_merge_model(hyper_model, dim_dict[f"{dim}"][0], args, backbone_parameters=backbone_parameters ,device=device, K=100)
                         val_loss, val_acc = validate_single(sampled_model, val_loader, val_criterion, args=args, device=device)
                         train_loss, train_acc = validate_single(sampled_model, train_loader, val_criterion, args=args, device=device)
@@ -426,6 +430,13 @@ def main_iterative_nerf(args):
                                 "Train Accuracy_model sampled outside training": train_acc,
                                 "Validation Loss_model sampled outside training": val_loss,
                                 "Validation Accuracy_model sampled outside training": val_acc
+                            }, step=((layers-args.model.first_trained_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
+                        elif not args.experiment.debug:
+                            wandb.log({
+                                f"Dim{dim} - Train Loss_model sampled outside training": train_loss,
+                                f"Dim{dim} - Train Accuracy_model sampled outside training": train_acc,
+                                f"Dim{dim} - Validation Loss_model sampled outside training": val_loss,
+                                f"Dim{dim} - Validation Accuracy_model sampled outside training": val_acc
                             }, step=((layers-args.model.first_trained_layer) * args.model.num_param * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval) + (epoch) * len(train_loader) // args.experiment.log_interval + (block_id - args.model.start_block) * args.experiment.num_epochs * len(train_loader) // args.experiment.log_interval)
                         print(f"Hidden Dim = {dim} - LAYER[{layers}/3]-Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc*100:.2f}%")
                         print(f"Hidden Dim = {dim} - LAYER[{layers}/3]-Block[{block_id}/{args.model.num_param}]-Epoch[{epoch}/{end_epoch-1}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc*100:.2f}%")

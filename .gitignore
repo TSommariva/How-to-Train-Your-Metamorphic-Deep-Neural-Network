@@ -8,3 +8,4 @@ wandb/
 
 #files to ignore
 core.*
+*.sh

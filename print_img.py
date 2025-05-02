@@ -119,7 +119,7 @@ def main(args):
 
     # --- Accuracy subplot ---
     ax_acc.plot(dimensions, accuracy, color='#D23F0F',linewidth=1.5 ,label='Accuracy')
-    ax_acc.set_xlabel('Hidden Dimension')
+    ax_acc.set_xlabel(r'Compression Ratio $\gamma$')
     ax_acc.set_ylabel('Accuracy (%)')
     ax_acc.axvspan(32, 64, color='gray', alpha=0.35)
 
@@ -136,9 +136,23 @@ def main(args):
 
     # --- Loss subplot ---
     ax_loss.plot(dimensions, loss, color='#D23F0F',linewidth=1.5, label='Loss')
-    ax_loss.set_xlabel('Hidden Dimension')
+    ax_loss.set_xlabel(r'Compression Ratio $\gamma$')
     ax_loss.set_ylabel('Loss')
     ax_loss.axvspan(32, 64, color='gray', alpha=0.35)
+    
+    dim_f32 = dimensions.to(dtype=torch.float32)
+    # choose every 4th value
+    custom_dimensions = torch.tensor([6, 16, 32, 48, 64, 80, 96])
+    
+    # Compute their transformed values
+    custom_labels = 1.0 - custom_dimensions.float() / 64.0
+    
+    # Set ticks
+    ax_acc.set_xticks(custom_dimensions)
+    ax_acc.set_xticklabels([f"{label:.2f}" for label in custom_labels])
+    
+    ax_loss.set_xticks(custom_dimensions)
+    ax_loss.set_xticklabels([f"{label:.2f}" for label in custom_labels])
 
     # Add the same text markers
     ax_loss.text(0.17, 0.8, 'Untrained', transform=ax_loss.transAxes,
