@@ -1,26 +1,15 @@
-# 🦋 NeuMeta: Neural Metamorphosis 🦋
+# How to Train Your Metamorphic Deep Neural Network
 
-NeuMeta transforms neural networks by allowing a single model to adapt on the fly to different sizes, generating the right weights when needed. It streamlines performance and efficiency, eliminating the need for multiple models and adjusting seamlessly in real-time.
-
-
-**Neural Metamorphosis(ECCV 2024)**
-
- 📝[[Paper](https://arxiv.org/abs/2409.10594)] </>[[code](https://github.com/Adamdad/neumeta)] 
-
-Xingyi Yang, Xinchao Wang
-
-National University of Singapore
-
-![](assets/tiser.png)
+Neural Metamorphosis (NeuMeta) is a recent paradigm for generating neural networks of varying width and depth. Based on Implicit Neural Representation (INR), NeuMeta learns a continuous weight manifold, enabling the direct generation of compressed models, including those with configurations not seen during training. While promising, the original formulation of NeuMeta proves effective only for the final layers of the undelying model, limiting its broader applicability. In this work, we propose a training algorithm that extends the capabilities of NeuMeta to enable full-network metamorphosis with minimal accuracy degradation. Our approach follows a structured recipe comprising block-wise incremental training, INR initialization, and strategies for replacing batch normalization. The resulting metamorphic networks maintain competitive accuracy across a wide range of compression ratios, offering a scalable solution for adaptable and efficient deployment of deep models.
 
 
+**How to Train Your Metamorphic Deep Neural Network**
 
+ 📝[Paper]()
 
+Thomas Sommariva, Simone Calderara, Angelo Porrello
 
-
-## 🔧 Key Features
-- **Dynamic Model Morphing**: Generate network weights on demand.
-- **Weight Smoothness**: Ensures smooth transitions between weight configurations.
+AImageLab, University of Modena and Reggio Emilia, Italy
 
 ## 🏗️ Code Structure
 
@@ -30,17 +19,12 @@ neumeta/
 ├── config/        # Configuration files for experimental setups
 ├── models/        # Definitions and variations of NeuMeta models
 ├── prune/         # Scripts for model pruning and optimization
-├── segmentation/  # Implementations for semantic segmentation tasks
 ├── similarity/    # Tools for evaluating model weight similarities
 ├── utils/         # General utility scripts
-├── vae/           # Variational Autoencoder components for NeuMeta
-│
-├── training_scripts/   # Scripts for dataset-specific training
-│   └── train_<DATASET>.py
 │
 ├── hypermodel.py   # The INR Hypernetwork for NeuMeta
-├── smoothness/     # Enforces smooth weight transitions across models
-└── requirements.txt   # Dependency list
+├── smoothing.py/     # Enforces smooth weight transitions across models
+└── environment.yml   # Conda Environment
 
 ```
 
@@ -48,10 +32,10 @@ neumeta/
 To run the NeuMeta project:
 
 1. **Clone the repository**.
-2. **Install the dependencies**: `pip install -r requirements.txt`.
+2. **Install the dependencies**: `conda env create -f environment.yml`.
 3. **Prepare the preatrined checkpoint**: Ensure you have a pretrained model checkpoint for initialization. This will act as the base for Neural Metamorphosis.
 
-4. **Convert to smooth weight**: Use the weight permutation algorithm in `smooth/permute.py` to transform the checkpoint into a smoother weight version for effective morphing. Here's an 
+4. **Convert to smooth weight**: Use the weight permutation algorithm in `smooth/permute.py` to transform the checkpoint into a smoother weight version for effective morphing.
 ```python
 from smooth.permute import PermutationManager
 
@@ -85,35 +69,30 @@ Replace `<CONFIG_PATH>` with the path to your specific configuration file tailor
 6. **Weight Sampling for Target Model**
 After training the INR, sample weights for any architecture in the same family. For example:
 ```python
+args = parse_args()
 #### Load INR model ####
-hyper_model = <XXXX>
+checkpoint_info, hyper_model, _, _, _ = load_checkpoint("test_path", hyper_model, None,None ,None, device=device)
+backbone_parameters = checkpoint_info['backbone_parameters']
 
 for hidden_dim in range(16, 65):
     # Create a model for the given hidden dimension
     model = create_model(args.model.type, 
-                          hidden_dim=hidden_dim, 
-                          path=args.model.pretrained_path, 
-                          smooth=args.model.smooth).to(device)
+                                 hidden_dim=hidden_dim,
+                                 num_param=args.model.num_param,
+                                 bottom_up=args.model.bottom_up,
+                                 single_block=False,
+                                 path=args.model.pretrained_path, 
+                                 smooth=args.model.smooth, fuse=args.model.fuse,
+                                 prior=False, config_args=args, first_meta_layer=args.model.start_layer, num_layers=3)
         
     # Sample the merged model for K times
-    accumulated_model = sample_merge_model(hyper_model, model, args, K=100)
-
+    accumulated_model = sample_merge_model(best_hyper_model, model, args, backbone_parameters=backbone_parameters ,K=100, device=device)
     # Validate the merged model
-    val_loss, acc = validate_single(accumulated_model, val_loader, val_criterion, args=args)
+    val_loss, val_acc = validate_single(accumulated_model, val_loader, criterion, args, device=device)
 
     # Print the results
     print(f"Test using model {args.model}: hidden_dim {hidden_dim}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {acc*100:.2f}%")        
 ```
 
-## 📚 Bibtex
-If you use this repository, please cite:
-```bibtex
-@inproceedings{yang2025neural,
-  title={Neural Metamorphosis},
-  author={Yang, Xingyi and Wang, Xinchao},
-  booktitle={European Conference on Computer Vision},
-  pages={1--19},
-  year={2025},
-  organization={Springer}
-}
-```
+## 🙏 Acknowledgments
+This project is adapted from [NeuMeta](https://github.com/Adamdad/neumeta). We extend our gratitude to the original authors for their foundational work.

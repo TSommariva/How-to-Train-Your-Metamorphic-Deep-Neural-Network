@@ -1,34 +1,68 @@
+base_config: neumeta/config/base_config.yaml
+# Model configurations
 model:
   type: ResNet56
-  num_param: 8 #Learnable Blocks
-  first_meta_block: 1
-  smooth: False
-  fuse: False
-  metamorphic_block_type: 'resize'
+  pretrained_path: neumeta/pretrained_models/cifar100_ResNet56-smoothed.pt
+  num_param: 8 #Number of metamorphic residual blocks in each layer
+  start_block: 1  #Index of the starting block for the iterative training strategy 
+  first_meta_block: 1 #Index of the first transformed block
+  smooth: True #If the pretrained_path is an already smoothed model set: smooth = False 
+  fuse: True #If the pretrained_path is an already smoothed model set: fuse = False 
+  start_layer: 1 #first metamorphic layer
+  first_trained_layer: 3 #first trained layer for the iterative training
   
 # Experiment settings
 experiment:
-  name: Resnet56_Small_${experiment.num_epochs}e_${training.batch_size}bs_${training.learning_rate}lr
-  debug: False
-  num_epochs: 200
-  log_interval: 25
-  eval_interval: 5
-  iterative: True
+  name: NeuMeta
+  num_epochs: 350
+  log_interval: 26
+  eval_interval: 10
+  batch_accumulation_steps: 4 
   custom_init: True
-  seed: 42
+  debug: False #True avoids wandb logging
+  test: False #True skip training 
+  test_path: ''
+  seed: 42  # Random seed
 
 
 # Training configurations
 training:
-  batch_size: 256
-  learning_rate: 1e-2
-  eta_min: 1e-3
-  warmup_epochs: 5
+  batch_size: 128
+  learning_rate: 8e-4
+  eta_min: ${training.learning_rate} 
+  scheduler: warmup_cosine
+  warmup_epochs: 20
+  start_decay: 100
   T_max: ${experiment.num_epochs}
-  weight_decay: 5e-4
-  save_model_path: experiments/${experiment.name} # Directory to save the trained model
-  optimizer: sgd
+  weight_decay: 1e-4
+  coordinate_noise: 1.0
+  clip_grad: 10.0
+  save_model_path: # Directory to save the trained model
+  cls_optimizer: adamw
+  cls_learning_rate: 7e-5 #lr for classifier and block 3.8
+  alpha_learning_rate: 1e-4 #lr for alpha coefficients
+  cls_weight_decay: 1e-2
 
+# Hyper-model specifications (specific to NeRF)
+hyper_model:
+  type: resmlpDict 
+  input_dim: 6
+  hidden_dim: 512
+  num_layers: 8
+  num_freqs: 32
+  output_dim: 9
+  scalar: 0.1
+  use_ema: False
+  ema_decay: 0.995  # Exponential moving average decay
+
+  loss_weight:
+    ce_weight: 100.0
+    reg_weight: 0.001
+    recon_weight: 1.0
+    kd_weight: 0.1
+
+
+# Experiment dimensions configuration
 dimensions:
   range: [32, 64]  # Dimension range for the experiment
   test_range: [16, 64]  # Dimension range for testing

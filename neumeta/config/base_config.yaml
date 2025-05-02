@@ -9,10 +9,12 @@ experiment:
   arch_accumulation_steps: 1
   batch_accumulation_steps: 1
   seed: 42  # Random seed
-  iterative: False
+  iterative: True
   convertToDdp: False
   scaler: False
   custom_init: False
+  simul_blocks: 8 #deprecato
+  all_layers_sim: True #Sempre True
 
 # Model configurations
 model:
@@ -23,6 +25,8 @@ model:
   smooth: True
   fuse: True
   single_block: False
+  only_last: False
+  metamorphic_block_type: 'skipInit'
 
 # Training configurations
 training:
@@ -36,6 +40,7 @@ training:
   save_model_path: neumeta/experiments/resnet20_cifar10_32-64-4layer-5 # Directory to save the trained model
   ft_scaling: False
   ft_scalinigFactor: 0.1
+  backbone_learning_rate: 0 
 
 # Hyper-model specifications (specific to NeRF)
 hyper_model:
@@ -45,6 +50,7 @@ hyper_model:
   num_freqs: 16
   output_dim: 9
   extend_ema: True
+  kernel_groups: 4 #deprecato
   ema_decay: 0.995  # Exponential moving average decay
 
   loss_weight:

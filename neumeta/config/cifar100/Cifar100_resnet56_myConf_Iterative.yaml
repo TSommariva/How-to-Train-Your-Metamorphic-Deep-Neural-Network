@@ -16,7 +16,7 @@ model:
 # Experiment settings
 experiment:
   name: FULL_allLayersSim:${experiment.all_layers_sim}_Blocks${model.first_meta_block}to${model.num_param}_normalLR   #${hyper_model.type}_${experiment.num_epochs}e_${model.metamorphic_block_type}_StartBlock${model.start_block}_CustmInit:${experiment.custom_init}_${experiment.batch_accumulation_steps}AccumulationSteps
-  num_epochs: 50 #100 #350
+  num_epochs: 50 #350
   log_interval: 26
   eval_interval: 10
   batch_accumulation_steps: 4 #1
