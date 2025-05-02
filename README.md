@@ -22,8 +22,8 @@ neumeta/
 ├── similarity/    # Tools for evaluating model weight similarities
 ├── utils/         # General utility scripts
 │
-├── hypermodel.py   # The INR Hypernetwork for NeuMeta
-├── smoothing.py/     # Enforces smooth weight transitions across models
+├── hypermodel.py     # The INR Hypernetwork for NeuMeta
+├── smoothing.py      # Enforces smooth weight transitions across models
 └── environment.yml   # Conda Environment
 
 ```
